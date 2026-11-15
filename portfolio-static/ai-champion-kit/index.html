@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Northstar Branch AI Champion Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Northstar intranet look: navy bar, gold rule, warm paper background. Single theme on purpose (brand world). */
+:root{
+  --navy:#0F2747;--navy-2:#16335E;--gold:#C9A227;--gold-soft:#E3C766;--gold-ink:#8A6A12;
+  --paper:#F4F2EC;--card:#FFFFFF;--line:#DCD7CA;--ink:#1B2333;--muted:#4A5468;
+  --pass:#14532D;--pass-bg:#DCF2E3;--flag:#7A4F00;--flag-bg:#FFF1D1;--hold:#9B1C1C;--hold-bg:#FDE8E6;
+  --f-display:"Source Serif 4",Georgia,serif;--f-body:Inter,"Segoe UI",system-ui,sans-serif;--f-mono:ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+a{color:var(--navy)}a:hover{color:var(--gold-ink)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--f-display);color:var(--navy);text-wrap:balance;line-height:1.2;margin:0}
+p{margin:0}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-4px}
+.icb{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:9px;background:#FBF1D2;color:var(--navy);flex:none}
+.icb .ic{width:21px;height:21px}
+.top{background:var(--navy);color:#fff}
+.top-in{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:14px 24px;max-width:1160px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:12px}
+.bn{font-family:var(--f-display);font-weight:700;font-size:17px;letter-spacing:.04em;line-height:1.1}
+.bn span{display:block;font-family:var(--f-body);font-size:10px;letter-spacing:.3em;color:var(--gold-soft);font-weight:600}
+.divider{width:1px;height:30px;background:#3A5276}
+.hub{font-weight:600;font-size:15px}
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--gold-soft);font-weight:600;font-size:14px;text-decoration:none}
+.back:hover{color:#fff}
+.views{background:#fff;border-bottom:1px solid var(--line)}
+.views-in{max-width:1160px;margin:0 auto;padding:0 24px;display:flex;gap:4px;overflow-x:auto}
+.vtab{display:inline-flex;align-items:center;gap:8px;padding:12px 12px 9px;border-bottom:3px solid transparent;color:var(--muted);font-weight:600;font-size:14px;text-decoration:none;white-space:nowrap}
+.vtab:hover{color:var(--navy)}
+.vtab[aria-current="page"]{color:var(--navy);border-bottom-color:var(--gold)}
+.vtab .ic{width:17px;height:17px}
+.view[hidden]{display:none}
+.crumb{font-size:13px;color:var(--muted);padding:10px 0}
+.crumb strong{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 20px;border-radius:6px;font:700 15px var(--f-body);text-decoration:none;border:2px solid transparent;cursor:pointer}
+.btn-navy{background:var(--navy);color:#fff}.btn-navy:hover{background:var(--navy-2);color:#fff}
+.btn-gold{background:var(--gold);color:var(--navy)}.btn-gold:hover{background:var(--gold-soft);color:var(--navy)}
+.btn-line{border-color:var(--navy);color:var(--navy);background:#fff}.btn-line:hover{background:#F1EEE5}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.pill{display:inline-block;font-size:12px;font-weight:700;border-radius:4px;padding:2px 8px;text-align:center}
+.p-PASS{background:var(--pass-bg);color:var(--pass)}.p-FLAG{background:var(--flag-bg);color:var(--flag)}.p-HOLD{background:var(--hold-bg);color:var(--hold)}
+.fine{font-size:13px;color:#5B6577;font-style:italic}
+/* Letter-size sheets shown on screen */
+.sheet-stage{padding:28px 16px 48px;display:flex;justify-content:center}
+.sheet{width:100%;max-width:816px;background:#fff;box-shadow:0 8px 28px rgba(15,39,71,.14);display:flex;flex-direction:column}
+.sheet-head{background:var(--navy);color:#fff;border-bottom:5px solid var(--gold);padding:24px 40px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.sheet-title{text-align:right}
+.sheet-title h1{color:#fff;font-size:28px}
+.sheet-title div{font-size:12px;color:var(--gold-soft);font-weight:600;letter-spacing:.06em;margin-top:4px}
+.sheet-body{padding:22px 40px 0;display:flex;flex-direction:column;gap:13px;font-size:14px;line-height:1.45}
+.sheet-foot{margin:18px 40px 0;padding:10px 0 26px;border-top:2px solid var(--gold);font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+/* Microsoft Forms mockups */
+.form-stage{padding:28px 16px 48px;display:flex;justify-content:center}
+.mform{width:100%;max-width:640px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.mform-head{background:var(--navy);color:#fff;padding:20px 26px;border-bottom:5px solid var(--gold)}
+.mform-kicker{font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--gold-soft)}
+.mform-head h1{color:#fff;font-size:25px;margin:6px 0 4px}
+.mform-head p{font-size:14px;color:#E6EBF3}
+.mform-body{padding:22px 26px 26px;display:flex;flex-direction:column;gap:18px}
+.who{background:#F4F2EC;border-radius:8px;padding:10px 14px;font-size:14px;color:#3A4458}
+.q{display:flex;flex-direction:column;gap:6px}
+.q>label,.q legend{font-weight:600}
+.req{color:var(--hold)}
+select,input[type=text],textarea{font:15px var(--f-body);border:1px solid #B9B3A3;border-radius:6px;padding:0 10px;background:#fff;color:var(--ink)}
+select,input[type=text]{height:44px}
+textarea{min-height:110px;padding:10px;resize:vertical}
+fieldset{border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.ck{display:flex;gap:10px;align-items:flex-start;min-height:30px;cursor:pointer}
+.ck input{width:20px;height:20px;margin-top:1px;flex:none;accent-color:var(--navy)}
+.radios{display:flex;flex-wrap:wrap;gap:16px}
+.radios label{display:flex;gap:8px;align-items:center;min-height:40px;cursor:pointer}
+.radios input{width:18px;height:18px;accent-color:var(--navy)}
+.done-head{display:flex;align-items:center;gap:14px}
+.done-head h2{font-size:27px}
+.resp{width:100%;border-collapse:collapse;font-size:14px;border:1px solid #E4E0D5}
+.resp th{text-align:left;padding:8px 12px;width:40%;color:var(--muted);font-weight:600;background:#F7F5EF;border-bottom:1px solid #E4E0D5}
+.resp td{padding:8px 12px;border-bottom:1px solid #E4E0D5}
+.note{background:#F4F2EC;border-radius:8px;padding:14px 16px;font-size:14px;color:#3A4458;display:flex;flex-direction:column;gap:6px}
+.next-link{display:flex;align-items:center;justify-content:space-between;min-height:48px;padding:0 16px;border-radius:6px;font-weight:700;text-decoration:none}
+.portfolio-note{text-align:center;padding:0 16px 28px}
+@media (max-width:600px){.sheet-head,.sheet-body{padding-left:20px;padding-right:20px}.sheet-foot{margin-left:20px;margin-right:20px}.sheet-title{text-align:left}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.hero{background:var(--navy);color:#fff;border-bottom:6px solid var(--gold)}
+.hero-in{max-width:1160px;margin:0 auto;padding:52px 24px 48px;display:flex;flex-wrap:wrap;gap:40px;align-items:center}
+.badge{display:inline-block;background:var(--gold);color:var(--navy);font-size:12px;font-weight:700;letter-spacing:.12em;padding:5px 10px;border-radius:4px}
+.hero h1{color:#fff;font-size:46px;line-height:1.1;margin:18px 0 14px}
+.glance{flex:1 1 300px;min-width:0;background:var(--navy-2);border:1px solid #2E4C7A;border-radius:10px;padding:22px 24px}
+.glance-t{font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--gold-soft);margin-bottom:12px}
+.glance-row{display:flex;gap:10px;align-items:flex-start;font-size:15px;color:#E6EBF3}
+.glance-row .ic{color:var(--gold-soft);margin-top:2px}
+.glance-row strong{color:#fff}
+.strip{margin-top:28px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px 18px;display:flex;flex-wrap:wrap;gap:10px 24px;font-size:14px;color:#3A4458;align-items:center}
+section.blk{padding-top:52px}
+.h2row{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.h2row h2{font-size:31px}
+.sub{color:var(--muted);margin:0 0 22px;max-width:760px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px}
+.card h3{font-size:19px;margin:12px 0 6px}
+.card p{font-size:15px;color:#3A4458}
+.tagx{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;padding:4px 9px;border-radius:4px}
+.step{background:#fff;border:1px solid var(--line);border-radius:12px;padding:26px;display:flex;flex-wrap:wrap;gap:28px}
+.step-l{flex:1 1 340px;min-width:0}
+.step-r{flex:1 1 380px;min-width:0;background:var(--paper);border-radius:10px;padding:18px}
+.num{width:36px;height:36px;border-radius:50%;background:var(--navy);color:var(--gold-soft);display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.step-h{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.step-h h3{font-size:21px}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.1em;color:#5B6577;margin-bottom:10px}
+.prompt{background:#F7F5EF;border:1px dashed var(--gold-ink);border-radius:8px;padding:14px 16px;font-family:var(--f-mono);font-size:14px;line-height:1.6}
+.box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:15px}
+.legend{display:flex;flex-direction:column;gap:8px;font-size:14px;margin-top:12px}
+.legend div{display:flex;gap:10px;align-items:baseline}
+.legend .pill{flex:none;width:52px}
+table.sc{width:100%;border-collapse:collapse;background:#fff;font-size:13.5px}
+table.sc th{background:var(--navy);color:#fff;text-align:left;padding:8px 10px}
+table.sc td{padding:8px 10px;border-bottom:1px solid #E4E0D5;vertical-align:top}
+.r-pass{color:var(--pass);font-weight:700}.r-flag{color:var(--flag);font-weight:700}
+.fix{display:flex;gap:10px;align-items:center;background:#fff;border:2px solid var(--navy);border-radius:8px;padding:10px 12px;font-size:14px}
+.fix input{width:18px;height:18px;accent-color:var(--navy)}
+del{color:var(--hold);text-decoration:line-through}
+ins{color:var(--pass);background:var(--pass-bg);text-decoration:none;font-weight:600}
+table.qi{width:100%;border-collapse:collapse;background:#fff;font-size:13.5px}
+table.qi th{text-align:left;padding:7px 10px;width:42%;color:var(--muted);font-weight:600;border-bottom:1px solid #E4E0D5}
+table.qi td{padding:7px 10px;border-bottom:1px solid #E4E0D5}
+.decide{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
+.won{background:var(--navy);color:#fff;border-radius:12px;padding:30px;display:flex;flex-wrap:wrap;gap:28px}
+.won h2{color:#fff;font-size:28px;margin-bottom:8px}
+.won-g{flex:2 1 520px;min-width:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.won-g div{border-left:3px solid var(--gold);padding-left:14px}
+.won-g b{display:block;color:var(--gold-soft);margin-bottom:4px}
+.won-g span{font-size:14px;color:#E6EBF3}
+.faq{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.faq div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.faq h3{font-family:var(--f-body);font-size:16px;margin-bottom:6px}
+.help{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.help .card h3{margin-top:6px}
+.kick{font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--gold-ink);display:flex;align-items:center;gap:8px}
+.incident{margin-top:16px;background:var(--hold-bg);border:1px solid #E8B4AE;border-radius:10px;padding:16px 20px;font-size:15px;color:#3A1512;display:flex;gap:10px}
+.owner{margin:56px 0 0;padding:26px 0 40px;border-top:2px solid var(--gold)}
+.owner-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;font-size:14px}
+.owner-g b{display:block;color:var(--navy)}
+.owner-g span{color:var(--muted)}
+/* cheat sheet */
+.cs-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.cs-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cs-step{border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;gap:10px}
+.cs-step .num{width:26px;height:26px;font-size:13px}
+.cs-step b{display:block;color:var(--navy);font-size:14px}
+@media (max-width:700px){.cs-3,.cs-2{grid-template-columns:1fr}.hero h1{font-size:36px}}
+
+/* ---- page-specific ---- */
+
+.split2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.list{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:9px;font-size:15px;color:#3A4458}
+.list li{display:flex;gap:10px;align-items:flex-start}
+.list li .ic{margin-top:2px;width:18px;height:18px}
+.yes .ic{color:var(--pass)}.no .ic{color:var(--hold)}
+.path{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.path>div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px;position:relative}
+.path h3{font-size:17px;margin:10px 0 6px}
+.path p{font-size:14.5px;color:#3A4458}
+.path .t{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--gold-ink)}
+.time{display:flex;flex-wrap:wrap;gap:14px;margin-top:18px}
+.time>div{flex:1 1 220px;background:var(--navy);color:#E6EBF3;border-radius:10px;padding:16px 18px}
+.time b{display:block;font-family:var(--f-display);font-size:26px;color:var(--gold-soft)}
+.gets{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.gets>div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px;border-left:4px solid var(--gold)}
+.gets h3{font-size:17px;margin:8px 0 6px}
+.gets p{font-size:14.5px;color:#3A4458}
+/* answer sheet */
+table.ans{width:100%;border-collapse:collapse;font-size:12.6px;line-height:1.38}
+table.ans th{background:var(--navy);color:#fff;text-align:left;padding:6px 8px;font-size:11.5px;letter-spacing:.04em}
+table.ans td{padding:6px 8px;border-bottom:1px solid #E4E0D5;vertical-align:top}
+table.ans td:first-child{font-weight:600;color:var(--navy);width:30%}
+table.ans td:last-child{width:19%;font-size:11.8px}
+.ho{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.04em;border-radius:4px;padding:1px 6px;margin-bottom:2px}
+.ho-you{background:var(--pass-bg);color:var(--pass)}
+.ho-sd{background:#E6EBF3;color:var(--navy)}
+.ho-co{background:var(--hold-bg);color:var(--hold)}
+.ho-en{background:#F3E7BF;color:#5C470B}
+/* monthly */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.kpi .k{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted);display:flex;align-items:center;gap:6px}
+.kpi .v{font-family:var(--f-display);font-size:34px;font-weight:700;color:var(--navy);line-height:1.1;margin:6px 0 2px}
+.kpi .s{font-size:13.5px;color:#3A4458}
+.meter{height:8px;background:#ECE8DD;border-radius:4px;margin:10px 0 6px;position:relative}
+.meter i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--navy)}
+.meter u{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--gold-ink)}
+.st{display:inline-block;font-size:11.5px;font-weight:700;border-radius:4px;padding:2px 7px}
+.st-ok{background:var(--pass-bg);color:var(--pass)}.st-w{background:var(--flag-bg);color:var(--flag)}
+.weeks{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.wk{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px;border-top:5px solid var(--navy)}
+.wk .when{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--gold-ink)}
+.wk h3{font-size:18px;margin:6px 0 10px}
+.wk .ck{font-size:14.5px;color:#3A4458}
+.prog{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin-bottom:18px;font-weight:600;color:var(--navy)}
+.prog .bar{flex:1;height:10px;background:#ECE8DD;border-radius:5px;overflow:hidden}
+.prog .bar i{display:block;height:100%;width:0;background:var(--gold);transition:width .2s}
+
+@media print{.top,.views,.portfolio-note,.noprint{display:none!important}body{background:#fff}.sheet-stage{padding:0}.sheet{box-shadow:none;max-width:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 21 2M16 7l3 3M18.5 4.5l2 2"/></symbol>
+<symbol id="i-package" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></symbol>
+<symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/></symbol>
+<symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></symbol>
+<symbol id="i-app" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M8 7h8M8 11h6"/></symbol>
+<symbol id="i-flow" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="6" rx="1"/><rect x="14" y="15" width="7" height="6" rx="1"/><path d="M6.5 9v4a2 2 0 0 0 2 2H14"/></symbol>
+<symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 2v6M15 2v6M6 8h12v3a6 6 0 0 1-12 0zM12 17v5"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2 21h20z"/><path d="M12 10v5M12 18h.01"/></symbol>
+<symbol id="i-message" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></symbol>
+<symbol id="i-usercheck" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="m16 11 2 2 4-4"/></symbol>
+<symbol id="i-trend" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+<symbol id="i-printer" viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.7-2.5 2-2.5 3.5M12 17h.01"/></symbol>
+<symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></symbol>
+<symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+
+<symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8M4 4v4h4M4 13a8 8 0 0 0 14.3 4.9L20 16M20 20v-4h-4"/></symbol>
+<symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></symbol>
+<symbol id="i-megaphone" viewBox="0 0 24 24"><path d="M3 11v2a1 1 0 0 0 1 1h3l6 5V5L7 10H4a1 1 0 0 0-1 1z"/><path d="M17 8a5 5 0 0 1 0 8"/></symbol>
+<symbol id="i-ticket" viewBox="0 0 24 24"><path d="M3 8a2 2 0 0 0 0 4v0a2 2 0 0 1 0 4v2h18v-2a2 2 0 0 1 0-4 2 2 0 0 0 0-4V6H3z"/><path d="M14 6v12" stroke-dasharray="2 2"/></symbol>
+<symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></symbol>
+<symbol id="i-rocket" viewBox="0 0 24 24"><path d="M5 15c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.8-.9.8-2.3-.1-3.1a2.2 2.2 0 0 0-2.9.1z"/><path d="m12 15-3-3a22 22 0 0 1 2-4A12.9 12.9 0 0 1 22 2c0 2.7-.8 7.5-6 11a22.4 22.4 0 0 1-4 2z"/><path d="M9 12H4s.6-3 2-4c1.6-1.1 5 0 5 0M12 15v5s3-.6 4-2c1.1-1.6 0-5 0-5"/></symbol>
+<symbol id="i-gradcap" viewBox="0 0 24 24"><path d="m22 9-10-5L2 9l10 5z"/><path d="M6 11v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5M22 9v6"/></symbol>
+
+</svg>
+
+<header class="top"><div class="top-in">
+  <div class="brand"><svg width="44" height="44" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#0F2747" stroke="#C9A227" stroke-width="1.6"/><path d="M20 6.5 L22.4 15.6 L31.5 18 L22.4 20.4 L20 29.5 L17.6 20.4 L8.5 18 L17.6 15.6 Z" fill="#C9A227"/><path d="M10 26.5 q2.5 -1.6 5 0 t5 0 t5 0 t5 0 M11.5 30 q2.1 -1.4 4.2 0 t4.3 0 t4.3 0 t4.2 0" fill="none" stroke="#C9A227" stroke-width="1.2"/></svg><div class="bn">NORTHSTAR HARBOR<span>MORTGAGE</span></div><div class="divider"></div><div class="hub">Harbor Hub</div></div>
+  <a class="back" href="../case-study/index.html#enablement" target="_blank" rel="noopener"><svg class="ic"><use href="#i-arrow-left"/></svg>Back to case study</a>
+</div></header>
+<nav class="views" aria-label="Pages in this piece"><div class="views-in">
+  <a class="vtab" href="#kit" data-view="kit"><svg class="ic"><use href="#i-star"/></svg>Champion kit</a>
+  <a class="vtab" href="#answers" data-view="answers"><svg class="ic"><use href="#i-printer"/></svg>Answer sheet</a>
+  <a class="vtab" href="#monthly" data-view="monthly"><svg class="ic"><use href="#i-calendar"/></svg>Monthly checklist</a>
+  <a class="vtab" href="#sign-up" data-view="sign-up"><svg class="ic"><use href="#i-clipboard"/></svg>Champion sign-up</a>
+  <a class="vtab" href="#signed-up" data-view="signed-up"><svg class="ic"><use href="#i-check"/></svg>Confirmation</a>
+</div></nav>
+
+<!-- ================= KIT ================= -->
+<div class="view" id="kit">
+  <div style="background:#fff;border-bottom:1px solid var(--line)"><div class="wrap crumb">Harbor Hub › AI Enablement › AI Champions › <strong>Branch AI Champion Kit</strong></div></div>
+  <div class="hero"><div class="hero-in">
+    <div style="flex:999 1 520px;min-width:0">
+      <span class="badge">BRANCH AI CHAMPION KIT</span>
+      <h1>Be your branch's first stop for AI.</h1>
+      <p style="font-size:19px;color:#E6EBF3;max-width:660px;margin-bottom:10px">Branch AI champions are loan officers who help their branch use Northstar's AI tools well. You answer "how do I" questions, run hands-on labs when a tool rolls out, and bring your branch's feedback back to AI Enablement. The Ad Review Assistant is the first tool you'll support.</p>
+      <p style="font-size:17px;color:var(--gold-soft);font-weight:600;margin-bottom:26px">About 2 hours a month. You're not the rule expert, and you don't need to be.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px"><a class="btn btn-gold" href="#sign-up"><svg class="ic"><use href="#i-clipboard"/></svg>Sign up to be a champion</a><a class="btn" href="#answers" style="color:#fff;border-color:#8DA2C0"><svg class="ic"><use href="#i-printer"/></svg>See the answer sheet</a></div>
+    </div>
+    <div class="glance"><div class="glance-t">IN THIS KIT</div><div style="display:flex;flex-direction:column;gap:12px">
+      <div class="glance-row"><svg class="ic"><use href="#i-usercheck"/></svg><div><strong>The role:</strong> what you do, what you hand off, and the time it takes.</div></div>
+      <div class="glance-row"><svg class="ic"><use href="#i-gradcap"/></svg><div><strong>Getting ready:</strong> train-the-trainer, co-lead once, then run each tool's lab on your own.</div></div>
+      <div class="glance-row"><svg class="ic"><use href="#i-help"/></svg><div><strong>Ad Review Assistant toolkit:</strong> its lab, an answer sheet and your branch's numbers.</div></div>
+      <div class="glance-row"><svg class="ic"><use href="#i-calendar"/></svg><div><strong>Monthly checklist:</strong> the call, the release, your branch numbers and feedback.</div></div>
+    </div></div>
+  </div></div>
+
+  <div class="wrap">
+    <div class="strip"><svg class="ic" style="color:var(--navy)"><use href="#i-shield"/></svg><span><strong style="color:var(--navy)">Approved for use</strong> by the Northstar AI Governance Committee</span><span><strong style="color:var(--navy)">Tools you support now:</strong> Ad Review Assistant (skill version 6)</span><span>Champions start in phase 2, after the Edmond, OK and Atlanta, GA pilots</span></div>
+
+    <!-- Role -->
+    <section class="blk" id="role">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-usercheck"/></svg></span><h2>The role</h2></div>
+      <p class="sub">Champions make Northstar's AI tools easy to use, for every tool AI Enablement rolls out. The business owner of each tool owns its rules, and AI Enablement owns the tools. Keeping those lines clear is what makes the role light.</p>
+      <div class="split2">
+        <div class="card" style="border-top:5px solid var(--pass)"><span class="tagx" style="background:var(--pass-bg);color:var(--pass)">YOU DO</span>
+          <ul class="list yes" style="margin-top:14px">
+            <li><svg class="ic"><use href="#i-check"/></svg><span><strong>Answer "how do I…?"</strong> questions: finding a tool, writing a good prompt, reading the output, knowing what to do next.</span></li>
+            <li><svg class="ic"><use href="#i-check"/></svg><span><strong>Run the hands-on labs</strong> when a tool rolls out, and for new hires after that.</span></li>
+            <li><svg class="ic"><use href="#i-check"/></svg><span><strong>Watch your branch's numbers</strong> for each tool every month, and nudge people who aren't set up yet.</span></li>
+            <li><svg class="ic"><use href="#i-check"/></svg><span><strong>Bring feedback back:</strong> confusing moments, wrong answers and ideas for new tools go to AI Enablement each month.</span></li>
+          </ul>
+        </div>
+        <div class="card" style="border-top:5px solid var(--hold)"><span class="tagx" style="background:var(--hold-bg);color:var(--hold)">YOU HAND OFF</span>
+          <ul class="list no" style="margin-top:14px">
+            <li><svg class="ic"><use href="#i-shield"/></svg><span><strong>Rule and policy questions</strong> go to the team that owns them, such as Compliance for ad rules. Never guess at a rule.</span></li>
+            <li><svg class="ic"><use href="#i-sliders"/></svg><span><strong>Anything broken</strong> goes to the service desk: a missing skill, an error, an alert that never came.</span></li>
+            <li><svg class="ic"><use href="#i-alert"/></svg><span><strong>Customer data pasted by mistake</strong> goes to the service desk as an "AI data incident," copying Compliance.</span></li>
+            <li><svg class="ic"><use href="#i-ban"/></svg><span><strong>Approving work.</strong> Champions never approve anything a tool produces. For ads, a compliance reviewer signs off on every one.</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="time">
+        <div><b>1 or 2</b>champions per branch. Your branch manager nominates you; volunteers are welcome too. Branches with more than 75 loan officers have two.</div>
+        <div><b>~3 hours</b>to get ready, one time: the train-the-trainer session, prep, and co-leading one lab with AI Enablement. Each new tool adds about an hour.</div>
+        <div><b>~2 hours</b>a month after that: a 30-minute champions call, a lab when you have new hires, and a short feedback roundup.</div>
+      </div>
+    </section>
+
+    <!-- Path -->
+    <section class="blk" id="path">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-gradcap"/></svg></span><h2>Getting ready to lead a lab</h2></div>
+      <p class="sub">Every tool comes with a hands-on lab and a facilitator guide, and AI Enablement runs each one with the pilot branches first. Nobody runs a session alone until they've co-led one. The steps below use the Ad Review lab, the first one you'll lead.</p>
+      <div class="path">
+        <div><span class="num">1</span><h3>Sign up and get set up</h3><p>Submit the champion sign-up. Before training, acknowledge the Data Rules card and pass the hands-on lab's exit check yourself.</p><span class="t">BEFORE TRAINING</span></div>
+        <div><span class="num">2</span><h3>Train-the-trainer</h3><p>A 45-minute Teams session with AI Enablement on the champion role and the Ad Review lab. You walk the run of show, practice the tricky moments, and learn what to hand off.</p><span class="t">45 MINUTES</span></div>
+        <div><span class="num">3</span><h3>Co-lead one lab</h3><p>Run half the steps in a live session while Enablement runs the rest and covers the chat. You get notes the same day.</p><span class="t">30 MINUTES + DEBRIEF</span></div>
+        <div><span class="num">4</span><h3>Run it for your branch</h3><p>Lead the lab on your own. Enablement stays on call in the AI Champions channel and reviews your branch's completions each month.</p><span class="t">ONGOING</span></div>
+      </div>
+      <div class="cards" style="margin-top:18px">
+        <div class="card"><div class="kick"><svg class="ic"><use href="#i-users"/></svg>YOUR SCRIPT</div><h3>Lab facilitator guide</h3><p style="margin-bottom:12px">Minute-by-minute run of show, what to say, what to watch for, and what to do when something goes sideways.</p><a href="../hands-on-lab/index.html#facilitator" target="_blank" rel="noopener" style="font-weight:600">Open the facilitator guide →</a></div>
+        <div class="card"><div class="kick"><svg class="ic"><use href="#i-target"/></svg>TAKE IT FIRST</div><h3>The 30-minute hands-on lab</h3><p style="margin-bottom:12px">Take Simone's ad from HOLD to PASS and pass the exit check before your train-the-trainer session.</p><a href="../hands-on-lab/index.html" target="_blank" rel="noopener" style="font-weight:600">Open the lab →</a></div>
+        <div class="card"><div class="kick"><svg class="ic"><use href="#i-book"/></svg>KNOW WHAT THEY SEE</div><h3>Guides your branch uses</h3><p style="margin-bottom:12px">The quick-start your loan officers follow, and the reviewer guide that shows what Compliance does with their ads.</p><a href="../loan-officer-quick-start/index.html" target="_blank" rel="noopener" style="font-weight:600">Quick-start →</a> &nbsp;·&nbsp; <a href="../compliance-reviewer-guide/index.html" target="_blank" rel="noopener" style="font-weight:600">Reviewer guide →</a></div>
+      </div>
+    </section>
+
+    <!-- Answering -->
+    <section class="blk" id="answering">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-help"/></svg></span><h2>Answering your branch's questions</h2></div>
+      <p class="sub">The same four doors work for every tool. Most questions are about how to use it, and those are yours. When a question is about a rule, a broken tool or customer data, hand it off quickly. You don't need to solve it, just send it to the right place.</p>
+      <div class="help">
+        <div class="card" style="border-top:5px solid var(--pass)"><div class="kick"><svg class="ic"><use href="#i-users"/></svg>"HOW DO I…?"</div><h3>You answer</h3><p>Prompts, reports, fixes, resubmitting, what PASS means. The answer sheet covers the top questions.</p></div>
+        <div class="card" style="border-top:5px solid var(--navy)"><div class="kick"><svg class="ic"><use href="#i-sliders"/></svg>"IS THIS BROKEN?"</div><h3>Service desk ticket</h3><p>Help them open it with the Submission ID and a screenshot. Then check back in a day.</p></div>
+        <div class="card" style="border-top:5px solid var(--hold)"><div class="kick"><svg class="ic"><use href="#i-shield"/></svg>"IS THIS COMPLIANT?"</div><h3>The rule owner</h3><p>For the Ad Review Assistant, that's Compliance on the Teams review thread for the Submission ID. Don't interpret the rule yourself.</p></div>
+        <div class="card" style="border-top:5px solid var(--gold)"><div class="kick"><svg class="ic"><use href="#i-message"/></svg>"IT GOT THIS WRONG."</div><h3>The tool's feedback form</h3><p style="margin-bottom:10px">They file it, and you mention the pattern in your monthly roundup.</p><a href="../loan-officer-quick-start/index.html#feedback" target="_blank" rel="noopener" style="font-weight:600">Ad Review feedback form →</a></div>
+      </div>
+      <div style="margin-top:16px"><a class="btn btn-navy" href="#answers"><svg class="ic"><use href="#i-printer"/></svg>Open the Ad Review answer sheet</a></div>
+    </section>
+
+    <!-- Monthly -->
+    <section class="blk" id="rhythm">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-calendar"/></svg></span><h2>Your monthly rhythm</h2></div>
+      <p class="sub">Same four touchpoints every month. Together they take about 2 hours.</p>
+      <div class="path">
+        <div><span class="num">1</span><h3>Champions call</h3><p>30 minutes, first Tuesday of the month in Teams. What's shipping next across tools, branch questions, and one tip to take back.</p></div>
+        <div><span class="num">2</span><h3>Preview the release</h3><p>Try each tool's next version a week before it ships, then share the release note with your branch on launch day.</p></div>
+        <div><span class="num">3</span><h3>Check your numbers</h3><p>Readiness, usage and quality for each tool, filtered to your branch on the AI dashboard. Nudge anyone who isn't set up.</p></div>
+        <div><span class="num">4</span><h3>Send your roundup</h3><p>Questions, confusing moments and wrong answers from your branch, one form per tool, starting with "Champion" and your branch.</p></div>
+      </div>
+      <div style="margin-top:16px"><a class="btn btn-navy" href="#monthly"><svg class="ic"><use href="#i-calendar"/></svg>See the checklist with a sample branch</a></div>
+    </section>
+
+    <!-- New tools -->
+    <section class="blk" id="new-tools">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-layers"/></svg></span><h2>When a new tool rolls out</h2></div>
+      <p class="sub">Every tool AI Enablement ships comes with the same champion package, so supporting a second or third tool feels familiar.</p>
+      <div class="split2">
+        <div class="card"><span class="tagx" style="background:var(--navy);color:#fff">EVERY NEW TOOL INCLUDES</span>
+          <ul class="list yes" style="margin-top:14px">
+            <li><svg class="ic"><use href="#i-check"/></svg><span><strong>A champion briefing</strong> on the monthly call, plus about an hour of tool-specific train-the-trainer.</span></li>
+            <li><svg class="ic"><use href="#i-check"/></svg><span><strong>A hands-on lab and facilitator guide,</strong> piloted by AI Enablement before champions run it.</span></li>
+            <li><svg class="ic"><use href="#i-check"/></svg><span><strong>An answer sheet</strong> with the top questions and who takes each one.</span></li>
+            <li><svg class="ic"><use href="#i-check"/></svg><span><strong>Branch numbers</strong> for readiness, usage and quality on the AI dashboard.</span></li>
+          </ul>
+        </div>
+        <div class="card"><span class="tagx" style="background:#F3E7BF;color:#5C470B">TOOLS YOU SUPPORT</span>
+          <div style="display:flex;flex-direction:column;gap:12px;margin-top:14px">
+            <div style="display:flex;gap:12px;align-items:flex-start;border:2px solid var(--navy);border-radius:8px;padding:12px 14px"><span class="icb"><svg class="ic"><use href="#i-clipboard"/></svg></span><div><strong style="color:var(--navy)">Ad Review Assistant</strong> <span class="pill p-PASS" style="margin-left:4px">LIVE</span><br><span style="font-size:14px;color:#3A4458">Pre-screens loan officer ads before Compliance. <a href="#answers">Answer sheet</a> · <a href="../hands-on-lab/index.html" target="_blank" rel="noopener">Lab</a> · <a href="#monthly">Branch numbers</a></span></div></div>
+            <div style="display:flex;gap:12px;align-items:flex-start;border:1px dashed #B9B3A3;border-radius:8px;padding:12px 14px;color:var(--muted)"><span class="icb" style="background:#ECE8DD"><svg class="ic"><use href="#i-app"/></svg></span><div><strong>Ad Review app</strong> <span class="pill" style="background:#ECE8DD;color:var(--muted);margin-left:4px">COMING NEXT</span><br><span style="font-size:14px">The same review in a branded web app. Champions test it first.</span></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- What you get -->
+    <section class="blk" id="gets">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-star"/></svg></span><h2>What you get</h2></div>
+      <p class="sub">Your time matters, and it should show.</p>
+      <div class="gets">
+        <div><div class="kick"><svg class="ic"><use href="#i-rocket"/></svg>EARLY ACCESS</div><h3>See it first</h3><p>Preview every release a week early, and test new tools and features, like the future Ad Review app, before anyone else.</p></div>
+        <div><div class="kick"><svg class="ic"><use href="#i-star"/></svg>VISIBLE CREDIT</div><h3>Recognized by name</h3><p>A Champion badge in Teams, your name on Harbor Hub, and a note from AI Enablement to your manager each quarter.</p></div>
+        <div><div class="kick"><svg class="ic"><use href="#i-sliders"/></svg>DIRECT LINE TO RULES</div><h3>Your feedback ships</h3><p>Your roundup goes straight into Enablement's monthly review, release notes name the changes that came from champions, and your ideas help pick the next tool.</p></div>
+        <div><div class="kick"><svg class="ic"><use href="#i-target"/></svg>GOAL CREDIT</div><h3>Counts toward your goals</h3><p>Agree with your manager to count the role toward a development goal in your annual review.</p></div>
+      </div>
+    </section>
+
+    <footer class="owner">
+      <div class="owner-g"><div><b>Maintained by AI Enablement</b><span>Owner: Akeyla Peele-Tembong, AI Platform &amp; Enablement Lead. Trains champions, runs the monthly call, and reviews branch data and roundups.</span></div><div><b>Rule content approved by each tool's owner</b><span>Champions don't interpret rules. For the Ad Review Assistant, Compliance approves the rules.</span></div><div><b>Sponsored by Marketing and loan officer leadership</b><span>Branch managers nominate champions and protect their 2 hours a month.</span></div></div>
+      <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:8px 24px;font-size:13px;color:var(--muted)"><span>Kit version 1.1 · current tools: Ad Review Assistant (skill version 6)</span><span>Last reviewed: November 14, 2026 · Next review: quarterly, or when the skill version changes</span><span>Questions? Post in the AI Champions channel in Teams.</span></div>
+      <p class="fine" style="margin-top:16px">Northstar Harbor Mortgage is a fictional company created for portfolio purposes.</p>
+    </footer>
+  </div>
+</div>
+
+<!-- ================= ANSWER SHEET ================= -->
+<div class="view" id="answers" hidden>
+  <div class="noprint" style="max-width:816px;margin:24px auto 0;padding:0 16px;display:flex;justify-content:flex-end"><span style="display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--muted)"><svg class="ic" style="width:17px;height:17px"><use href="#i-printer"/></svg>Letter size · keep it next to your desk</span></div>
+  <div class="sheet-stage" style="padding-top:14px"><article class="sheet" aria-labelledby="as-title">
+    <div class="sheet-head"><div class="brand"><svg width="44" height="44" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#0F2747" stroke="#C9A227" stroke-width="1.6"/><path d="M20 6.5 L22.4 15.6 L31.5 18 L22.4 20.4 L20 29.5 L17.6 20.4 L8.5 18 L17.6 15.6 Z" fill="#C9A227"/><path d="M10 26.5 q2.5 -1.6 5 0 t5 0 t5 0 t5 0 M11.5 30 q2.1 -1.4 4.2 0 t4.3 0 t4.3 0 t4.2 0" fill="none" stroke="#C9A227" stroke-width="1.2"/></svg><div class="bn">NORTHSTAR HARBOR<span>MORTGAGE</span></div></div><div class="sheet-title"><h1 id="as-title">Champion Answer Sheet</h1><div>TOOL: AD REVIEW ASSISTANT · THE QUESTIONS YOUR BRANCH WILL ASK</div></div></div>
+    <div class="sheet-body" style="gap:10px">
+      <div style="display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:#3A4458"><span><span class="ho ho-you">YOU</span> You answer it</span><span><span class="ho ho-sd">SERVICE DESK</span> Help them open a ticket</span><span><span class="ho ho-co">COMPLIANCE</span> Teams review thread</span><span><span class="ho ho-en">FEEDBACK</span> Ad Review feedback form</span></div>
+      <table class="ans"><thead><tr><th scope="col">THEY ASK</th><th scope="col">YOU SAY</th><th scope="col">WHO TAKES IT</th></tr></thead><tbody>
+        <tr><td>"Where do I find it?"</td><td>It's already in your Claude. Look under Customize for <strong>mortgage-ad-review</strong>.</td><td><span class="ho ho-you">YOU</span><br>Not there? <span class="ho ho-sd">SERVICE DESK</span></td></tr>
+        <tr><td>"What do I type?"</td><td>Attach the ad, then: <span style="font-family:var(--f-mono);font-size:11.5px">Review this [channel] ad for a [loan product] loan. Planned publish date: [date].</span> Naming the product matters.</td><td><span class="ho ho-you">YOU</span></td></tr>
+        <tr><td>"It says PASS. Can I post it?"</td><td>Not yet. Submit it. A compliance reviewer signs off on every ad, including PASS.</td><td><span class="ho ho-you">YOU</span></td></tr>
+        <tr><td>"It flagged something that's fine."</td><td>Skip that fix and submit. It stays open for the reviewer, who makes the call. Then file it on the feedback form.</td><td><span class="ho ho-you">YOU</span> + <span class="ho ho-en">FEEDBACK</span></td></tr>
+        <tr><td>"It came back from Compliance."</td><td>New chat, paste the prompt from the Teams message (<span style="font-family:var(--f-mono);font-size:11.5px">Resubmit NHM-…</span>), plus the reviewer's comments and the latest version. Same item, next version.</td><td><span class="ho ho-you">YOU</span></td></tr>
+        <tr><td>"I don't understand the reviewer's comment."</td><td>Reply on the Teams review thread for that Submission ID. The reviewer will explain.</td><td><span class="ho ho-co">COMPLIANCE</span></td></tr>
+        <tr><td>"Is this wording allowed?"</td><td>Run it through the assistant first. If it's still a question, ask on the review thread. Don't guess at a rule.</td><td><span class="ho ho-co">COMPLIANCE</span></td></tr>
+        <tr><td>"Can I check my video?"</td><td>Yes. Paste the script or captions and attach a still frame for each on-screen disclosure.</td><td><span class="ho ho-you">YOU</span></td></tr>
+        <tr><td>"Can I paste my client's details to personalize it?"</td><td>No. No borrower names, addresses or loan numbers, ever. Rate sheets and your own NMLS ID are fine. Check the Data Rules card.</td><td><span class="ho ho-you">YOU</span></td></tr>
+        <tr><td>"I pasted client info by mistake."</td><td>Stop. Open a service desk ticket marked "AI data incident," copy Compliance, then delete the chat. No blame.</td><td><span class="ho ho-sd">SERVICE DESK</span> + <span class="ho ho-co">COMPLIANCE</span></td></tr>
+        <tr><td>"Can I use my own ChatGPT or Claude?"</td><td>No. Northstar's Claude only, never a personal account.</td><td><span class="ho ho-you">YOU</span></td></tr>
+        <tr><td>"The report reads differently each time."</td><td>That's normal. Wording varies a little. The verdict and main findings should match. If the verdict changes, file it.</td><td><span class="ho ho-you">YOU</span> + <span class="ho ho-en">FEEDBACK</span></td></tr>
+        <tr><td>"I changed one word after approval."</td><td>That's a new ad. Run it through the assistant again and resubmit.</td><td><span class="ho ho-you">YOU</span></td></tr>
+        <tr><td>"It's erroring, or my alert never came."</td><td>Open a ticket with the Submission ID and a screenshot. Check back with them in a day.</td><td><span class="ho ho-sd">SERVICE DESK</span></td></tr>
+      </tbody></table>
+      <div class="cs-3">
+        <div style="background:var(--navy);color:#E6EBF3;border-radius:8px;padding:10px 12px;font-size:12.5px"><div style="font-family:var(--f-display);font-weight:700;font-size:15px;color:var(--gold-soft);margin-bottom:5px">Champions never</div>Interpret a rule · approve or "pre-approve" an ad · look at customer data · fix the tool</div>
+        <div style="border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:12.5px"><div style="font-family:var(--f-display);font-weight:700;font-size:15px;color:var(--navy);margin-bottom:5px">Stuck?</div>Post in the <strong>AI Champions</strong> channel in Teams. AI Enablement answers within a business day.</div>
+        <div style="border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:12.5px"><div style="font-family:var(--f-display);font-weight:700;font-size:15px;color:var(--navy);margin-bottom:5px">Point them to</div>Quick-start + cheat sheet · Data Rules card · the 30-minute lab</div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span><strong style="color:var(--navy)">Maintained by AI Enablement</strong> · Owner: Akeyla Peele-Tembong, AI Platform &amp; Enablement Lead · Rule content approved by Compliance · Sponsored by Marketing and loan officer leadership</span><span>Answer sheet version 1.0 · for skill version 6 · Last reviewed November 14, 2026 · Updated with each monthly release</span><span style="font-style:italic">Northstar Harbor Mortgage is a fictional company created for portfolio purposes.</span></div>
+  </article></div>
+</div>
+
+<!-- ================= MONTHLY ================= -->
+<div class="view" id="monthly" hidden>
+  <div style="background:#fff;border-bottom:1px solid var(--line)"><div class="wrap crumb">Harbor Hub › AI Enablement › AI Champions › <strong>Monthly checklist</strong></div></div>
+  <div class="wrap" style="padding-top:34px;padding-bottom:20px">
+    <div class="kick"><svg class="ic"><use href="#i-calendar"/></svg>SAMPLE MONTH · MARCH 2027</div>
+    <h1 style="font-size:36px;margin:8px 0 8px">Priya's month as Irvine's champion</h1>
+    <p class="sub" style="margin-bottom:24px">Priya Natarajan (NMLS 0000101) champions the Irvine, CA branch: 58 loan officers. Her branch joined in phase 2, after the pilots, and the Ad Review Assistant is the only tool it supports so far. Check items off as you go.</p>
+
+    <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-chart"/></svg></span><h2 style="font-size:26px">Irvine's Ad Review Assistant numbers</h2></div>
+    <p class="sub" style="margin-bottom:16px">From the AI dashboard, filtered to your branch and tool. Each tool you support gets its own three numbers. The gold mark is the target.</p>
+    <div class="kpis">
+      <div class="kpi"><div class="k"><svg class="ic" style="width:16px;height:16px"><use href="#i-shield"/></svg>READINESS</div><div class="v">95%</div><div class="s">Data Rules acknowledged (55 of 58) · target 100%</div><div class="meter"><i style="width:95%"></i><u style="left:100%"></u></div><div class="s">Lab completed: <strong>79%</strong> (46 of 58) · target 80%</div><div class="meter"><i style="width:79%"></i><u style="left:80%"></u></div><span class="st st-w">WATCH · 3 not acknowledged</span></div>
+      <div class="kpi"><div class="k"><svg class="ic" style="width:16px;height:16px"><use href="#i-search"/></svg>USAGE</div><div class="v">88%</div><div class="s">Ads pre-screened before submission (29 of 33) · target 90%</div><div class="meter"><i style="width:88%"></i><u style="left:90%"></u></div><span class="st st-w">WATCH · 4 submitted without it</span></div>
+      <div class="kpi"><div class="k"><svg class="ic" style="width:16px;height:16px"><use href="#i-trend"/></svg>QUALITY</div><div class="v">24%</div><div class="s">Ads returned by Compliance (8 of 33) · target 20% · before rollout ~50%</div><div class="meter"><i style="width:24%;background:var(--pass)"></i><u style="left:20%"></u></div><div class="s">Average rounds per ad: <strong>1.3</strong> · target 1.2 · before ~1.8</div><span class="st st-ok">ON TRACK · down from ~50%</span></div>
+    </div>
+    <p class="fine" style="margin-top:10px">Sample numbers for a fictional branch, built from the rollout's planning assumptions.</p>
+
+    <div class="prog" style="margin-top:34px" aria-live="polite"><span id="progTxt">0 of 10 done</span><div class="bar"><i id="progBar"></i></div><span style="font-weight:500;color:var(--muted);font-size:14px">About 2 hours</span></div>
+    <div class="weeks" id="checklist">
+      <div class="wk"><div class="when">WEEK 1 · ~45 MIN</div><h3>Call and release</h3>
+        <label class="ck"><input type="checkbox">Join the champions call, first Tuesday, 30 minutes in Teams</label>
+        <label class="ck"><input type="checkbox">Preview the next Ad Review Assistant version in the early-access space and post any surprises in AI Champions</label>
+      </div>
+      <div class="wk" style="border-top-color:var(--gold)"><div class="when">WEEK 2 · ~20 MIN</div><h3>Check your numbers</h3>
+        <label class="ck"><input type="checkbox">Open the dashboard, filter to Irvine, and note anything below target</label>
+        <label class="ck"><input type="checkbox">Message the 3 loan officers who haven't acknowledged the Data Rules card</label>
+        <label class="ck"><input type="checkbox">Check in with the 4 people who submitted without a pre-screen. Ask what got in the way</label>
+      </div>
+      <div class="wk" style="border-top-color:var(--pass)"><div class="when">WEEK 3 · ~35 MIN</div><h3>Release day and lab</h3>
+        <label class="ck"><input type="checkbox">Share the release note with the branch on launch day, with one sentence on what changed for them</label>
+        <label class="ck"><input type="checkbox">Run the 30-minute lab for new hires and anyone still missing it (12 people this month)</label>
+      </div>
+      <div class="wk" style="border-top-color:var(--flag)"><div class="when">WEEK 4 · ~20 MIN</div><h3>Send your roundup</h3>
+        <label class="ck"><input type="checkbox">File one feedback form starting "Champion · Irvine": top questions, confusing moments, wrong flags</label>
+        <label class="ck"><input type="checkbox">Send the most-missed lab exit question to AI Enablement</label>
+        <label class="ck"><input type="checkbox">Update your branch manager in two lines: your three numbers and one win</label>
+      </div>
+    </div>
+    <div class="note" style="margin-top:18px"><strong style="color:var(--navy)">Priya's roundup line this month</strong><span>"Champion · Irvine: Two loan officers thought FLAG meant they couldn't submit. Three questions about whether Spanish captions need their own APR line. One wrong flag: '30-year' in a bio line, already filed."</span></div>
+    <p style="margin-top:22px"><a href="#kit" style="font-weight:600">← Back to the champion kit</a></p>
+  </div>
+</div>
+
+<!-- ================= SIGN-UP ================= -->
+<div class="view" id="sign-up" hidden>
+  <div class="form-stage"><form class="mform" id="champForm" novalidate>
+    <div class="mform-head"><div class="mform-kicker">MICROSOFT FORMS · AI ENABLEMENT</div><h1>Branch AI Champion sign-up</h1><p>Champions support every Northstar AI tool their branch uses, starting with the Ad Review Assistant. About 2 hours a month after a one-time ~3 hours to get ready. Your branch manager approves every sign-up.</p></div>
+    <div class="mform-body">
+      <div class="who">Signed in as <strong>Priya Natarajan</strong> (priya.natarajan@northstarharbor.example). Your name and email are recorded.</div>
+      <div class="q"><label for="cbranch">1. Your branch <span class="req">*</span></label><select id="cbranch"><option>Atlanta, GA</option><option>Edmond, OK</option><option selected>Irvine, CA</option><option>Dallas, TX</option><option>Charlotte, NC</option><option>Corporate / Remote</option></select></div>
+      <fieldset class="q"><legend>2. How are you joining? <span class="req">*</span></legend><div class="radios"><label><input type="radio" name="how" checked>Nominated by my branch manager</label><label><input type="radio" name="how">Volunteering</label></div></fieldset>
+      <div class="q"><label for="cmgr">3. Branch manager <span class="req">*</span></label><input type="text" id="cmgr" value="Marisol Duarte"></div>
+      <fieldset class="q"><legend>4. Before training, I have… <span class="req">*</span></legend>
+        <label class="ck"><input type="checkbox" id="pre1" checked>Acknowledged the Data Rules card</label>
+        <label class="ck"><input type="checkbox" id="pre2" checked>Passed the hands-on lab's exit check</label>
+      </fieldset>
+      <div class="q"><label for="csess">5. Train-the-trainer session: champion role + Ad Review lab (45 minutes, Teams) <span class="req">*</span></label><select id="csess"><option>Tue, February 2 · 10:00 a.m. PT</option><option selected>Thu, February 4 · 1:00 p.m. PT</option><option>Wed, February 10 · 9:00 a.m. PT</option></select></div>
+      <div class="q"><label for="cwhy">6. Anything Enablement should know? <span style="font-weight:400;color:var(--muted)">(optional)</span></label><textarea id="cwhy">About a third of our branch markets to Spanish-speaking buyers. Happy to help test bilingual ads.</textarea></div>
+      <label class="ck" style="font-weight:600"><input type="checkbox" id="commit" checked>I can give about 2 hours a month, and I'll hand off rule questions, broken tools and data incidents for every tool instead of answering them myself.</label>
+      <p id="champMsg" role="alert" style="color:var(--hold);font-weight:600;min-height:1em"></p>
+      <button class="btn btn-navy" type="submit" style="align-self:flex-start"><svg class="ic"><use href="#i-send"/></svg>Submit</button>
+    </div>
+  </form></div>
+</div>
+
+<!-- ================= CONFIRMATION ================= -->
+<div class="view" id="signed-up" hidden>
+  <div class="form-stage"><div class="mform">
+    <div class="mform-head"><div class="mform-kicker">MICROSOFT FORMS · AI ENABLEMENT</div><h1>Branch AI Champion sign-up</h1><p>Response received</p></div>
+    <div class="mform-body">
+      <div class="done-head"><svg class="ic" style="width:52px;height:52px;color:var(--pass)"><use href="#i-check"/></svg><div><h2>Thanks, Priya. You're in.</h2><div style="color:#3A4458">Your branch manager gets an approval request now.</div></div></div>
+      <table class="resp"><tbody>
+        <tr><th scope="row">Confirmation</th><td style="font-family:var(--f-mono);font-weight:700;color:var(--navy)">CHAMP-2027-0014</td></tr>
+        <tr><th scope="row">Branch</th><td id="rBranch">Irvine, CA</td></tr>
+        <tr><th scope="row">Joining as</th><td id="rHow">Nominated by my branch manager</td></tr>
+        <tr><th scope="row">Manager approval</th><td>Sent to <span id="rMgr">Marisol Duarte</span></td></tr>
+        <tr><th scope="row">Train-the-trainer</th><td id="rSess">Thu, February 4 · 1:00 p.m. PT</td></tr>
+        <tr><th scope="row">Prerequisites</th><td>Data Rules acknowledged · Lab exit check passed</td></tr>
+      </tbody></table>
+      <div class="note"><strong style="color:var(--navy)">What happens next</strong><span>1. Once your manager approves, a Teams invite for your session arrives and you're added to the <strong>AI Champions</strong> channel.</span><span>2. Before the session, skim the <a href="../hands-on-lab/index.html#facilitator" target="_blank" rel="noopener">lab facilitator guide</a>.</span><span>3. After it, AI Enablement schedules the lab you'll co-lead.</span></div>
+      <a class="next-link" href="#kit" style="background:var(--navy);color:#fff">Back to the champion kit <span aria-hidden="true">→</span></a>
+    </div>
+  </div></div>
+</div>
+
+<p class="fine portfolio-note">Northstar Harbor Mortgage is a fictional company created for portfolio purposes. The forms, dashboard numbers and checklist on this page are mockups; nothing is sent or saved.</p>
+<script>
+window.pageInit=function(){
+  var f=document.getElementById('champForm');
+  f.addEventListener('submit',function(e){ e.preventDefault();
+    var m=document.getElementById('champMsg');
+    if(!document.getElementById('pre1').checked||!document.getElementById('pre2').checked){ m.textContent='Finish the Data Rules acknowledgment and the lab exit check before signing up.'; return; }
+    if(!document.getElementById('commit').checked){ m.textContent='Check the commitment box to continue.'; return; }
+    if(!document.getElementById('cmgr').value.trim()){ m.textContent='Add your branch manager.'; document.getElementById('cmgr').focus(); return; }
+    m.textContent='';
+    document.getElementById('rBranch').textContent=document.getElementById('cbranch').value;
+    document.getElementById('rMgr').textContent=document.getElementById('cmgr').value;
+    document.getElementById('rSess').textContent=document.getElementById('csess').value;
+    var how=f.querySelectorAll('input[name=how]'); document.getElementById('rHow').textContent=how[0].checked?'Nominated by my branch manager':'Volunteering';
+    location.hash='signed-up'; });
+  var boxes=document.querySelectorAll('#checklist input');
+  function upd(){ var n=0; boxes.forEach(function(b){ if(b.checked) n++; }); document.getElementById('progTxt').textContent=n+' of '+boxes.length+' done'; document.getElementById('progBar').style.width=(n/boxes.length*100)+'%'; }
+  boxes.forEach(function(b){ b.addEventListener('change',upd); }); upd();
+};
+</script>
+
+<script>
+(function(){
+  var views=["kit","answers","monthly","sign-up","signed-up"];
+  function show(){var h=location.hash.slice(1), v=views.indexOf(h)>=0?h:views[0];
+    views.forEach(function(x){var el=document.getElementById(x); if(el) el.hidden=(x!==v);});
+    document.querySelectorAll('.vtab').forEach(function(t){ if(t.getAttribute('data-view')===v) t.setAttribute('aria-current','page'); else t.removeAttribute('aria-current'); });
+    if(views.indexOf(h)>=0) window.scrollTo(0,0);
+    else if(h){ var el=document.getElementById(h); if(el){ var p=el.closest('.view'); if(p&&p.hidden){ views.forEach(function(x){var e=document.getElementById(x); if(e) e.hidden=(x!==p.id);}); } el.scrollIntoView(); } }
+  }
+  window.addEventListener('hashchange',show); show();
+  document.querySelectorAll('[data-scroll]').forEach(function(a){ a.addEventListener('click',function(e){ e.preventDefault(); var el=document.getElementById(a.getAttribute('data-scroll')); if(el) el.scrollIntoView({behavior:'smooth'}); }); });
+  document.querySelectorAll('[data-print]').forEach(function(b){ b.addEventListener('click',function(){ window.print(); }); });
+  if(window.pageInit) window.pageInit();
+})();
+</script>
+</body>
+</html>

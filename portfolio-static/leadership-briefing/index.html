@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ad Review Assistant: Leadership Briefing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Northstar intranet look: navy bar, gold rule, warm paper background. Single theme on purpose (brand world). */
+:root{
+  --navy:#0F2747;--navy-2:#16335E;--gold:#C9A227;--gold-soft:#E3C766;--gold-ink:#8A6A12;
+  --paper:#F4F2EC;--card:#FFFFFF;--line:#DCD7CA;--ink:#1B2333;--muted:#4A5468;
+  --pass:#14532D;--pass-bg:#DCF2E3;--flag:#7A4F00;--flag-bg:#FFF1D1;--hold:#9B1C1C;--hold-bg:#FDE8E6;
+  --f-display:"Source Serif 4",Georgia,serif;--f-body:Inter,"Segoe UI",system-ui,sans-serif;--f-mono:ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+a{color:var(--navy)}a:hover{color:var(--gold-ink)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--f-display);color:var(--navy);text-wrap:balance;line-height:1.2;margin:0}
+p{margin:0}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-4px}
+.icb{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:9px;background:#FBF1D2;color:var(--navy);flex:none}
+.icb .ic{width:21px;height:21px}
+.top{background:var(--navy);color:#fff}
+.top-in{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:14px 24px;max-width:1160px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:12px}
+.bn{font-family:var(--f-display);font-weight:700;font-size:17px;letter-spacing:.04em;line-height:1.1}
+.bn span{display:block;font-family:var(--f-body);font-size:10px;letter-spacing:.3em;color:var(--gold-soft);font-weight:600}
+.divider{width:1px;height:30px;background:#3A5276}
+.hub{font-weight:600;font-size:15px}
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--gold-soft);font-weight:600;font-size:14px;text-decoration:none}
+.back:hover{color:#fff}
+.views{background:#fff;border-bottom:1px solid var(--line)}
+.views-in{max-width:1160px;margin:0 auto;padding:0 24px;display:flex;gap:4px;overflow-x:auto}
+.vtab{display:inline-flex;align-items:center;gap:8px;padding:12px 12px 9px;border-bottom:3px solid transparent;color:var(--muted);font-weight:600;font-size:14px;text-decoration:none;white-space:nowrap}
+.vtab:hover{color:var(--navy)}
+.vtab[aria-current="page"]{color:var(--navy);border-bottom-color:var(--gold)}
+.vtab .ic{width:17px;height:17px}
+.view[hidden]{display:none}
+.crumb{font-size:13px;color:var(--muted);padding:10px 0}
+.crumb strong{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 20px;border-radius:6px;font:700 15px var(--f-body);text-decoration:none;border:2px solid transparent;cursor:pointer}
+.btn-navy{background:var(--navy);color:#fff}.btn-navy:hover{background:var(--navy-2);color:#fff}
+.btn-gold{background:var(--gold);color:var(--navy)}.btn-gold:hover{background:var(--gold-soft);color:var(--navy)}
+.btn-line{border-color:var(--navy);color:var(--navy);background:#fff}.btn-line:hover{background:#F1EEE5}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.pill{display:inline-block;font-size:12px;font-weight:700;border-radius:4px;padding:2px 8px;text-align:center}
+.p-PASS{background:var(--pass-bg);color:var(--pass)}.p-FLAG{background:var(--flag-bg);color:var(--flag)}.p-HOLD{background:var(--hold-bg);color:var(--hold)}
+.fine{font-size:13px;color:#5B6577;font-style:italic}
+/* Letter-size sheets shown on screen */
+.sheet-stage{padding:28px 16px 48px;display:flex;justify-content:center}
+.sheet{width:100%;max-width:816px;background:#fff;box-shadow:0 8px 28px rgba(15,39,71,.14);display:flex;flex-direction:column}
+.sheet-head{background:var(--navy);color:#fff;border-bottom:5px solid var(--gold);padding:24px 40px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.sheet-title{text-align:right}
+.sheet-title h1{color:#fff;font-size:28px}
+.sheet-title div{font-size:12px;color:var(--gold-soft);font-weight:600;letter-spacing:.06em;margin-top:4px}
+.sheet-body{padding:22px 40px 0;display:flex;flex-direction:column;gap:13px;font-size:14px;line-height:1.45}
+.sheet-foot{margin:18px 40px 0;padding:10px 0 26px;border-top:2px solid var(--gold);font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+/* Microsoft Forms mockups */
+.form-stage{padding:28px 16px 48px;display:flex;justify-content:center}
+.mform{width:100%;max-width:640px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.mform-head{background:var(--navy);color:#fff;padding:20px 26px;border-bottom:5px solid var(--gold)}
+.mform-kicker{font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--gold-soft)}
+.mform-head h1{color:#fff;font-size:25px;margin:6px 0 4px}
+.mform-head p{font-size:14px;color:#E6EBF3}
+.mform-body{padding:22px 26px 26px;display:flex;flex-direction:column;gap:18px}
+.who{background:#F4F2EC;border-radius:8px;padding:10px 14px;font-size:14px;color:#3A4458}
+.q{display:flex;flex-direction:column;gap:6px}
+.q>label,.q legend{font-weight:600}
+.req{color:var(--hold)}
+select,input[type=text],textarea{font:15px var(--f-body);border:1px solid #B9B3A3;border-radius:6px;padding:0 10px;background:#fff;color:var(--ink)}
+select,input[type=text]{height:44px}
+textarea{min-height:110px;padding:10px;resize:vertical}
+fieldset{border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.ck{display:flex;gap:10px;align-items:flex-start;min-height:30px;cursor:pointer}
+.ck input{width:20px;height:20px;margin-top:1px;flex:none;accent-color:var(--navy)}
+.radios{display:flex;flex-wrap:wrap;gap:16px}
+.radios label{display:flex;gap:8px;align-items:center;min-height:40px;cursor:pointer}
+.radios input{width:18px;height:18px;accent-color:var(--navy)}
+.done-head{display:flex;align-items:center;gap:14px}
+.done-head h2{font-size:27px}
+.resp{width:100%;border-collapse:collapse;font-size:14px;border:1px solid #E4E0D5}
+.resp th{text-align:left;padding:8px 12px;width:40%;color:var(--muted);font-weight:600;background:#F7F5EF;border-bottom:1px solid #E4E0D5}
+.resp td{padding:8px 12px;border-bottom:1px solid #E4E0D5}
+.note{background:#F4F2EC;border-radius:8px;padding:14px 16px;font-size:14px;color:#3A4458;display:flex;flex-direction:column;gap:6px}
+.next-link{display:flex;align-items:center;justify-content:space-between;min-height:48px;padding:0 16px;border-radius:6px;font-weight:700;text-decoration:none}
+.portfolio-note{text-align:center;padding:0 16px 28px}
+@media (max-width:600px){.sheet-head,.sheet-body{padding-left:20px;padding-right:20px}.sheet-foot{margin-left:20px;margin-right:20px}.sheet-title{text-align:left}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.hero{background:var(--navy);color:#fff;border-bottom:6px solid var(--gold)}
+.hero-in{max-width:1160px;margin:0 auto;padding:52px 24px 48px;display:flex;flex-wrap:wrap;gap:40px;align-items:center}
+.badge{display:inline-block;background:var(--gold);color:var(--navy);font-size:12px;font-weight:700;letter-spacing:.12em;padding:5px 10px;border-radius:4px}
+.hero h1{color:#fff;font-size:46px;line-height:1.1;margin:18px 0 14px}
+.glance{flex:1 1 300px;min-width:0;background:var(--navy-2);border:1px solid #2E4C7A;border-radius:10px;padding:22px 24px}
+.glance-t{font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--gold-soft);margin-bottom:12px}
+.glance-row{display:flex;gap:10px;align-items:flex-start;font-size:15px;color:#E6EBF3}
+.glance-row .ic{color:var(--gold-soft);margin-top:2px}
+.glance-row strong{color:#fff}
+.strip{margin-top:28px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px 18px;display:flex;flex-wrap:wrap;gap:10px 24px;font-size:14px;color:#3A4458;align-items:center}
+section.blk{padding-top:52px}
+.h2row{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.h2row h2{font-size:31px}
+.sub{color:var(--muted);margin:0 0 22px;max-width:760px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px}
+.card h3{font-size:19px;margin:12px 0 6px}
+.card p{font-size:15px;color:#3A4458}
+.tagx{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;padding:4px 9px;border-radius:4px}
+.step{background:#fff;border:1px solid var(--line);border-radius:12px;padding:26px;display:flex;flex-wrap:wrap;gap:28px}
+.step-l{flex:1 1 340px;min-width:0}
+.step-r{flex:1 1 380px;min-width:0;background:var(--paper);border-radius:10px;padding:18px}
+.num{width:36px;height:36px;border-radius:50%;background:var(--navy);color:var(--gold-soft);display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.step-h{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.step-h h3{font-size:21px}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.1em;color:#5B6577;margin-bottom:10px}
+.prompt{background:#F7F5EF;border:1px dashed var(--gold-ink);border-radius:8px;padding:14px 16px;font-family:var(--f-mono);font-size:14px;line-height:1.6}
+.box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:15px}
+.legend{display:flex;flex-direction:column;gap:8px;font-size:14px;margin-top:12px}
+.legend div{display:flex;gap:10px;align-items:baseline}
+.legend .pill{flex:none;width:52px}
+table.sc{width:100%;border-collapse:collapse;background:#fff;font-size:13.5px}
+table.sc th{background:var(--navy);color:#fff;text-align:left;padding:8px 10px}
+table.sc td{padding:8px 10px;border-bottom:1px solid #E4E0D5;vertical-align:top}
+.r-pass{color:var(--pass);font-weight:700}.r-flag{color:var(--flag);font-weight:700}
+.fix{display:flex;gap:10px;align-items:center;background:#fff;border:2px solid var(--navy);border-radius:8px;padding:10px 12px;font-size:14px}
+.fix input{width:18px;height:18px;accent-color:var(--navy)}
+del{color:var(--hold);text-decoration:line-through}
+ins{color:var(--pass);background:var(--pass-bg);text-decoration:none;font-weight:600}
+table.qi{width:100%;border-collapse:collapse;background:#fff;font-size:13.5px}
+table.qi th{text-align:left;padding:7px 10px;width:42%;color:var(--muted);font-weight:600;border-bottom:1px solid #E4E0D5}
+table.qi td{padding:7px 10px;border-bottom:1px solid #E4E0D5}
+.decide{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
+.won{background:var(--navy);color:#fff;border-radius:12px;padding:30px;display:flex;flex-wrap:wrap;gap:28px}
+.won h2{color:#fff;font-size:28px;margin-bottom:8px}
+.won-g{flex:2 1 520px;min-width:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.won-g div{border-left:3px solid var(--gold);padding-left:14px}
+.won-g b{display:block;color:var(--gold-soft);margin-bottom:4px}
+.won-g span{font-size:14px;color:#E6EBF3}
+.faq{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.faq div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.faq h3{font-family:var(--f-body);font-size:16px;margin-bottom:6px}
+.help{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.help .card h3{margin-top:6px}
+.kick{font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--gold-ink);display:flex;align-items:center;gap:8px}
+.incident{margin-top:16px;background:var(--hold-bg);border:1px solid #E8B4AE;border-radius:10px;padding:16px 20px;font-size:15px;color:#3A1512;display:flex;gap:10px}
+.owner{margin:56px 0 0;padding:26px 0 40px;border-top:2px solid var(--gold)}
+.owner-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;font-size:14px}
+.owner-g b{display:block;color:var(--navy)}
+.owner-g span{color:var(--muted)}
+/* cheat sheet */
+.cs-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.cs-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cs-step{border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;gap:10px}
+.cs-step .num{width:26px;height:26px;font-size:13px}
+.cs-step b{display:block;color:var(--navy);font-size:14px}
+@media (max-width:700px){.cs-3,.cs-2{grid-template-columns:1fr}.hero h1{font-size:36px}}
+
+
+.split2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.list{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:9px;font-size:15px;color:#3A4458}
+.list li{display:flex;gap:10px;align-items:flex-start}
+.list li .ic{margin-top:2px;width:18px;height:18px}
+.yes .ic{color:var(--pass)}.no .ic{color:var(--hold)}
+.vrow{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid #E4E0D5;font-size:15px}
+.vrow:first-child{border-top:none;padding-top:0}
+.vrow .pill{flex:none;width:52px;margin-top:2px}
+/* Teams alert mock */
+.teams{background:#fff;border:1px solid #D6D3E8;border-left:5px solid #5B5FC7;border-radius:8px;padding:14px 16px;font-size:14px}
+.teams-top{display:flex;align-items:center;gap:8px;font-size:12px;color:#5B6577;margin-bottom:8px}
+.teams-av{width:26px;height:26px;border-radius:6px;background:var(--navy);color:var(--gold-soft);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
+.teams h4{margin:0 0 8px;font:700 15px var(--f-body);color:var(--ink)}
+.teams .kv{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:13.5px;margin-bottom:12px}
+.teams .kv span:nth-child(odd){color:#5B6577}
+.teams .tbtn{display:inline-flex;align-items:center;min-height:34px;padding:0 14px;border:1px solid #5B5FC7;border-radius:4px;color:#3D3F9E;font-weight:600;font-size:13px;margin-right:6px;background:#fff}
+.teams .tbtn.pri{background:#5B5FC7;color:#fff}
+/* comment cards */
+.cmt{background:#fff;border:1px solid var(--line);border-left:4px solid var(--flag);border-radius:8px;padding:12px 14px;font-size:14.5px}
+.cmt b{color:var(--navy)}
+.cmt q{font-style:italic}
+.acc{display:flex;flex-direction:column;gap:8px}
+.acc label{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:6px;padding:9px 12px;font-size:14.5px;cursor:pointer;min-height:44px}
+.acc label.on{border:2px solid var(--navy);background:#F7F5EF}
+.acc input{width:18px;height:18px;accent-color:var(--navy);flex:none}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13.5px;font-weight:600}
+.flow .st{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 12px;color:var(--navy)}
+.flow .st.you{background:var(--navy);color:#fff;border-color:var(--navy)}
+.flow .ar{color:var(--gold-ink)}
+table.res{width:100%;border-collapse:collapse;background:#fff;font-size:14px}
+table.res th{background:var(--navy);color:#fff;text-align:left;padding:8px 10px}
+table.res td{padding:9px 10px;border-bottom:1px solid #E4E0D5;vertical-align:top}
+.timeline{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.tl{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px;border-top:5px solid var(--navy)}
+.tl .when{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--gold-ink)}
+.tl h3{font-size:18px;margin:6px 0 6px}
+.tl p{font-size:14.5px;color:#3A4458}
+.rel{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;counter-reset:r}
+.rel>div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px 18px 18px}
+.rel h3{font-size:17px;margin:10px 0 6px}
+.rel p{font-size:14.5px;color:#3A4458}
+.ex{margin-top:18px;background:#FFF6E0;border:1px solid #E2C47A;border-radius:10px;padding:16px 20px;font-size:15px;color:#3A2E0A;display:flex;gap:12px}
+.mini{font-size:12px;font-weight:700;letter-spacing:.08em}
+
+/* ---- leadership briefing ---- */
+.from{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:14px;color:#C9D3E3;margin-bottom:24px}
+.from b{color:#fff}
+.bottom{background:#fff;border:1px solid var(--line);border-left:6px solid var(--gold);border-radius:10px;padding:20px 24px;display:flex;flex-wrap:wrap;gap:18px 36px;align-items:center;margin-top:18px}
+.bottom .big{font-family:var(--f-display);font-size:40px;font-weight:700;color:var(--navy);line-height:1}
+.bottom .big small{font-size:17px;color:var(--muted);font-family:var(--f-body);font-weight:600}
+.bottom p{font-size:15px;color:#3A4458;flex:1 1 320px}
+.sum3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.sum3 .card{border-top:5px solid var(--navy)}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.k{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.k .lab{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted)}
+.k .ba{display:flex;align-items:baseline;gap:10px;margin-top:8px;flex-wrap:wrap}
+.k .b4{font-size:20px;color:#7A8395;text-decoration:line-through;text-decoration-thickness:1.5px}
+.k .af{font-family:var(--f-display);font-size:32px;font-weight:700;color:var(--navy)}
+.k .ar{color:var(--gold-ink);font-weight:700}
+.k p{font-size:13.5px;color:var(--muted);margin-top:4px}
+.cap{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px 24px}
+.cap-row{display:grid;grid-template-columns:160px minmax(0,1fr);gap:14px;align-items:center;margin:12px 0}
+.cap-row .nm{font-weight:600;font-size:14.5px}
+.cap-row .nm span{display:block;font-weight:500;font-size:12.5px;color:var(--muted)}
+.track{position:relative;height:30px;background:#F1EEE5;border-radius:6px}
+.fillb{position:absolute;left:0;top:0;bottom:0;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;color:#fff;font-weight:700;font-size:13.5px}
+.capline{position:absolute;top:-8px;bottom:-8px;width:0;border-left:2.5px dashed var(--hold)}
+.caplabel{position:absolute;top:-26px;transform:translateX(-50%);font-size:12px;font-weight:700;color:var(--hold);white-space:nowrap}
+@media (max-width:600px){.cap-row{grid-template-columns:1fr}}
+.asks{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
+.askcol{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.askcol-h{background:var(--navy);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-size:20px;font-weight:700}
+.askcol-h .ic{color:var(--gold-soft)}
+.ask{display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;padding:16px 20px;border-top:1px solid #E4E0D5}
+.ask:first-of-type{border-top:none}
+.ask h3{font-family:var(--f-body);font-size:16px;margin:4px 0 4px}
+.ask p{font-size:14.5px;color:#3A4458}
+.ask .due{display:inline-block;margin-top:6px;font-size:12.5px;font-weight:700;color:var(--gold-ink);background:#FBF1D2;border-radius:4px;padding:2px 8px}
+.guard{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.guard div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px;font-size:14.5px;color:#3A4458}
+.guard b{display:flex;align-items:center;gap:8px;color:var(--navy);margin-bottom:6px;font-size:15.5px}
+.guard .ic{color:var(--pass)}
+.next{background:var(--navy);color:#E6EBF3;border-radius:12px;padding:28px;display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}
+.next h2{color:#fff;font-size:28px;margin:12px 0 8px}
+.next-l{flex:1 1 420px;min-width:0}
+.next-r{flex:1 1 320px;min-width:0;background:var(--navy-2);border:1px solid #2E4C7A;border-radius:10px;padding:18px 20px}
+.gate{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;margin-top:10px}
+.gate .ic{color:var(--gold-soft);margin-top:2px}
+.assume{margin-top:18px;background:#F7F5EF;border:1px dashed #B9B3A3;border-radius:10px;padding:14px 18px;font-size:13.5px;color:#3A4458}
+.assume b{color:var(--navy)}
+.links{display:flex;flex-wrap:wrap;gap:10px}
+.links a{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-weight:600;font-size:14px;text-decoration:none}
+.links a:hover{border-color:var(--navy)}
+/* one-pager */
+.op-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.op-k{border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:12.5px}
+.op-k b{display:block;font-size:11px;letter-spacing:.06em;color:var(--muted)}
+.op-k .v{font-family:var(--f-display);font-size:20px;font-weight:700;color:var(--navy)}
+.op-k .v s{font-size:14px;color:#7A8395;font-weight:600;margin-right:4px}
+.op-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.op-box{border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:12.8px;line-height:1.45}
+.op-box h4{margin:0 0 6px;font:700 15px var(--f-display);color:var(--navy)}
+.op-box ul{margin:0;padding-left:17px;display:flex;flex-direction:column;gap:3px}
+@media (max-width:700px){.op-g,.op-2{grid-template-columns:1fr}}
+
+@media print{.top,.views,.noprint{display:none!important}body{background:#fff}.sheet-stage{padding:0}.sheet{box-shadow:none;max-width:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 21 2M16 7l3 3M18.5 4.5l2 2"/></symbol>
+<symbol id="i-package" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></symbol>
+<symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/></symbol>
+<symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></symbol>
+<symbol id="i-app" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M8 7h8M8 11h6"/></symbol>
+<symbol id="i-flow" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="6" rx="1"/><rect x="14" y="15" width="7" height="6" rx="1"/><path d="M6.5 9v4a2 2 0 0 0 2 2H14"/></symbol>
+<symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 2v6M15 2v6M6 8h12v3a6 6 0 0 1-12 0zM12 17v5"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2 21h20z"/><path d="M12 10v5M12 18h.01"/></symbol>
+<symbol id="i-message" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></symbol>
+<symbol id="i-usercheck" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="m16 11 2 2 4-4"/></symbol>
+<symbol id="i-trend" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+<symbol id="i-printer" viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.7-2.5 2-2.5 3.5M12 17h.01"/></symbol>
+<symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></symbol>
+<symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+
+<symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8M4 4v4h4M4 13a8 8 0 0 0 14.3 4.9L20 16M20 20v-4h-4"/></symbol>
+<symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></symbol>
+<symbol id="i-megaphone" viewBox="0 0 24 24"><path d="M3 11v2a1 1 0 0 0 1 1h3l6 5V5L7 10H4a1 1 0 0 0-1 1z"/><path d="M17 8a5 5 0 0 1 0 8"/></symbol>
+<symbol id="i-ticket" viewBox="0 0 24 24"><path d="M3 8a2 2 0 0 0 0 4v0a2 2 0 0 1 0 4v2h18v-2a2 2 0 0 1 0-4 2 2 0 0 0 0-4V6H3z"/><path d="M14 6v12" stroke-dasharray="2 2"/></symbol>
+<symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></symbol>
+<symbol id="i-rocket" viewBox="0 0 24 24"><path d="M5 15c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.8-.9.8-2.3-.1-3.1a2.2 2.2 0 0 0-2.9.1z"/><path d="m12 15-3-3a22 22 0 0 1 2-4A12.9 12.9 0 0 1 22 2c0 2.7-.8 7.5-6 11a22.4 22.4 0 0 1-4 2z"/><path d="M9 12H4s.6-3 2-4c1.6-1.1 5 0 5 0M12 15v5s3-.6 4-2c1.1-1.6 0-5 0-5"/></symbol>
+<symbol id="i-gradcap" viewBox="0 0 24 24"><path d="m22 9-10-5L2 9l10 5z"/><path d="M6 11v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5M22 9v6"/></symbol>
+
+<symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></symbol>
+</svg>
+<header class="top"><div class="top-in">
+  <div class="brand"><svg width="44" height="44" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#0F2747" stroke="#C9A227" stroke-width="1.6"/><path d="M20 6.5 L22.4 15.6 L31.5 18 L22.4 20.4 L20 29.5 L17.6 20.4 L8.5 18 L17.6 15.6 Z" fill="#C9A227"/><path d="M10 26.5 q2.5 -1.6 5 0 t5 0 t5 0 t5 0 M11.5 30 q2.1 -1.4 4.2 0 t4.3 0 t4.3 0 t4.2 0" fill="none" stroke="#C9A227" stroke-width="1.2"/></svg><div class="bn">NORTHSTAR HARBOR<span>MORTGAGE</span></div><div class="divider"></div><div class="hub">Harbor Hub · Leadership</div></div>
+  <a class="back" href="../case-study/index.html#enablement" target="_blank" rel="noopener"><svg class="ic"><use href="#i-arrow-left"/></svg>Back to case study</a>
+</div></header>
+<nav class="views" aria-label="Pages in this piece"><div class="views-in">
+  <a class="vtab" href="#briefing" data-view="briefing"><svg class="ic"><use href="#i-briefcase"/></svg>Leadership briefing</a>
+  <a class="vtab" href="#one-pager" data-view="one-pager"><svg class="ic"><use href="#i-printer"/></svg>One-page leave-behind</a>
+</div></nav>
+
+<!-- ================= BRIEFING ================= -->
+<div class="view" id="briefing">
+  <div style="background:#fff;border-bottom:1px solid var(--line)"><div class="wrap crumb">Harbor Hub › Leadership › AI Program › <strong>Ad Review Assistant: Leadership Briefing</strong></div></div>
+  <div class="hero"><div class="hero-in">
+    <div style="flex:999 1 560px;min-width:0">
+      <span class="badge">LEADERSHIP BRIEFING · NOVEMBER 2026</span>
+      <h1>Faster ad approvals. Compliance still makes every call.</h1>
+      <p style="font-size:19px;color:#E6EBF3;max-width:680px;margin-bottom:18px">The Ad Review Assistant pre-screens every loan officer ad before it reaches Compliance. Reviewers spend their time on judgment, not on finding missing disclosures. This briefing covers the problem, what changes, what it's worth, and four things we need from you.</p>
+      <div class="from"><span><b>For:</b> Marketing and loan officer leadership, Compliance leadership, regional and branch managers</span><span><b>From:</b> Akeyla Peele-Tembong, AI Platform &amp; Enablement Lead</span><span><b>Read time:</b> 5 minutes</span></div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px"><a class="btn btn-gold" href="#asks" data-scroll="asks"><svg class="ic"><use href="#i-target"/></svg>Jump to what we need from you</a><a class="btn" href="#one-pager" style="color:#fff;border-color:#8DA2C0"><svg class="ic"><use href="#i-printer"/></svg>One-page leave-behind</a></div>
+    </div>
+    <div class="glance"><div class="glance-t">THE SHORT VERSION</div><div style="display:flex;flex-direction:column;gap:12px">
+      <div class="glance-row"><svg class="ic"><use href="#i-alert"/></svg><div><strong>Today:</strong> reviewers need 757 hours a month for ads but have 408. Half of all ads go back at least once.</div></div>
+      <div class="glance-row"><svg class="ic"><use href="#i-trend"/></svg><div><strong>Target:</strong> about 229 hours a month, 1 in 5 ads returned, and a decision within 1 business day.</div></div>
+      <div class="glance-row"><svg class="ic"><use href="#i-chart"/></svg><div><strong>Worth:</strong> about $30,600 a month in reviewer capacity, about $367,000 a year (illustrative).</div></div>
+      <div class="glance-row"><svg class="ic"><use href="#i-users"/></svg><div><strong>Ask:</strong> nominate champions, own branch readiness, protect time, and agree to the app decision gate.</div></div>
+    </div></div>
+  </div></div>
+
+  <div class="wrap">
+    <div class="strip"><svg class="ic" style="color:var(--navy)"><use href="#i-shield"/></svg><span><strong style="color:var(--navy)">Approved for use</strong> by the Northstar AI Governance Committee</span><span>Runs in Northstar's Claude workspace with Northstar SSO</span><span>Rule content signed off by Compliance</span><span>First tool in Northstar's AI program</span></div>
+
+    <section class="blk">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-file"/></svg></span><h2>Summary</h2></div>
+      <p class="sub">Every ad a loan officer writes has to clear Regulation Z and our house standards. That review is careful work, and it has become a bottleneck.</p>
+      <div class="sum3">
+        <div class="card"><span class="tagx" style="background:var(--hold-bg);color:var(--hold)">THE PROBLEM</span><h3>More ads than reviewer hours</h3><p>About 1,147 ads a month from 2,032 loan officers. Six part-time reviewers have 408 hours for ads but need 757. Half of all ads go back at least once, and each round takes 3 to 5 business days. Loan officers wait, or they're tempted to skip review.</p></div>
+        <div class="card" style="border-top-color:var(--gold)"><span class="tagx" style="background:#FBF1D2;color:var(--gold-ink)">WHAT WE BUILT</span><h3>A pre-screen before Compliance</h3><p>Loan officers run each draft through the Ad Review Assistant in Northstar's Claude. It checks disclosures and house standards, offers fixes, and submits a clean packet to the Compliance queue in SharePoint, with a Teams alert. <strong>It never approves an ad.</strong></p></div>
+        <div class="card" style="border-top-color:var(--pass)"><span class="tagx" style="background:var(--pass-bg);color:var(--pass)">WHAT CHANGES</span><h3>Fewer rounds, faster decisions</h3><p>Ads arrive with the routine problems already fixed. Reviewers spend about 10 minutes per ad instead of 22, fewer ads go back, and reviewers decide within 1 business day. Compliance keeps full sign-off and owns every rule.</p></div>
+      </div>
+      <div class="bottom"><div class="big">~$30,600<small> / month</small></div><p><strong style="color:var(--navy)">Reviewer capacity freed, illustrative.</strong> About 528 fewer reviewer hours a month (757 → ~229) at an assumed $58 an hour fully loaded, or about <strong>$367,000 a year</strong>. That time goes back to the reviewers' other Compliance work and closes the 349-hour shortfall without adding headcount.</p></div>
+    </section>
+
+    <section class="blk">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-chart"/></svg></span><h2>Before and after</h2></div>
+      <p class="sub">Planning baselines and targets. We'll replace them with real numbers from the Edmond and Atlanta pilots before company-wide rollout.</p>
+      <div class="cap" aria-label="Reviewer hours needed compared with hours available">
+        <div style="font-weight:700;color:var(--navy);margin-bottom:22px">Reviewer hours needed each month for ads</div>
+        <div class="cap-row"><div class="nm">Today<span>22 min per ad · 1.8 rounds</span></div><div class="track"><div class="fillb" style="width:94.6%;background:var(--hold)">757 h</div><div class="capline" style="left:51%"></div><div class="caplabel" style="left:51%">408 h available</div></div></div>
+        <div class="cap-row"><div class="nm">With pre-screen<span>10 min per ad · 1.2 rounds</span></div><div class="track"><div class="fillb" style="width:28.6%;background:var(--pass)">~229 h</div><div class="capline" style="left:51%"></div></div></div>
+        <p style="font-size:13.5px;color:var(--muted);margin-top:14px">Today the team is 349 hours short every month. With the pre-screen, it has about 179 hours of headroom.</p>
+      </div>
+      <div class="kpi" style="margin-top:18px">
+        <div class="k"><div class="lab">ADS RETURNED AT LEAST ONCE</div><div class="ba"><span class="b4">50%</span><span class="ar">→</span><span class="af">20%</span></div><p>1.8 rounds per ad → 1.2</p></div>
+        <div class="k"><div class="lab">REVIEWER TIME PER AD</div><div class="ba"><span class="b4">22 min</span><span class="ar">→</span><span class="af">10 min</span></div><p>Routine checks done before it arrives</p></div>
+        <div class="k"><div class="lab">TIME PER REVIEW ROUND</div><div class="ba"><span class="b4">3–5 days</span><span class="ar">→</span><span class="af">1 day</span></div><p>Decision target, escalates at 2 days</p></div>
+        <div class="k"><div class="lab">ADS PRE-SCREENED</div><div class="ba"><span class="b4">0%</span><span class="ar">→</span><span class="af">90%</span></div><p>Share of submitted ads that went through the assistant first</p></div>
+      </div>
+      <div class="assume"><b>Planning assumptions.</b> 2,032 loan officers, ~1,147 ads a month, 6 reviewers at ~68 hours each for ads. Dollar value uses an assumed $58 an hour fully loaded for a Compliance reviewer and counts reviewer time only. Claude seats are assumed already licensed company-wide for other uses, so no new seat cost is included. Loan officer time saved on fewer rounds is real but not counted here.</div>
+    </section>
+
+    <section class="blk">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-shield"/></svg></span><h2>How risk stays managed</h2></div>
+      <p class="sub">Speed only matters if Compliance trusts the process. These controls are in place from day one.</p>
+      <div class="guard">
+        <div><b><svg class="ic"><use href="#i-usercheck"/></svg>A licensed reviewer signs off on every ad</b>The assistant can't approve or publish. PASS means "ready for review," never "approved."</div>
+        <div><b><svg class="ic"><use href="#i-lock"/></svg>No customer data</b>Every user acknowledges the Data Rules before access. If data is pasted by mistake, it's a P1 with Compliance and InfoSec within an hour, and no blame for reporting.</div>
+        <div><b><svg class="ic"><use href="#i-sliders"/></svg>Compliance owns the rules</b>Rule changes ship monthly, after re-testing and Compliance sign-off. Reviewers rate the pre-screen's accuracy on every decision.</div>
+        <div><b><svg class="ic"><use href="#i-file"/></svg>One record per ad</b>Each ad has a locked queue record with every version, comment and decision, ready for an exam or audit.</div>
+      </div>
+    </section>
+
+    <section class="blk" id="asks">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-target"/></svg></span><h2>What we need from you</h2></div>
+      <p class="sub">Four asks. Two for executives, two for branch managers. Each one has a date.</p>
+      <div class="asks">
+        <div class="askcol"><div class="askcol-h"><svg class="ic"><use href="#i-briefcase"/></svg>Executives</div>
+          <div class="ask"><span class="num">1</span><div><h3>Protect the time</h3><p>Let each branch AI champion spend about 3 hours on setup, then about 2 hours a month. Give every loan officer 30 minutes for the hands-on lab, on the clock.</p><span class="due">Confirm by December 4, 2026</span></div></div>
+          <div class="ask"><span class="num">2</span><div><h3>Agree to the app decision gate</h3><p>When the assistant meets its targets company-wide for 2 months in a row, AI Enablement and Engineering bring a build proposal for the Ad Review app to the AI Governance Committee. You agree now to review it then.</p><span class="due">Earliest decision: June 2027 Committee meeting</span></div></div>
+        </div>
+        <div class="askcol"><div class="askcol-h"><svg class="ic"><use href="#i-users"/></svg>Branch managers</div>
+          <div class="ask"><span class="num">3</span><div><h3>Nominate your branch AI champion</h3><p>One champion per branch, two if you have more than 75 loan officers. Volunteers are welcome. Champions get early access, visible credit, and a direct line to the rules.</p><span class="due">Nominations due January 15, 2027</span></div></div>
+          <div class="ask"><span class="num">4</span><div><h3>Own your branch's readiness</h3><p>100% of loan officers acknowledge the Data Rules, and at least 80% complete the lab, before your branch goes live. Your champion brings you the numbers each month.</p><span class="due">Before your branch's go-live date</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="blk">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-calendar"/></svg></span><h2>Timeline</h2></div>
+      <p class="sub">The <a href="../rollout-plan/index.html" target="_blank" rel="noopener">full rollout plan ↗</a> has the branch-by-branch schedule and how we measure each phase.</p>
+      <div class="timeline">
+        <div class="tl"><div class="when">DEC 7, 2026 – JAN 22, 2027</div><h3>Pilot</h3><p>Edmond, OK and Atlanta, GA. AI Enablement leads the labs and collects the real baseline.</p></div>
+        <div class="tl" style="border-top-color:var(--gold)"><div class="when">BY JAN 15, 2027</div><h3>Champions nominated</h3><p>Branch managers name their champions.</p></div>
+        <div class="tl" style="border-top-color:var(--gold)"><div class="when">FEB 2–10, 2027</div><h3>Champions trained</h3><p>Train-the-trainer sessions. Champions co-lead a lab before running one alone.</p></div>
+        <div class="tl" style="border-top-color:var(--pass)"><div class="when">FEB 15 – MAR 31, 2027</div><h3>Branches go live</h3><p>In waves, once each branch hits its readiness targets.</p></div>
+        <div class="tl" style="border-top-color:var(--navy-2)"><div class="when">MONTHLY</div><h3>Results reported</h3><p>To Compliance leadership and the AI Governance Committee, with branch numbers through champions.</p></div>
+      </div>
+    </section>
+
+    <section class="blk">
+      <div class="next">
+        <div class="next-l"><span class="badge">COMING NEXT</span><h2>The Ad Review app</h2>
+          <p style="font-size:16px">Today the assistant runs as a skill inside Claude, with a starter prompt. The next step is a simple Northstar web app: sign in with Northstar SSO, drop in an ad, review the fixes, and submit, with no prompt to remember. Same rules and the same Compliance sign-off, with fewer steps and less room for error.</p>
+          <div class="links" style="margin-top:18px"><a href="../ad-review-tool/index.html" target="_blank" rel="noopener"><svg class="ic"><use href="#i-app"/></svg>See the working prototype ↗</a></div>
+          <p style="font-size:14px;color:#C9D3E3;margin-top:16px">This is the playbook for Northstar's AI program. Each new tool comes with the same package: a leadership briefing, a lab, a champion answer sheet, a service desk section, and branch numbers.</p>
+        </div>
+        <div class="next-r"><div class="glance-t">THE DECISION GATE</div><p style="font-size:14.5px">Build is proposed only when, company-wide, for 2 months in a row:</p>
+          <div class="gate"><svg class="ic"><use href="#i-check"/></svg><span>20% or fewer ads are returned</span></div>
+          <div class="gate"><svg class="ic"><use href="#i-check"/></svg><span>90% or more of submitted ads were pre-screened</span></div>
+          <div class="gate"><svg class="ic"><use href="#i-check"/></svg><span>No unresolved P1 data incidents</span></div>
+          <p style="font-size:14px;color:#C9D3E3;margin-top:12px">Then AI Enablement and Engineering bring a build proposal, with scope, cost and timeline, to the AI Governance Committee.</p></div>
+      </div>
+    </section>
+
+    <section class="blk">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-book"/></svg></span><h2>The rollout package</h2></div>
+      <p class="sub">Everything your teams will use is ready.</p>
+      <div class="links">
+        <a href="../loan-officer-quick-start/index.html" target="_blank" rel="noopener"><svg class="ic"><use href="#i-book"/></svg>Loan officer quick-start ↗</a>
+        <a href="../data-rules-card/index.html" target="_blank" rel="noopener"><svg class="ic"><use href="#i-lock"/></svg>Data Rules card ↗</a>
+        <a href="../hands-on-lab/index.html" target="_blank" rel="noopener"><svg class="ic"><use href="#i-gradcap"/></svg>30-minute lab ↗</a>
+        <a href="../compliance-reviewer-guide/index.html" target="_blank" rel="noopener"><svg class="ic"><use href="#i-shield"/></svg>Compliance reviewer guide ↗</a>
+        <a href="../ai-champion-kit/index.html" target="_blank" rel="noopener"><svg class="ic"><use href="#i-star"/></svg>Branch AI champion kit ↗</a>
+        <a href="../service-desk-article/index.html" target="_blank" rel="noopener"><svg class="ic"><use href="#i-ticket"/></svg>Service desk article ↗</a>
+      </div>
+    </section>
+
+    <footer class="owner">
+      <div class="owner-g"><div><b>Prepared by AI Enablement</b><span>Akeyla Peele-Tembong, AI Platform &amp; Enablement Lead. Questions or concerns: post in the AI Enablement Teams channel or ask for a 15-minute walkthrough.</span></div><div><b>Sponsored by Marketing and loan officer leadership</b><span>Accountable for how their teams use the tool and for acting on reviewer feedback.</span></div><div><b>Reviewed by Compliance</b><span>The Compliance lead reviewed the controls and the 1-business-day decision target.</span></div></div>
+      <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:8px 24px;font-size:13px;color:var(--muted)"><span>Briefing version 1.0 · November 2026</span><span>Numbers are planning assumptions until pilot results replace them</span></div>
+      <p class="fine" style="margin-top:16px">Northstar Harbor Mortgage is a fictional company created for portfolio purposes.</p>
+    </footer>
+  </div>
+</div>
+
+<!-- ================= ONE-PAGER ================= -->
+<div class="view" id="one-pager" hidden>
+  <div class="noprint" style="max-width:816px;margin:24px auto 0;padding:0 16px;display:flex;justify-content:flex-end"><span style="display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--muted)"><svg class="ic" style="width:17px;height:17px"><use href="#i-printer"/></svg>Letter size · leave-behind for leadership meetings</span></div>
+  <div class="sheet-stage" style="padding-top:14px"><article class="sheet" aria-labelledby="op-title">
+    <div class="sheet-head"><div class="brand"><svg width="44" height="44" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#0F2747" stroke="#C9A227" stroke-width="1.6"/><path d="M20 6.5 L22.4 15.6 L31.5 18 L22.4 20.4 L20 29.5 L17.6 20.4 L8.5 18 L17.6 15.6 Z" fill="#C9A227"/><path d="M10 26.5 q2.5 -1.6 5 0 t5 0 t5 0 t5 0 M11.5 30 q2.1 -1.4 4.2 0 t4.3 0 t4.3 0 t4.2 0" fill="none" stroke="#C9A227" stroke-width="1.2"/></svg><div class="bn">NORTHSTAR HARBOR<span>MORTGAGE</span></div></div><div class="sheet-title"><h1 id="op-title">Ad Review Assistant</h1><div>LEADERSHIP BRIEFING · NOVEMBER 2026</div></div></div>
+    <div class="sheet-body">
+      <div style="font-family:var(--f-display);font-size:19px;font-weight:700;color:var(--navy)">Faster ad approvals. Compliance still makes every call.</div>
+      <p>An AI pre-screen in Northstar's Claude checks every loan officer ad for disclosures and house standards, offers fixes, and submits a clean packet to the Compliance queue. It never approves an ad. A licensed reviewer signs off on every one.</p>
+      <div class="op-g">
+        <div class="op-k"><b>REVIEWER HOURS / MONTH</b><div class="v"><s>757</s>~229</div>vs 408 available</div>
+        <div class="op-k"><b>ADS RETURNED</b><div class="v"><s>50%</s>20%</div>1.8 → 1.2 rounds</div>
+        <div class="op-k"><b>PER REVIEW ROUND</b><div class="v"><s>3–5 days</s>1 day</div>decision target</div>
+      </div>
+      <div style="background:#FFF6E0;border:1px solid #E2C47A;border-radius:8px;padding:9px 14px;font-size:13px"><strong style="color:var(--navy)">~$30,600 a month (~$367,000 a year) in reviewer capacity, illustrative.</strong> 528 hours at an assumed $58 an hour loaded. Reviewer time only. Planning numbers until the pilots replace them.</div>
+      <div class="op-2">
+        <div class="op-box"><h4>Executives</h4><ul><li><strong>Protect time:</strong> ~3 h setup + ~2 h/month per champion, 30 min lab per loan officer. <em>By Dec 4.</em></li><li><strong>Agree to the app gate:</strong> review an Ad Review app proposal after 2 months on target. <em>Earliest June 2027.</em></li></ul></div>
+        <div class="op-box"><h4>Branch managers</h4><ul><li><strong>Nominate a champion:</strong> 1 per branch, 2 if over 75 loan officers. <em>By Jan 15, 2027.</em></li><li><strong>Own readiness:</strong> 100% Data Rules acknowledged, 80% or more complete the lab. <em>Before go-live.</em></li></ul></div>
+      </div>
+      <div class="op-2">
+        <div class="op-box"><h4>Controls from day one</h4><ul><li>Human sign-off on every ad</li><li>No customer data; P1 to Compliance + InfoSec within 1 hour, no blame</li><li>Compliance signs off every rule change</li><li>One locked record per ad</li></ul></div>
+        <div class="op-box"><h4>Timeline</h4><ul><li><strong>Dec 7 – Jan 22:</strong> pilot in Edmond and Atlanta</li><li><strong>Jan 15:</strong> champions nominated</li><li><strong>Feb 2–10:</strong> champion train-the-trainer</li><li><strong>Feb 15 – Mar 31:</strong> branches go live in waves</li></ul></div>
+      </div>
+      <div style="background:var(--navy);color:#E6EBF3;border-radius:8px;padding:10px 14px;font-size:13px"><strong style="color:var(--gold-soft)">Coming next: the Ad Review app.</strong> Sign in, drop in an ad, submit, with no prompt to remember. Proposed to the AI Governance Committee when, company-wide, for 2 months in a row, 20% or fewer ads are returned, 90% or more are pre-screened, and there are no open P1s.</div>
+    </div>
+    <div class="sheet-foot"><span><strong style="color:var(--navy)">Prepared by AI Enablement</strong> · Akeyla Peele-Tembong, AI Platform &amp; Enablement Lead · Sponsored by Marketing and loan officer leadership · Controls reviewed by Compliance</span><span>Full briefing: Harbor Hub › Leadership › AI Program · Questions: AI Enablement Teams channel</span><span style="font-style:italic">Northstar Harbor Mortgage is a fictional company created for portfolio purposes.</span></div>
+  </article></div>
+</div>
+
+<script>
+(function(){
+  var views=["briefing","one-pager"];
+  function show(){var h=location.hash.slice(1), v=views.indexOf(h)>=0?h:views[0];
+    if(views.indexOf(h)<0&&h){var t=document.getElementById(h); var p=t&&t.closest('.view'); if(p) v=p.id;}
+    views.forEach(function(x){var el=document.getElementById(x); if(el) el.hidden=(x!==v);});
+    document.querySelectorAll('.vtab').forEach(function(t){ if(t.getAttribute('data-view')===v) t.setAttribute('aria-current','page'); else t.removeAttribute('aria-current'); });
+    if(views.indexOf(h)>=0) window.scrollTo(0,0);
+    else if(h){ var el=document.getElementById(h); if(el) el.scrollIntoView(); }
+  }
+  window.addEventListener('hashchange',show); show();
+  document.querySelectorAll('[data-scroll]').forEach(function(a){ a.addEventListener('click',function(e){ e.preventDefault(); var el=document.getElementById(a.getAttribute('data-scroll')); if(el) el.scrollIntoView({behavior:'smooth'}); }); });
+})();
+</script>
+
+</body>
+</html>
