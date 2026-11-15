@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ad Review Assistant: Compliance Reviewer Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Northstar intranet look: navy bar, gold rule, warm paper background. Single theme on purpose (brand world). */
+:root{
+  --navy:#0F2747;--navy-2:#16335E;--gold:#C9A227;--gold-soft:#E3C766;--gold-ink:#8A6A12;
+  --paper:#F4F2EC;--card:#FFFFFF;--line:#DCD7CA;--ink:#1B2333;--muted:#4A5468;
+  --pass:#14532D;--pass-bg:#DCF2E3;--flag:#7A4F00;--flag-bg:#FFF1D1;--hold:#9B1C1C;--hold-bg:#FDE8E6;
+  --f-display:"Source Serif 4",Georgia,serif;--f-body:Inter,"Segoe UI",system-ui,sans-serif;--f-mono:ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+a{color:var(--navy)}a:hover{color:var(--gold-ink)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--f-display);color:var(--navy);text-wrap:balance;line-height:1.2;margin:0}
+p{margin:0}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-4px}
+.icb{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:9px;background:#FBF1D2;color:var(--navy);flex:none}
+.icb .ic{width:21px;height:21px}
+.top{background:var(--navy);color:#fff}
+.top-in{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:14px 24px;max-width:1160px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:12px}
+.bn{font-family:var(--f-display);font-weight:700;font-size:17px;letter-spacing:.04em;line-height:1.1}
+.bn span{display:block;font-family:var(--f-body);font-size:10px;letter-spacing:.3em;color:var(--gold-soft);font-weight:600}
+.divider{width:1px;height:30px;background:#3A5276}
+.hub{font-weight:600;font-size:15px}
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--gold-soft);font-weight:600;font-size:14px;text-decoration:none}
+.back:hover{color:#fff}
+.views{background:#fff;border-bottom:1px solid var(--line)}
+.views-in{max-width:1160px;margin:0 auto;padding:0 24px;display:flex;gap:4px;overflow-x:auto}
+.vtab{display:inline-flex;align-items:center;gap:8px;padding:12px 12px 9px;border-bottom:3px solid transparent;color:var(--muted);font-weight:600;font-size:14px;text-decoration:none;white-space:nowrap}
+.vtab:hover{color:var(--navy)}
+.vtab[aria-current="page"]{color:var(--navy);border-bottom-color:var(--gold)}
+.vtab .ic{width:17px;height:17px}
+.view[hidden]{display:none}
+.crumb{font-size:13px;color:var(--muted);padding:10px 0}
+.crumb strong{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 20px;border-radius:6px;font:700 15px var(--f-body);text-decoration:none;border:2px solid transparent;cursor:pointer}
+.btn-navy{background:var(--navy);color:#fff}.btn-navy:hover{background:var(--navy-2);color:#fff}
+.btn-gold{background:var(--gold);color:var(--navy)}.btn-gold:hover{background:var(--gold-soft);color:var(--navy)}
+.btn-line{border-color:var(--navy);color:var(--navy);background:#fff}.btn-line:hover{background:#F1EEE5}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.pill{display:inline-block;font-size:12px;font-weight:700;border-radius:4px;padding:2px 8px;text-align:center}
+.p-PASS{background:var(--pass-bg);color:var(--pass)}.p-FLAG{background:var(--flag-bg);color:var(--flag)}.p-HOLD{background:var(--hold-bg);color:var(--hold)}
+.fine{font-size:13px;color:#5B6577;font-style:italic}
+/* Letter-size sheets shown on screen */
+.sheet-stage{padding:28px 16px 48px;display:flex;justify-content:center}
+.sheet{width:100%;max-width:816px;background:#fff;box-shadow:0 8px 28px rgba(15,39,71,.14);display:flex;flex-direction:column}
+.sheet-head{background:var(--navy);color:#fff;border-bottom:5px solid var(--gold);padding:24px 40px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.sheet-title{text-align:right}
+.sheet-title h1{color:#fff;font-size:28px}
+.sheet-title div{font-size:12px;color:var(--gold-soft);font-weight:600;letter-spacing:.06em;margin-top:4px}
+.sheet-body{padding:22px 40px 0;display:flex;flex-direction:column;gap:13px;font-size:14px;line-height:1.45}
+.sheet-foot{margin:18px 40px 0;padding:10px 0 26px;border-top:2px solid var(--gold);font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+/* Microsoft Forms mockups */
+.form-stage{padding:28px 16px 48px;display:flex;justify-content:center}
+.mform{width:100%;max-width:640px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.mform-head{background:var(--navy);color:#fff;padding:20px 26px;border-bottom:5px solid var(--gold)}
+.mform-kicker{font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--gold-soft)}
+.mform-head h1{color:#fff;font-size:25px;margin:6px 0 4px}
+.mform-head p{font-size:14px;color:#E6EBF3}
+.mform-body{padding:22px 26px 26px;display:flex;flex-direction:column;gap:18px}
+.who{background:#F4F2EC;border-radius:8px;padding:10px 14px;font-size:14px;color:#3A4458}
+.q{display:flex;flex-direction:column;gap:6px}
+.q>label,.q legend{font-weight:600}
+.req{color:var(--hold)}
+select,input[type=text],textarea{font:15px var(--f-body);border:1px solid #B9B3A3;border-radius:6px;padding:0 10px;background:#fff;color:var(--ink)}
+select,input[type=text]{height:44px}
+textarea{min-height:110px;padding:10px;resize:vertical}
+fieldset{border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.ck{display:flex;gap:10px;align-items:flex-start;min-height:30px;cursor:pointer}
+.ck input{width:20px;height:20px;margin-top:1px;flex:none;accent-color:var(--navy)}
+.radios{display:flex;flex-wrap:wrap;gap:16px}
+.radios label{display:flex;gap:8px;align-items:center;min-height:40px;cursor:pointer}
+.radios input{width:18px;height:18px;accent-color:var(--navy)}
+.done-head{display:flex;align-items:center;gap:14px}
+.done-head h2{font-size:27px}
+.resp{width:100%;border-collapse:collapse;font-size:14px;border:1px solid #E4E0D5}
+.resp th{text-align:left;padding:8px 12px;width:40%;color:var(--muted);font-weight:600;background:#F7F5EF;border-bottom:1px solid #E4E0D5}
+.resp td{padding:8px 12px;border-bottom:1px solid #E4E0D5}
+.note{background:#F4F2EC;border-radius:8px;padding:14px 16px;font-size:14px;color:#3A4458;display:flex;flex-direction:column;gap:6px}
+.next-link{display:flex;align-items:center;justify-content:space-between;min-height:48px;padding:0 16px;border-radius:6px;font-weight:700;text-decoration:none}
+.portfolio-note{text-align:center;padding:0 16px 28px}
+@media (max-width:600px){.sheet-head,.sheet-body{padding-left:20px;padding-right:20px}.sheet-foot{margin-left:20px;margin-right:20px}.sheet-title{text-align:left}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.hero{background:var(--navy);color:#fff;border-bottom:6px solid var(--gold)}
+.hero-in{max-width:1160px;margin:0 auto;padding:52px 24px 48px;display:flex;flex-wrap:wrap;gap:40px;align-items:center}
+.badge{display:inline-block;background:var(--gold);color:var(--navy);font-size:12px;font-weight:700;letter-spacing:.12em;padding:5px 10px;border-radius:4px}
+.hero h1{color:#fff;font-size:46px;line-height:1.1;margin:18px 0 14px}
+.glance{flex:1 1 300px;min-width:0;background:var(--navy-2);border:1px solid #2E4C7A;border-radius:10px;padding:22px 24px}
+.glance-t{font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--gold-soft);margin-bottom:12px}
+.glance-row{display:flex;gap:10px;align-items:flex-start;font-size:15px;color:#E6EBF3}
+.glance-row .ic{color:var(--gold-soft);margin-top:2px}
+.glance-row strong{color:#fff}
+.strip{margin-top:28px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px 18px;display:flex;flex-wrap:wrap;gap:10px 24px;font-size:14px;color:#3A4458;align-items:center}
+section.blk{padding-top:52px}
+.h2row{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.h2row h2{font-size:31px}
+.sub{color:var(--muted);margin:0 0 22px;max-width:760px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px}
+.card h3{font-size:19px;margin:12px 0 6px}
+.card p{font-size:15px;color:#3A4458}
+.tagx{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;padding:4px 9px;border-radius:4px}
+.step{background:#fff;border:1px solid var(--line);border-radius:12px;padding:26px;display:flex;flex-wrap:wrap;gap:28px}
+.step-l{flex:1 1 340px;min-width:0}
+.step-r{flex:1 1 380px;min-width:0;background:var(--paper);border-radius:10px;padding:18px}
+.num{width:36px;height:36px;border-radius:50%;background:var(--navy);color:var(--gold-soft);display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.step-h{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.step-h h3{font-size:21px}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.1em;color:#5B6577;margin-bottom:10px}
+.prompt{background:#F7F5EF;border:1px dashed var(--gold-ink);border-radius:8px;padding:14px 16px;font-family:var(--f-mono);font-size:14px;line-height:1.6}
+.box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:15px}
+.legend{display:flex;flex-direction:column;gap:8px;font-size:14px;margin-top:12px}
+.legend div{display:flex;gap:10px;align-items:baseline}
+.legend .pill{flex:none;width:52px}
+table.sc{width:100%;border-collapse:collapse;background:#fff;font-size:13.5px}
+table.sc th{background:var(--navy);color:#fff;text-align:left;padding:8px 10px}
+table.sc td{padding:8px 10px;border-bottom:1px solid #E4E0D5;vertical-align:top}
+.r-pass{color:var(--pass);font-weight:700}.r-flag{color:var(--flag);font-weight:700}
+.fix{display:flex;gap:10px;align-items:center;background:#fff;border:2px solid var(--navy);border-radius:8px;padding:10px 12px;font-size:14px}
+.fix input{width:18px;height:18px;accent-color:var(--navy)}
+del{color:var(--hold);text-decoration:line-through}
+ins{color:var(--pass);background:var(--pass-bg);text-decoration:none;font-weight:600}
+table.qi{width:100%;border-collapse:collapse;background:#fff;font-size:13.5px}
+table.qi th{text-align:left;padding:7px 10px;width:42%;color:var(--muted);font-weight:600;border-bottom:1px solid #E4E0D5}
+table.qi td{padding:7px 10px;border-bottom:1px solid #E4E0D5}
+.decide{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
+.won{background:var(--navy);color:#fff;border-radius:12px;padding:30px;display:flex;flex-wrap:wrap;gap:28px}
+.won h2{color:#fff;font-size:28px;margin-bottom:8px}
+.won-g{flex:2 1 520px;min-width:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.won-g div{border-left:3px solid var(--gold);padding-left:14px}
+.won-g b{display:block;color:var(--gold-soft);margin-bottom:4px}
+.won-g span{font-size:14px;color:#E6EBF3}
+.faq{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.faq div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.faq h3{font-family:var(--f-body);font-size:16px;margin-bottom:6px}
+.help{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.help .card h3{margin-top:6px}
+.kick{font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--gold-ink);display:flex;align-items:center;gap:8px}
+.incident{margin-top:16px;background:var(--hold-bg);border:1px solid #E8B4AE;border-radius:10px;padding:16px 20px;font-size:15px;color:#3A1512;display:flex;gap:10px}
+.owner{margin:56px 0 0;padding:26px 0 40px;border-top:2px solid var(--gold)}
+.owner-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;font-size:14px}
+.owner-g b{display:block;color:var(--navy)}
+.owner-g span{color:var(--muted)}
+/* cheat sheet */
+.cs-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.cs-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cs-step{border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;gap:10px}
+.cs-step .num{width:26px;height:26px;font-size:13px}
+.cs-step b{display:block;color:var(--navy);font-size:14px}
+@media (max-width:700px){.cs-3,.cs-2{grid-template-columns:1fr}.hero h1{font-size:36px}}
+
+/* ---- page-specific ---- */
+
+.split2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.list{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:9px;font-size:15px;color:#3A4458}
+.list li{display:flex;gap:10px;align-items:flex-start}
+.list li .ic{margin-top:2px;width:18px;height:18px}
+.yes .ic{color:var(--pass)}.no .ic{color:var(--hold)}
+.vrow{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid #E4E0D5;font-size:15px}
+.vrow:first-child{border-top:none;padding-top:0}
+.vrow .pill{flex:none;width:52px;margin-top:2px}
+/* Teams alert mock */
+.teams{background:#fff;border:1px solid #D6D3E8;border-left:5px solid #5B5FC7;border-radius:8px;padding:14px 16px;font-size:14px}
+.teams-top{display:flex;align-items:center;gap:8px;font-size:12px;color:#5B6577;margin-bottom:8px}
+.teams-av{width:26px;height:26px;border-radius:6px;background:var(--navy);color:var(--gold-soft);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
+.teams h4{margin:0 0 8px;font:700 15px var(--f-body);color:var(--ink)}
+.teams .kv{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:13.5px;margin-bottom:12px}
+.teams .kv span:nth-child(odd){color:#5B6577}
+.teams .tbtn{display:inline-flex;align-items:center;min-height:34px;padding:0 14px;border:1px solid #5B5FC7;border-radius:4px;color:#3D3F9E;font-weight:600;font-size:13px;margin-right:6px;background:#fff}
+.teams .tbtn.pri{background:#5B5FC7;color:#fff}
+/* comment cards */
+.cmt{background:#fff;border:1px solid var(--line);border-left:4px solid var(--flag);border-radius:8px;padding:12px 14px;font-size:14.5px}
+.cmt b{color:var(--navy)}
+.cmt q{font-style:italic}
+.acc{display:flex;flex-direction:column;gap:8px}
+.acc label{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:6px;padding:9px 12px;font-size:14.5px;cursor:pointer;min-height:44px}
+.acc label.on{border:2px solid var(--navy);background:#F7F5EF}
+.acc input{width:18px;height:18px;accent-color:var(--navy);flex:none}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13.5px;font-weight:600}
+.flow .st{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 12px;color:var(--navy)}
+.flow .st.you{background:var(--navy);color:#fff;border-color:var(--navy)}
+.flow .ar{color:var(--gold-ink)}
+table.res{width:100%;border-collapse:collapse;background:#fff;font-size:14px}
+table.res th{background:var(--navy);color:#fff;text-align:left;padding:8px 10px}
+table.res td{padding:9px 10px;border-bottom:1px solid #E4E0D5;vertical-align:top}
+.timeline{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.tl{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px;border-top:5px solid var(--navy)}
+.tl .when{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--gold-ink)}
+.tl h3{font-size:18px;margin:6px 0 6px}
+.tl p{font-size:14.5px;color:#3A4458}
+.rel{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;counter-reset:r}
+.rel>div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px 18px 18px}
+.rel h3{font-size:17px;margin:10px 0 6px}
+.rel p{font-size:14.5px;color:#3A4458}
+.ex{margin-top:18px;background:#FFF6E0;border:1px solid #E2C47A;border-radius:10px;padding:16px 20px;font-size:15px;color:#3A2E0A;display:flex;gap:12px}
+.mini{font-size:12px;font-weight:700;letter-spacing:.08em}
+
+@media print{.top,.views,.portfolio-note,.noprint{display:none!important}body{background:#fff}.sheet-stage{padding:0}.sheet{box-shadow:none;max-width:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 21 2M16 7l3 3M18.5 4.5l2 2"/></symbol>
+<symbol id="i-package" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></symbol>
+<symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/></symbol>
+<symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></symbol>
+<symbol id="i-app" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M8 7h8M8 11h6"/></symbol>
+<symbol id="i-flow" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="6" rx="1"/><rect x="14" y="15" width="7" height="6" rx="1"/><path d="M6.5 9v4a2 2 0 0 0 2 2H14"/></symbol>
+<symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 2v6M15 2v6M6 8h12v3a6 6 0 0 1-12 0zM12 17v5"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2 21h20z"/><path d="M12 10v5M12 18h.01"/></symbol>
+<symbol id="i-message" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></symbol>
+<symbol id="i-usercheck" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="m16 11 2 2 4-4"/></symbol>
+<symbol id="i-trend" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+<symbol id="i-printer" viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.7-2.5 2-2.5 3.5M12 17h.01"/></symbol>
+<symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></symbol>
+<symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+
+<symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8M4 4v4h4M4 13a8 8 0 0 0 14.3 4.9L20 16M20 20v-4h-4"/></symbol>
+<symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></symbol>
+<symbol id="i-megaphone" viewBox="0 0 24 24"><path d="M3 11v2a1 1 0 0 0 1 1h3l6 5V5L7 10H4a1 1 0 0 0-1 1z"/><path d="M17 8a5 5 0 0 1 0 8"/></symbol>
+<symbol id="i-ticket" viewBox="0 0 24 24"><path d="M3 8a2 2 0 0 0 0 4v0a2 2 0 0 1 0 4v2h18v-2a2 2 0 0 1 0-4 2 2 0 0 0 0-4V6H3z"/><path d="M14 6v12" stroke-dasharray="2 2"/></symbol>
+<symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></symbol>
+<symbol id="i-rocket" viewBox="0 0 24 24"><path d="M5 15c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.8-.9.8-2.3-.1-3.1a2.2 2.2 0 0 0-2.9.1z"/><path d="m12 15-3-3a22 22 0 0 1 2-4A12.9 12.9 0 0 1 22 2c0 2.7-.8 7.5-6 11a22.4 22.4 0 0 1-4 2z"/><path d="M9 12H4s.6-3 2-4c1.6-1.1 5 0 5 0M12 15v5s3-.6 4-2c1.1-1.6 0-5 0-5"/></symbol>
+<symbol id="i-gradcap" viewBox="0 0 24 24"><path d="m22 9-10-5L2 9l10 5z"/><path d="M6 11v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5M22 9v6"/></symbol>
+
+</svg>
+
+<header class="top"><div class="top-in">
+  <div class="brand"><svg width="44" height="44" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#0F2747" stroke="#C9A227" stroke-width="1.6"/><path d="M20 6.5 L22.4 15.6 L31.5 18 L22.4 20.4 L20 29.5 L17.6 20.4 L8.5 18 L17.6 15.6 Z" fill="#C9A227"/><path d="M10 26.5 q2.5 -1.6 5 0 t5 0 t5 0 t5 0 M11.5 30 q2.1 -1.4 4.2 0 t4.3 0 t4.3 0 t4.2 0" fill="none" stroke="#C9A227" stroke-width="1.2"/></svg><div class="bn">NORTHSTAR HARBOR<span>MORTGAGE</span></div><div class="divider"></div><div class="hub">Harbor Hub</div></div>
+  <a class="back" href="../case-study/index.html#enablement" target="_blank" rel="noopener"><svg class="ic"><use href="#i-arrow-left"/></svg>Back to case study</a>
+</div></header>
+<nav class="views" aria-label="Pages in this piece"><div class="views-in">
+  <a class="vtab" href="#guide" data-view="guide"><svg class="ic"><use href="#i-book"/></svg>Reviewer guide</a>
+  <a class="vtab" href="#desk-card" data-view="desk-card"><svg class="ic"><use href="#i-printer"/></svg>One-page desk card</a>
+</div></nav>
+
+<!-- ================= GUIDE ================= -->
+<div class="view" id="guide">
+  <div style="background:#fff;border-bottom:1px solid var(--line)"><div class="wrap crumb">Harbor Hub › Compliance › Ad Review › <strong>Ad Review Assistant: Compliance Reviewer Guide</strong></div></div>
+  <div class="hero"><div class="hero-in">
+    <div style="flex:999 1 520px;min-width:0">
+      <span class="badge">COMPLIANCE REVIEWER GUIDE</span>
+      <h1>The pre-screen goes first. You make the call.</h1>
+      <p style="font-size:19px;color:#E6EBF3;max-width:660px;margin-bottom:10px">Every ad in the Ad Review Queue has already been checked by the Ad Review Assistant. This guide covers how to work the queue, how far to trust the pre-screen, and how to help tune its rules.</p>
+      <p style="font-size:17px;color:var(--gold-soft);font-weight:600;margin-bottom:26px">You spend your time on judgment calls, not on finding a missing APR.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px"><a class="btn btn-gold" href="#desk-card"><svg class="ic"><use href="#i-printer"/></svg>See the one-page desk card</a><a class="btn" href="#queue" data-scroll="queue" style="color:#fff;border-color:#8DA2C0">Work your first item</a></div>
+    </div>
+    <div class="glance"><div class="glance-t">AT A GLANCE</div><div style="display:flex;flex-direction:column;gap:12px">
+      <div class="glance-row"><svg class="ic"><use href="#i-bell"/></svg><div><strong>Where it arrives:</strong> a Teams alert that links to the item in the SharePoint Ad Review Queue.</div></div>
+      <div class="glance-row"><svg class="ic"><use href="#i-file"/></svg><div><strong>What you get:</strong> a submission packet with the final ad, the scorecard, the changes made, and the open items.</div></div>
+      <div class="glance-row"><svg class="ic"><use href="#i-clock"/></svg><div><strong>Your target:</strong> a decision within 1 business day of the alert.</div></div>
+      <div class="glance-row"><svg class="ic"><use href="#i-usercheck"/></svg><div><strong>What you add:</strong> your decision, your comments, and a pre-screen accuracy rating.</div></div>
+    </div></div>
+  </div></div>
+
+  <div class="wrap">
+    <div class="strip"><svg class="ic" style="color:var(--navy)"><use href="#i-shield"/></svg><span><strong style="color:var(--navy)">Approved for use</strong> by the Northstar AI Governance Committee</span><span>Skill: <strong>mortgage-ad-review</strong>, version 6</span><span>Rule content signed off by Compliance</span><span>Covered by the AI Acceptable Use Policy</span></div>
+
+    <!-- What it does -->
+    <section class="blk" id="trust">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-search"/></svg></span><h2>What the pre-screen checks, and what's still yours</h2></div>
+      <p class="sub">The assistant is a first pass. It is thorough on rules that can be written down and checked against the text. It is weaker on context, timing and intent. That's where your review matters most.</p>
+      <div class="split2">
+        <div class="card" style="border-top:5px solid var(--pass)"><span class="tagx" style="background:var(--pass-bg);color:var(--pass)">IT CHECKS EVERY AD FOR</span>
+          <ul class="list yes" style="margin-top:14px">
+            <li><svg class="ic"><use href="#i-check"/></svg><span><strong>Rates and APR</strong> (Reg Z 1026.24(c)): any rate stated without an APR.</span></li>
+            <li><svg class="ic"><use href="#i-check"/></svg><span><strong>Triggering terms</strong> (1026.24(d), (f)): down payment, term, payment or finance charge without the required disclosures nearby.</span></li>
+            <li><svg class="ic"><use href="#i-check"/></svg><span><strong>Prohibited practices</strong> (1026.24(i)): misleading "fixed," implied government endorsement, "counselor," split-language disclosures.</span></li>
+            <li><svg class="ic"><use href="#i-check"/></svg><span><strong>Northstar house standards:</strong> NMLS IDs, Equal Housing Lender, as-of date, credit approval language, no pressure claims.</span></li>
+            <li><svg class="ic"><use href="#i-check"/></svg><span><strong>Product accuracy:</strong> product claims checked against Northstar's connected loan product knowledge.</span></li>
+          </ul>
+          <p style="margin-top:14px;font-size:14px;color:var(--muted)">A deterministic scan lists every candidate trigger word, and the report must address each one. Every finding quotes the ad and names its rule, so you can check it in seconds.</p>
+        </div>
+        <div class="card" style="border-top:5px solid var(--flag)"><span class="tagx" style="background:var(--flag-bg);color:var(--flag)">STILL NEEDS YOUR JUDGMENT</span>
+          <ul class="list no" style="margin-top:14px">
+            <li><svg class="ic"><use href="#i-eye"/></svg><span><strong>Benefit and savings claims</strong> that aren't triggering terms but can still mislead, such as "free up hundreds a month."</span></li>
+            <li><svg class="ic"><use href="#i-calendar"/></svg><span><strong>Timing:</strong> whether the rate and as-of date will still be true on the planned publish date.</span></li>
+            <li><svg class="ic"><use href="#i-users"/></svg><span><strong>Context outside the ad:</strong> the audience, the landing page, where it runs, and who publishes it.</span></li>
+            <li><svg class="ic"><use href="#i-file"/></svg><span><strong>Anything it flagged as unreadable:</strong> small image text and video frames it couldn't fully read.</span></li>
+            <li><svg class="ic"><use href="#i-ban"/></svg><span><strong>The decision itself.</strong> The assistant never approves an ad. Only a licensed reviewer does.</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="card" style="margin-top:18px">
+        <h3 style="margin-top:0;margin-bottom:12px">What each verdict means by the time it reaches you</h3>
+        <div class="vrow"><span class="pill p-PASS">PASS</span><div><strong>No issues found by the pre-screen.</strong> Still read the whole ad. PASS means "ready for your sign-off," never "approved."</div></div>
+        <div class="vrow"><span class="pill p-FLAG">FLAG</span><div><strong>Arrives with open items.</strong> The loan officer skipped a fix or the assistant wants a human look. Start with the Open items list in the packet.</div></div>
+        <div class="vrow"><span class="pill p-HOLD">HOLD</span><div><strong>Shouldn't reach you.</strong> The assistant won't offer submission at HOLD. If one arrives, choose Changes Requested and open a service desk ticket so AI Enablement can find out why.</div></div>
+      </div>
+    </section>
+
+    <!-- Working the queue -->
+    <section class="blk" id="queue">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-flow"/></svg></span><h2>Working the queue, step by step</h2></div>
+      <p class="sub" style="margin-bottom:8px">Follow along with a sample: Liam Smith's refinance email to past clients, the same ad loan officers practice with in the quick-start. It arrives at PASS, goes back once with two comments, and is approved as version 2.</p>
+      <p style="font-size:13px;color:#5B6577;margin-bottom:18px">Sample content. Rates, APRs, names and NMLS numbers are illustrative placeholders.</p>
+      <div class="flow" style="margin-bottom:22px" aria-label="Queue status flow"><span class="st">Submitted</span><span class="ar">→</span><span class="st you">Changes Requested</span><span class="ar">→</span><span class="st">Submitted v2</span><span class="ar">→</span><span class="st you">Approved</span><span class="ar">→</span><span class="st">Published</span><span style="font-weight:500;color:var(--muted);margin-left:6px">Dark steps are yours. The assistant only sets Submitted. Marketing or the loan officer sets Published.</span></div>
+      <div style="display:flex;flex-direction:column;gap:18px">
+
+        <div class="step"><div class="step-l"><div class="step-h"><span class="num">1</span><h3>Pick up the Teams alert</h3></div>
+          <p style="font-size:15px;margin-bottom:12px">When a loan officer submits, Power Automate posts an alert in the <strong>Compliance › Ad Review</strong> channel and assigns the item to the next reviewer in rotation. Open the item from the alert.</p>
+          <p style="font-size:15px">Your 1-business-day clock starts when the alert posts. The due date is on the alert and on the queue item.</p></div>
+          <div class="step-r"><div class="lbl">THE ALERT</div><div class="teams">
+            <div class="teams-top"><span class="teams-av">AR</span><span><strong style="color:var(--ink)">Ad Review Queue</strong> · Compliance › Ad Review · Sat 4:12 PM</span></div>
+            <h4>New ad for review: NHM-20261114-LS-1</h4>
+            <div class="kv"><span>Loan officer</span><span>Liam Smith, NMLS #0000404</span><span>Channel</span><span>Email to past clients</span><span>Pre-screen</span><span><span class="pill p-FLAG">FLAG</span> → <span class="pill p-PASS">PASS</span></span><span>Publish date</span><span>November 20, 2026</span><span>Assigned to</span><span>Dana Reyes</span><span>Due</span><span><strong>Mon, November 16</strong></span></div>
+            <span class="tbtn pri">Open in Ad Review Queue</span><span class="tbtn">View packet</span></div></div></div>
+
+        <div class="step"><div class="step-l"><div class="step-h"><span class="num">2</span><h3>Open the item and the packet</h3></div>
+          <p style="font-size:15px;margin-bottom:12px">The queue item holds the facts. The attached submission packet holds the ad and the pre-screen. Read the packet in this order:</p>
+          <ol style="margin:0;padding-left:20px;font-size:15px;display:flex;flex-direction:column;gap:6px"><li><strong>Open items.</strong> Skipped fixes and notes for you. Start here.</li><li><strong>Final ad.</strong> Read it in full, as the customer will see it.</li><li><strong>Scorecard.</strong> Check any finding you doubt against its rule.</li><li><strong>Changes made.</strong> Before and after for each fix the loan officer approved.</li></ol></div>
+          <div class="step-r"><div class="lbl">LIAM'S QUEUE ITEM</div><table class="qi"><tbody>
+            <tr><th scope="row">Submission ID</th><td style="font-family:var(--f-mono);font-weight:700;color:var(--navy)">NHM-20261114-LS-1</td></tr>
+            <tr><th scope="row">Title</th><td>Refinance email to past clients</td></tr>
+            <tr><th scope="row">Loan officer</th><td>Liam Smith, NMLS #0000404</td></tr>
+            <tr><th scope="row">Channel · Product</th><td>Email · 30-year fixed refinance</td></tr>
+            <tr><th scope="row">Pre-screen verdict</th><td>FLAG → PASS</td></tr>
+            <tr><th scope="row">Version</th><td>1</td></tr>
+            <tr><th scope="row">Planned publish date</th><td>2026-11-20</td></tr>
+            <tr><th scope="row">Open items for reviewer</th><td>None</td></tr>
+            <tr><th scope="row">Publisher</th><td>Marketing (company email)</td></tr>
+            <tr><th scope="row">Status</th><td><strong>Submitted</strong></td></tr>
+            <tr><th scope="row">Attachment</th><td>NHM-20261114-LS-1_submission-packet.pdf</td></tr>
+          </tbody></table></div></div>
+
+        <div class="step"><div class="step-l"><div class="step-h"><span class="num">3</span><h3>Review what the pre-screen can't</h3></div>
+          <p style="font-size:15px;margin-bottom:12px">The disclosures are in place, so spend your time on judgment. Ask four questions of every ad:</p>
+          <ul class="list" style="margin-bottom:12px"><li><svg class="ic" style="color:var(--gold-ink)"><use href="#i-eye"/></svg><span>Would a customer take any promise here literally?</span></li><li><svg class="ic" style="color:var(--gold-ink)"><use href="#i-calendar"/></svg><span>Will the rate and dates still be true on the publish date?</span></li><li><svg class="ic" style="color:var(--gold-ink)"><use href="#i-users"/></svg><span>Does it fit the channel, audience and publisher?</span></li><li><svg class="ic" style="color:var(--gold-ink)"><use href="#i-search"/></svg><span>Do I agree with every finding, and did it miss anything?</span></li></ul>
+          <p style="font-size:15px">In Liam's email, Dana spots two things the pre-screen passed.</p></div>
+          <div class="step-r"><div class="lbl">WHAT DANA SEES IN VERSION 1</div><div class="box" style="font-size:14.5px;line-height:1.65">
+            <p>Today's 30-year fixed refinance rate starts at 6.125% (6.244% APR).</p>
+            <p style="margin-top:8px">Refinancing <mark style="background:var(--flag-bg);padding:0 3px">could free up hundreds of dollars a month</mark> for the things that matter to you.</p>
+            <p style="margin-top:8px;font-size:13px;color:var(--muted)">Footer: …360 monthly payments. <mark style="background:var(--flag-bg);padding:0 3px">Rates as of November 13, 2026.</mark> Planned send: November 20.</p>
+          </div></div></div>
+
+        <div class="step"><div class="step-l"><div class="step-h"><span class="num">4</span><h3>Decide: approve or request changes</h3></div>
+          <p style="font-size:15px;margin-bottom:12px">Choose <strong>Changes Requested</strong> and add your comments, or choose <strong>Approved</strong> and sign the Compliance decision section of the packet. Please don't edit the ad yourself. Sending it back keeps the version history clean.</p>
+          <div class="note"><strong style="color:var(--navy)">Write comments the assistant can act on</strong><span>One change per comment. Quote the exact words. Say what you need, with example wording if you have it. The loan officer pastes your comments into a new chat, and the assistant turns each one into an action item.</span></div></div>
+          <div class="step-r"><div class="lbl">DANA'S COMMENTS · STATUS: CHANGES REQUESTED</div><div style="display:flex;flex-direction:column;gap:10px">
+            <div class="cmt"><b>1. Savings claim.</b> <q>Could free up hundreds of dollars a month</q> promises a result we can't support for every borrower. Use softer wording, such as "may lower your monthly payment, depending on your loan."</div>
+            <div class="cmt"><b>2. Rate date.</b> The rate is <q>as of November 13</q> but the email sends November 20. Mark the rate, APR and as-of date as send-day fields so Marketing confirms them on the send date, and keep the footer example matching.</div>
+            <p style="font-size:13.5px;color:var(--muted)">Liam gets a Teams message with these comments and a ready-to-paste prompt: <span style="font-family:var(--f-mono);font-weight:700;color:var(--navy)">Resubmit NHM-20261114-LS-1</span></p></div></div></div>
+
+        <div class="step"><div class="step-l"><div class="step-h"><span class="num">5</span><h3>Rate the pre-screen</h3></div>
+          <p style="font-size:15px;margin-bottom:12px"><strong>Pre-screen accuracy</strong> is a required field on every decision, so it takes ten seconds and needs no extra form. AI Enablement reviews these ratings every month, and they feed the usage dashboard.</p>
+          <p style="font-size:15px">Rate what the pre-screen did, not the loan officer. Dana chose <strong>Missed an issue</strong> because the assistant passed both items she sent back.</p></div>
+          <div class="step-r"><div class="lbl">PRE-SCREEN ACCURACY · REQUIRED</div><div class="acc" role="radiogroup" aria-label="Pre-screen accuracy" id="accGroup">
+            <label><input type="radio" name="acc" value="Accurate">Accurate: I agree with every finding</label>
+            <label class="on"><input type="radio" name="acc" value="Missed" checked>Missed an issue I caught</label>
+            <label><input type="radio" name="acc" value="False">Flagged something that was fine</label>
+            <textarea aria-label="Accuracy note" style="min-height:76px;margin-top:4px;font-size:14px">Passed a savings claim ("could free up hundreds of dollars a month") and didn't compare the as-of date with the publish date.</textarea>
+          </div></div></div>
+
+        <div class="step"><div class="step-l"><div class="step-h"><span class="num">6</span><h3>Review the resubmission</h3></div>
+          <p style="font-size:15px;margin-bottom:12px">The resubmission comes back to <strong>you</strong>, on the <strong>same queue item</strong>, as version 2. Its Open items list each of your comments with how it was resolved. Check those first, then read the whole ad again.</p>
+          <p style="font-size:15px">Dana approves version 2 and rates the pre-screen <strong>Accurate</strong>. The record locks, Liam gets a receipt email with Marketing copied, and Marketing confirms the send-day rate before the email goes out.</p></div>
+          <div class="step-r"><div class="lbl">VERSION 2 · OPEN ITEMS</div><table class="res"><thead><tr><th scope="col">Your comment</th><th scope="col">How v2 resolved it</th></tr></thead><tbody>
+            <tr><td>1. Savings claim</td><td><del>could free up hundreds of dollars a month</del> → <ins>may lower your monthly payment, depending on your loan</ins></td></tr>
+            <tr><td>2. Rate date</td><td>Rate, APR and as-of date marked <ins>[send-day rate]</ins> with a note to Marketing to confirm them on November 20. Footer example updated to match.</td></tr>
+          </tbody></table>
+          <div style="margin-top:12px;display:flex;align-items:center;gap:10px;font-weight:600;font-size:14.5px"><span>Status:</span><span class="pill" style="background:var(--navy);color:#fff">Approved</span><span style="color:var(--muted);font-weight:500">Version 2 · Pre-screen accuracy: Accurate</span></div></div></div>
+      </div>
+    </section>
+
+    <!-- Turnaround -->
+    <section class="blk" id="turnaround">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-clock"/></svg></span><h2>Turnaround</h2></div>
+      <p class="sub">The pre-screen does the slow part, so a round can take one day instead of three to five. Power Automate keeps the clock.</p>
+      <div class="timeline">
+        <div class="tl"><div class="when">WHEN THE ALERT POSTS</div><h3>Assigned to you</h3><p>The next reviewer in rotation gets the item. Out of office? Set your status in the queue and new items skip you.</p></div>
+        <div class="tl" style="border-top-color:var(--gold)"><div class="when">BY 1 BUSINESS DAY</div><h3>Your decision</h3><p>Approved or Changes Requested, with a pre-screen accuracy rating. If an item is due and still open, you get a Teams reminder.</p></div>
+        <div class="tl" style="border-top-color:var(--flag)"><div class="when">AT 2 BUSINESS DAYS</div><h3>Escalates to the Compliance lead</h3><p>The lead reassigns or picks it up. It's not a mark against you. It keeps loan officers from waiting.</p></div>
+        <div class="tl" style="border-top-color:var(--pass)"><div class="when">RESUBMISSIONS</div><h3>Same reviewer, same clock</h3><p>Version 2 comes back to the reviewer who asked for changes and starts a new 1-business-day clock.</p></div>
+      </div>
+    </section>
+
+    <!-- Rule changes -->
+    <section class="blk" id="rules">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-sliders"/></svg></span><h2>When a rule needs to change</h2></div>
+      <p class="sub">Compliance owns the rules. AI Enablement owns the skill. Rule changes ship once a month, so everyone gets the same version at the same time.</p>
+      <div class="rel">
+        <div><span class="num">1</span><h3>Compliance files a request</h3><p>Use the <strong>Ad Review rule change request</strong> form, pinned in the Compliance Teams channel. Include the rule and citation, example ad wording, and the verdict you expect.</p></div>
+        <div><span class="num">2</span><h3>Enablement updates and re-tests</h3><p>AI Enablement updates the skill, then re-runs the full sample ad set and every past miss to check that nothing else changed.</p></div>
+        <div><span class="num">3</span><h3>Compliance signs off</h3><p>The Compliance lead reviews the before-and-after test results and signs off. Nothing ships without that sign-off.</p></div>
+        <div><span class="num">4</span><h3>It ships at the monthly release</h3><p>The new version goes out in the plugin for the Loan Officer, Marketing and Compliance groups. A release note posts in Teams, and the guides are updated the same day.</p></div>
+      </div>
+      <div class="ex"><svg class="ic" style="color:var(--gold-ink);margin-top:2px"><use href="#i-refresh"/></svg><div><strong>How Liam's email feeds the next release.</strong> Dana's "Missed an issue" rating joined two similar ratings that month. AI Enablement drafted a request with the Compliance lead: flag benefit and savings claims, and compare the as-of date with the planned publish date. After sign-off, it's planned for skill version 7. <span style="color:#5C470B">Urgent regulatory changes don't wait for the monthly release. They can ship the same week.</span></div></div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="blk">
+      <div class="h2row" style="margin-bottom:18px"><span class="icb"><svg class="ic"><use href="#i-help"/></svg></span><h2>Quick answers</h2></div>
+      <div class="faq">
+        <div><h3>It arrived at PASS. Do I still read the whole ad?</h3><p style="font-size:15px">Yes. PASS means the pre-screen found nothing. It doesn't replace your review.</p></div>
+        <div><h3>The loan officer skipped a fix.</h3><p style="font-size:15px">It's listed under Open items. You decide whether it stands. Skipping a fix is allowed. It isn't automatically wrong.</p></div>
+        <div><h3>I see customer information in a submission.</h3><p style="font-size:15px">Don't approve it. Choose Changes Requested, then open a service desk ticket marked "AI data incident." <a href="../data-rules-card/index.html#card" target="_blank" rel="noopener">See the Data Rules card</a>.</p></div>
+        <div><h3>Can I fix one word myself?</h3><p style="font-size:15px">Please don't. Send it back with the exact wording. A changed ad is a new version and needs a fresh pre-screen.</p></div>
+        <div><h3>I disagree with a finding.</h3><p style="font-size:15px">Your call stands. Approve it if it's fine, and rate the pre-screen "Flagged something that was fine" so the rule gets tuned.</p></div>
+        <div><h3>What do loan officers see?</h3><p style="font-size:15px">Read the <a href="../loan-officer-quick-start/index.html#guide" target="_blank" rel="noopener">loan officer quick-start</a>, or try the <a href="../hands-on-lab/index.html" target="_blank" rel="noopener">30-minute hands-on lab</a> yourself.</p></div>
+      </div>
+    </section>
+
+    <!-- Help -->
+    <section class="blk" id="help">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-users"/></svg></span><h2>Get help</h2></div>
+      <p class="sub">Loan officers start with their branch AI champion. For reviewers, these are the doors.</p>
+      <div class="help">
+        <div class="card"><div class="kick"><svg class="ic"><use href="#i-shield"/></svg>"HOW SHOULD THIS RULE APPLY?"</div><h3>The Compliance lead</h3><p>Rule interpretation, edge cases, and anything you'd like a second opinion on.</p></div>
+        <div class="card"><div class="kick"><svg class="ic"><use href="#i-sliders"/></svg>"IS THIS BROKEN?"</div><h3>Service desk ticket</h3><p>A missing alert, a packet that won't open, a HOLD in your queue, or a queue item with the wrong fields.</p></div>
+        <div class="card"><div class="kick"><svg class="ic"><use href="#i-message"/></svg>"IT GOT THIS WRONG."</div><h3>Pre-screen accuracy field</h3><p>Rate it on the queue item and add a note. AI Enablement reads every note in its monthly review.</p></div>
+        <div class="card"><div class="kick"><svg class="ic"><use href="#i-edit"/></svg>"THE RULE SHOULD CHANGE."</div><h3>Rule change request form</h3><p>Pinned in the Compliance Teams channel. Ships at the next monthly release after sign-off.</p></div>
+      </div>
+      <div class="incident"><svg class="ic" style="color:var(--hold);margin-top:2px"><use href="#i-alert"/></svg><div><strong style="color:var(--hold)">Customer information in a submission?</strong> Don't approve it. Open a service desk ticket marked "AI data incident" and return the item with Changes Requested. No blame for the loan officer. Reporting quickly is what matters. <a href="../data-rules-card/index.html#card" target="_blank" rel="noopener" style="color:var(--hold);font-weight:600">Review the Data Rules card →</a></div></div>
+    </section>
+
+    <footer class="owner">
+      <div class="owner-g"><div><b>Maintained by AI Enablement</b><span>Owner: Akeyla Peele-Tembong, AI Platform &amp; Enablement Lead. Writes this guide, runs the monthly accuracy review, and ships rule changes.</span></div><div><b>Rule content approved by Compliance</b><span>The Compliance lead approved the review steps in this guide and signs off on every rule change before it ships.</span></div><div><b>Sponsored by Marketing and loan officer leadership</b><span>Accountable for how their teams use the tool and for acting on reviewer feedback.</span></div></div>
+      <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:8px 24px;font-size:13px;color:var(--muted)"><span>Guide version 1.0 · for skill version 6</span><span>Last reviewed: November 14, 2026 · Next review: at each monthly release</span><span>Feedback on this guide? Post in the AI Enablement Teams channel.</span></div>
+      <p class="fine" style="margin-top:16px">Northstar Harbor Mortgage is a fictional company created for portfolio purposes.</p>
+    </footer>
+  </div>
+</div>
+
+<!-- ================= DESK CARD ================= -->
+<div class="view" id="desk-card" hidden>
+  <div class="noprint" style="max-width:816px;margin:24px auto 0;padding:0 16px;display:flex;justify-content:flex-end"><span style="display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--muted)"><svg class="ic" style="width:17px;height:17px"><use href="#i-printer"/></svg>Letter size · printed for each reviewer's desk</span></div>
+  <div class="sheet-stage" style="padding-top:14px"><article class="sheet" aria-labelledby="dc-title">
+    <div class="sheet-head"><div class="brand"><svg width="44" height="44" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#0F2747" stroke="#C9A227" stroke-width="1.6"/><path d="M20 6.5 L22.4 15.6 L31.5 18 L22.4 20.4 L20 29.5 L17.6 20.4 L8.5 18 L17.6 15.6 Z" fill="#C9A227"/><path d="M10 26.5 q2.5 -1.6 5 0 t5 0 t5 0 t5 0 M11.5 30 q2.1 -1.4 4.2 0 t4.3 0 t4.3 0 t4.2 0" fill="none" stroke="#C9A227" stroke-width="1.2"/></svg><div class="bn">NORTHSTAR HARBOR<span>MORTGAGE</span></div></div><div class="sheet-title"><h1 id="dc-title">Ad Review Queue</h1><div>COMPLIANCE REVIEWER DESK CARD · DECIDE WITHIN 1 BUSINESS DAY</div></div></div>
+    <div class="sheet-body">
+      <div class="cs-2">
+        <div class="cs-step"><span class="num">1</span><div><b>Open the alert</b>Teams › Compliance › Ad Review. The item is assigned to you with a due date.</div></div>
+        <div class="cs-step"><span class="num">2</span><div><b>Read the packet</b>Open items first, then the final ad in full, the scorecard, and the changes made.</div></div>
+        <div class="cs-step"><span class="num">3</span><div><b>Judge what it can't</b>Literal promises, rate and date at publish, channel and audience, anything it missed.</div></div>
+        <div class="cs-step"><span class="num">4</span><div><b>Decide</b><strong>Approved</strong>: sign the packet's decision section. <strong>Changes Requested</strong>: add comments. Don't edit the ad yourself.</div></div>
+        <div class="cs-step"><span class="num">5</span><div><b>Rate the pre-screen</b>Required: Accurate · Missed an issue · Flagged something fine. Add a note.</div></div>
+        <div class="cs-step"><span class="num">6</span><div><b>Resubmissions</b>Same item, next version, back to you. Check how each of your comments was resolved.</div></div>
+      </div>
+      <div style="background:#F7F5EF;border:1.5px dashed var(--gold-ink);border-radius:8px;padding:10px 14px"><div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#5C470B;margin-bottom:3px">A COMMENT THE ASSISTANT CAN ACT ON</div><div style="font-size:13.5px;color:var(--navy)"><strong>One change. Exact words. What you need.</strong> "'Could free up hundreds of dollars a month' is an unsupported savings claim. Use wording such as 'may lower your monthly payment, depending on your loan.'"</div></div>
+      <div class="cs-3">
+        <div style="border:1px solid var(--line);border-radius:8px;padding:11px 12px"><div style="font-family:var(--f-display);font-weight:700;font-size:16px;color:var(--navy);margin-bottom:7px">Verdicts you'll see</div><div style="display:flex;flex-direction:column;gap:7px"><div><span class="pill p-PASS" style="width:44px">PASS</span> Nothing found. Still read it all.</div><div><span class="pill p-FLAG" style="width:44px">FLAG</span> Start with Open items.</div><div><span class="pill p-HOLD" style="width:44px">HOLD</span> Shouldn't arrive. Return it and open a ticket.</div></div></div>
+        <div style="background:var(--navy);color:#E6EBF3;border-radius:8px;padding:11px 12px"><div style="font-family:var(--f-display);font-weight:700;font-size:16px;color:var(--gold-soft);margin-bottom:7px">The clock</div><div style="display:flex;flex-direction:column;gap:6px"><div><strong style="color:#fff">1 business day</strong> to decide, from the alert.</div><div><strong style="color:#fff">Reminder</strong> in Teams when it's due.</div><div><strong style="color:#fff">2 business days:</strong> escalates to the Compliance lead.</div></div></div>
+        <div style="border:1px solid var(--line);border-radius:8px;padding:11px 12px"><div style="font-family:var(--f-display);font-weight:700;font-size:16px;color:var(--navy);margin-bottom:7px">Get help</div><div style="display:flex;flex-direction:column;gap:6px"><div><strong>Rule question</strong><br>Compliance lead</div><div><strong>Something broken</strong><br>Service desk ticket</div><div><strong>Pre-screen wrong</strong><br>Accuracy field + note</div><div><strong>Rule should change</strong><br>Rule change request form</div></div></div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;background:#FFF6E0;border:1px solid #E2C47A;border-radius:8px;padding:9px 14px"><div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:#5C470B">RULE CHANGES</div><div style="font-size:12.5px;color:#3A4458">Request → Enablement updates and re-tests → Compliance signs off → ships at the <strong>monthly release</strong>. Urgent regulatory changes can ship the same week.</div></div>
+      <div style="background:var(--hold-bg);border:1px solid #E8B4AE;border-radius:8px;padding:8px 14px;color:#3A1512"><strong style="color:var(--hold)">Customer information in a submission?</strong> Don't approve. Open a service desk ticket marked "AI data incident," then return it with Changes Requested.</div>
+      <div style="text-align:center;font-family:var(--f-display);font-size:15px;font-weight:600;color:var(--navy)">The pre-screen goes first. You make the call.</div>
+    </div>
+    <div class="sheet-foot"><span><strong style="color:var(--navy)">Maintained by AI Enablement</strong> · Owner: Akeyla Peele-Tembong, AI Platform &amp; Enablement Lead · Review steps approved by Compliance · Sponsored by Marketing and loan officer leadership</span><span>Desk card version 1.0 · for skill version 6 · Last reviewed November 14, 2026 · Full guide: Harbor Hub › Compliance › Ad Review</span><span style="font-style:italic">Northstar Harbor Mortgage is a fictional company created for portfolio purposes.</span></div>
+  </article></div>
+</div>
+
+<p class="fine portfolio-note">Northstar Harbor Mortgage is a fictional company created for portfolio purposes. The Teams alert, queue item and accuracy field are mockups; nothing is sent.</p>
+<script>
+window.pageInit=function(){
+  var g=document.getElementById('accGroup'); if(!g) return;
+  g.addEventListener('change',function(){ g.querySelectorAll('label').forEach(function(l){ l.classList.toggle('on', l.querySelector('input').checked); }); });
+};
+</script>
+
+<script>
+(function(){
+  var views=["guide","desk-card"];
+  function show(){var h=location.hash.slice(1), v=views.indexOf(h)>=0?h:views[0];
+    views.forEach(function(x){var el=document.getElementById(x); if(el) el.hidden=(x!==v);});
+    document.querySelectorAll('.vtab').forEach(function(t){ if(t.getAttribute('data-view')===v) t.setAttribute('aria-current','page'); else t.removeAttribute('aria-current'); });
+    if(views.indexOf(h)>=0) window.scrollTo(0,0);
+    else if(h){ var el=document.getElementById(h); if(el){ var p=el.closest('.view'); if(p&&p.hidden){ views.forEach(function(x){var e=document.getElementById(x); if(e) e.hidden=(x!==p.id);}); } el.scrollIntoView(); } }
+  }
+  window.addEventListener('hashchange',show); show();
+  document.querySelectorAll('[data-scroll]').forEach(function(a){ a.addEventListener('click',function(e){ e.preventDefault(); var el=document.getElementById(a.getAttribute('data-scroll')); if(el) el.scrollIntoView({behavior:'smooth'}); }); });
+  document.querySelectorAll('[data-print]').forEach(function(b){ b.addEventListener('click',function(){ window.print(); }); });
+  if(window.pageInit) window.pageInit();
+})();
+</script>
+</body>
+</html>

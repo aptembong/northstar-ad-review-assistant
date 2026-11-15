@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Northstar Harbor Ad Review Case Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a navy masthead with the role-fit headline, then tabbed sections; each section pairs short prose with a built artifact card and a click-through walkthrough. One visual world (Northstar brand), single theme. */
+:root{
+  --navy:#0F2747; --navy-2:#1C3A63; --gold:#C9A227; --gold-soft:#E3C766; --gold-ink:#8A6A12;
+  --paper:#F7F5EF; --card:#FFFFFF; --line:#E2DDD0; --ink:#1B2333; --muted:#4A5468;
+  --pass:#14532D; --pass-bg:#E3F1E7; --flag:#8A4B00; --flag-bg:#FBEBD3; --hold:#9B1C1C; --hold-bg:#FBE4E2;
+  --f-display:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-body:Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono:ui-monospace, Menlo, Consolas, monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+a{color:var(--navy)}
+a:hover{color:var(--gold-ink)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--f-display);color:var(--navy);text-wrap:balance;line-height:1.2;margin:0}
+h2{font-size:30px}
+h3{font-size:21px}
+p{margin:0}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+.small{font-size:14px;color:var(--muted)}
+.dir{border:1px solid var(--line);border-radius:12px;background:#fff;margin-top:14px}
+.dir-row{display:grid;grid-template-columns:minmax(0,15rem) minmax(0,1fr) auto;gap:6px 18px;align-items:center;padding:12px 18px;border-top:1px solid var(--line)}
+.dir-row:first-child{border-top:0}
+.dir-name a{font-weight:600;color:var(--navy);text-decoration:none}
+.dir-name a:hover{text-decoration:underline}
+.dir-desc{color:var(--muted);font-size:15px}
+.dir-tab{min-height:34px;padding:4px 12px;font-size:14px;white-space:nowrap}
+@media (max-width:720px){.dir-row{grid-template-columns:1fr}.dir-tab{justify-self:start}}
+
+.motto{font-family:var(--f-display);font-size:24px;font-weight:600;color:var(--gold-soft);margin:4px 0 12px}
+.explainer{margin:0 0 28px;padding:0;overflow:hidden}
+.explainer video{display:block;width:100%;aspect-ratio:16/9;background:#0F2747;border:0}
+.explainer .ex-meta{padding:16px 22px 18px;display:flex;flex-wrap:wrap;gap:6px 20px;align-items:baseline;justify-content:space-between}
+.explainer .ex-meta h3{margin:0;font-size:20px}
+.explainer details{padding:0 22px 18px}
+.explainer summary{cursor:pointer;font-weight:600;color:var(--navy)}
+.explainer ol{margin:10px 0 0 20px;padding:0;max-width:80ch}
+.explainer li{margin:4px 0}
+
+.mono{font-family:var(--f-mono)}
+
+/* Masthead */
+.mast{background:var(--navy);color:#fff;border-bottom:5px solid var(--gold)}
+.mast-top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 0 0;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-name{font-family:var(--f-display);font-weight:700;letter-spacing:.05em;font-size:16px;line-height:1.1}
+.brand-name span{display:block;font-family:var(--f-body);font-size:10px;letter-spacing:.3em;color:var(--gold-soft);font-weight:600}
+.byline{font-size:14px;color:#C9D3E3}
+.byline strong{color:#fff}
+.hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:40px;padding:34px 0 30px;align-items:end}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--gold-soft);text-transform:uppercase}
+.hero h1{color:#fff;font-size:52px;margin:8px 0 14px;letter-spacing:-.01em}
+.hero h1 em{font-style:normal;color:var(--gold-soft)}
+.hero p.lede{color:#DCE3EE;font-size:18px;max-width:60ch}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 20px;border-radius:6px;font-weight:700;font-size:15px;text-decoration:none;border:2px solid transparent;cursor:pointer;font-family:var(--f-body)}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.btn-gold:hover{background:var(--gold-soft);color:var(--navy)}
+.btn-ghost{border-color:#7F92B0;color:#fff;background:transparent}
+.btn-ghost:hover{border-color:var(--gold-soft);color:var(--gold-soft)}
+.btn-navy{background:var(--navy);color:#fff}
+.btn-navy:hover{background:var(--navy-2);color:#fff}
+.btn-line{border-color:var(--navy);color:var(--navy);background:#fff}
+.btn-line:hover{background:#F1EEE5;color:var(--navy)}
+.split{background:rgba(255,255,255,.06);border:1px solid rgba(201,162,39,.45);border-radius:10px;padding:18px 20px}
+.split-title{font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--gold-soft);margin-bottom:12px}
+.split-row{display:grid;grid-template-columns:52px 1fr;gap:12px;align-items:center;padding:8px 0;border-top:1px solid rgba(255,255,255,.12)}
+.split-row:first-of-type{border-top:none}
+.split-pct{font-family:var(--f-display);font-size:24px;font-weight:700;color:var(--gold-soft)}
+.split-row > div:not(.split-pct){color:#E6EBF3;font-size:14px}
+.split-row strong{color:#fff;display:block;font-size:15px}
+
+/* Tabs */
+.tabs{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--line)}
+.tablist{display:flex;gap:4px;overflow-x:auto;scrollbar-width:thin}
+.tab{appearance:none;background:none;border:none;border-bottom:3px solid transparent;padding:14px 14px 11px;font:600 15px var(--f-body);color:var(--muted);cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--navy)}
+.tab[aria-selected="true"]{color:var(--navy);border-bottom-color:var(--gold)}
+main{padding:36px 0 56px}
+.panel{display:flex;flex-direction:column;gap:32px}
+.panel[hidden]{display:none}
+.intro{display:flex;flex-direction:column;gap:10px;max-width:75ch}
+.intro p{font-size:17px}
+.section{display:flex;flex-direction:column;gap:16px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px 22px;display:flex;flex-direction:column;gap:10px}
+.card ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.callout{background:#FFF9E8;border-left:4px solid var(--gold);border-radius:6px;padding:14px 18px}
+
+/* Icons */
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-4px}
+.icb{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;background:#FBF1D2;color:var(--navy);flex:none}
+.icb .ic{width:22px;height:22px}
+.h-ic{display:flex;align-items:center;gap:10px}
+.h-ic .ic{color:var(--gold-ink);width:22px;height:22px}
+.art-kind{display:flex;align-items:center;gap:6px}
+.art-kind .ic{width:16px;height:16px;color:var(--gold-ink)}
+.split-row strong{display:flex!important;align-items:center;gap:8px}
+.split-row strong .ic{width:18px;height:18px;color:var(--gold-soft)}
+.who-card{flex-direction:row!important;gap:14px!important;align-items:flex-start}
+/* Tags */
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:12px;font-weight:700;letter-spacing:.04em;border-radius:999px;padding:3px 10px;border:1px solid}
+.t-admin{color:#1C3A63;background:#E6EBF3;border-color:#C3CEDF}
+.t-enable{color:#6B4F00;background:#FBF1D2;border-color:#EAD68F}
+.t-gov{color:#5B2A67;background:#F2E8F4;border-color:#DCC6E1}
+
+/* Artifact cards */
+.art{border-top:4px solid var(--navy)}
+.art-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.art-kind{font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.art .btn{align-self:flex-start;margin-top:4px}
+.hint{font-size:13px;color:var(--muted)}
+
+/* Pills */
+.pill{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.06em;border-radius:4px;padding:2px 8px}
+.p-PASS{background:var(--pass-bg);color:var(--pass)}
+.p-FLAG{background:var(--flag-bg);color:var(--flag)}
+.p-HOLD{background:var(--hold-bg);color:var(--hold)}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.stat b{display:block;font-family:var(--f-display);font-size:30px;color:var(--navy);font-variant-numeric:tabular-nums;line-height:1.1}
+.stat span{font-size:14px;color:var(--muted)}
+.bars{display:flex;flex-direction:column;gap:12px}
+.bar-row{display:grid;grid-template-columns:230px 1fr 70px;gap:14px;align-items:center}
+.bar-track{height:26px;background:#EFECE3;border-radius:4px;position:relative;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px}
+.bar-val{font-weight:700;font-variant-numeric:tabular-nums;color:var(--navy)}
+.bar-label{font-size:15px}
+.bar-label small{display:block;color:var(--muted);font-size:13px}
+
+/* Walkthrough */
+.wt{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.wt-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 20px;background:#F1EEE5;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.wt-head h3{font-size:19px}
+.wt-dots{display:flex;gap:6px}
+.wt-dot{width:28px;height:28px;border-radius:50%;border:1px solid #B9B3A3;background:#fff;font:700 12px var(--f-body);color:var(--muted);cursor:pointer}
+.wt-dot[aria-current="step"]{background:var(--navy);color:var(--gold-soft);border-color:var(--navy)}
+.wt-body{display:grid;grid-template-columns:minmax(0,1fr) 300px;min-height:400px}
+.wt-stage{padding:22px;background:#E9E6DD;display:flex;align-items:flex-start;justify-content:center}
+.wt-side{padding:22px;display:flex;flex-direction:column;gap:12px;border-left:1px solid var(--line)}
+.wt-step-n{font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--gold-ink)}
+.wt-side h4{margin:0;font-family:var(--f-display);font-size:20px;color:var(--navy)}
+.wt-nav{display:flex;gap:10px;margin-top:auto}
+.wt-nav .btn{min-height:42px;padding:0 16px}
+.wt-nav .btn[disabled]{opacity:.4;cursor:default}
+.step{display:none;width:100%}
+.step.on{display:block}
+.cap{display:none}
+.cap.on{display:flex;flex-direction:column;gap:10px}
+
+/* Mock windows */
+.mock{background:#fff;border:1px solid #CFCABD;border-radius:8px;box-shadow:0 6px 18px rgba(15,39,71,.10);overflow:hidden;max-width:620px;margin:0 auto;font-size:14px}
+.mock-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;font-size:12px;font-weight:700;letter-spacing:.04em;color:#fff}
+.mb-claude{background:#3D3A35}
+.mb-sp{background:#036C70}
+.mb-teams{background:#4B53BC}
+.mb-mail{background:#0F6CBD}
+.mb-forms{background:#007C70}
+.mb-ns{background:var(--navy);border-bottom:3px solid var(--gold)}
+.mock-in{padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.chip{display:inline-block;font-size:12px;font-weight:600;background:#F1EEE5;border:1px solid var(--line);border-radius:4px;padding:2px 8px}
+.chat-user{align-self:flex-end;background:#F1EEE5;border-radius:10px;padding:10px 12px;max-width:85%}
+.row-attach{display:flex;gap:12px;align-items:center}
+.row-attach img{width:96px;height:96px;border-radius:6px;object-fit:cover;border:1px solid var(--line)}
+.score{width:100%;border-collapse:collapse;font-size:13px}
+.score th,.score td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.score th{font-size:12px;color:var(--muted);font-weight:700;background:#F7F5EF}
+.checks{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.checks li{display:flex;gap:8px;align-items:flex-start}
+.box{flex:none;width:18px;height:18px;border-radius:4px;background:var(--navy);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:12px;margin-top:2px}
+.diff{background:#F7F5EF;border:1px solid var(--line);border-radius:6px;padding:10px 12px}
+.diff del{color:var(--hold);text-decoration-thickness:2px}
+.diff ins{color:var(--pass);text-decoration:none;background:var(--pass-bg);border-radius:3px;padding:0 2px}
+.verdict{display:flex;align-items:center;gap:10px;font-weight:700}
+.sp-table{width:100%;border-collapse:collapse;font-size:13px}
+.sp-table th,.sp-table td{padding:7px 8px;border-bottom:1px solid #E5E5E5;text-align:left}
+.sp-table th{color:#505050;font-weight:600}
+.sp-table tr.hl td{background:#E6F4F4}
+.status{font-size:12px;font-weight:700;border-radius:3px;padding:2px 7px;background:#E6EBF3;color:var(--navy)}
+.st-cr{background:var(--flag-bg);color:var(--flag)}
+.st-ap{background:var(--pass-bg);color:var(--pass)}
+.st-pub{background:#E8E3F5;color:#3E2E7A}
+.teams-msg{border:1px solid #E0E0E0;border-left:4px solid #4B53BC;border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.form-q{display:flex;flex-direction:column;gap:5px}
+.form-q label,.form-q .q{font-weight:600}
+.fake-input{border:1px solid #B9B3A3;border-radius:6px;padding:8px 10px;background:#fff}
+.done{display:flex;gap:12px;align-items:center}
+.done svg{flex:none}
+.ticket{border:2px solid var(--navy);border-radius:8px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.ticket b{font-family:var(--f-mono);font-size:22px;color:var(--navy)}
+
+/* Flowcharts */
+.flows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.flow{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:0}
+.flow-head{display:flex;flex-direction:column;gap:4px;margin-bottom:16px}
+.flow.before{border-top:5px solid #9AA3B2}
+.flow.after{border-top:5px solid var(--gold)}
+.node{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:#FBFAF6}
+.node .sys{flex:none;font-size:11px;font-weight:700;letter-spacing:.04em;border-radius:4px;padding:3px 7px;min-width:92px;text-align:center}
+.node.pain{border-color:#E9B8B3;background:#FFF6F5}
+.node.decision{border-style:dashed;border-color:var(--navy)}
+.arrow{width:2px;height:18px;background:#9AA3B2;margin:2px 0 2px 56px;position:relative}
+.arrow::after{content:"";position:absolute;bottom:-4px;left:-4px;border:5px solid transparent;border-top-color:#9AA3B2}
+.loop{margin:6px 0 6px 20px;font-size:13px;color:var(--flag);font-weight:600;border-left:3px solid var(--flag);padding:4px 10px;background:var(--flag-bg);border-radius:0 6px 6px 0}
+.s-email{background:#DCEBFA;color:#0F4C8A}
+.s-claude{background:#ECE7DF;color:#3D3A35}
+.s-sp{background:#D7EFEF;color:#035458}
+.s-teams{background:#E4E5F7;color:#3B4296}
+.s-pa{background:#DDE8FB;color:#1A4B9C}
+.s-person{background:#F1EEE5;color:var(--muted)}
+.s-mkt{background:#FBF1D2;color:#6B4F00}
+.s-dash{background:#E8E3F5;color:#3E2E7A}
+
+/* Tables */
+.tbl-wrap{overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:10px}
+table.data{width:100%;border-collapse:collapse;font-size:15px}
+table.data th,table.data td{padding:12px 16px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+table.data thead th{background:#F1EEE5;font-size:13px;letter-spacing:.04em;color:var(--muted)}
+table.data tr:last-child td{border-bottom:none}
+table.data td.grp{background:#FBFAF6;font-family:var(--f-display);font-weight:700;color:var(--navy);font-size:17px}
+.pct{font-family:var(--f-body);font-size:13px;color:var(--gold-ink);font-weight:700;margin-left:6px}
+
+/* Evidence */
+.compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+figure{margin:0;background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px}
+figure img{width:100%;height:auto;border-radius:4px;border:1px solid var(--line);display:block}
+figcaption{font-size:14px;color:var(--muted)}
+.fig-top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.thumbs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.thumbs button{padding:0;border:1px solid var(--line);border-radius:6px;background:#fff;cursor:zoom-in;overflow:hidden}
+.thumbs img{width:100%;display:block}
+.privacy{display:flex;gap:14px;align-items:flex-start;background:#EEF2F8;border:1px solid #C3CEDF;border-radius:10px;padding:16px 18px}
+.dl-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.dl-msg{font-size:13px;color:var(--muted)}
+
+/* Lightbox */
+.lb{position:fixed;inset:0;background:rgba(15,39,71,.82);display:none;align-items:center;justify-content:center;padding:24px;z-index:20}
+.lb.on{display:flex}
+.lb img{max-width:min(900px,100%);max-height:100%;border-radius:6px;background:#fff}
+.lb button{position:absolute;top:16px;right:16px}
+
+/* Footer */
+footer{background:var(--navy);color:#DCE3EE;border-top:5px solid var(--gold);padding:36px 0 30px}
+.foot{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:40px}
+footer h2{color:#fff;font-size:26px;margin-bottom:10px}
+footer p{max-width:62ch}
+footer a{color:var(--gold-soft)}
+footer a:hover{color:#fff}
+.contact{display:flex;flex-direction:column;gap:12px}
+.contact .btn-gold{align-self:flex-start}
+.fine{margin-top:26px;padding-top:14px;border-top:1px solid rgba(255,255,255,.18);font-size:13px;color:#AEBBD0}
+
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr;gap:24px}
+  .hero h1{font-size:40px}
+  .grid2,.grid3,.flows,.compare,.foot{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .wt-body{grid-template-columns:1fr}
+  .wt-side{border-left:none;border-top:1px solid var(--line)}
+  .bar-row{grid-template-columns:1fr 60px}
+  .bar-row .bar-label{grid-column:1 / -1}
+  .thumbs{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:420px){
+  .wrap{padding:0 16px}
+  .hero h1{font-size:34px}
+  .stats{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* ---- Discovery tab ---- */
+.d-steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.d-step{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:13.5px;color:var(--muted);position:relative}
+.d-step b{display:block;font-family:var(--f-display);font-size:16px;color:var(--navy);margin-bottom:2px}
+.d-step .n{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--gold-ink)}
+.d-step.last{background:var(--navy);border-color:var(--navy);color:#C9D3E3}
+.d-step.last b{color:#fff}.d-step.last .n{color:var(--gold-soft)}
+.d-form{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;max-width:760px}
+.d-form-h{background:var(--navy);color:#fff;padding:16px 22px;border-bottom:4px solid var(--gold)}
+.d-form-h .k{font-size:11.5px;font-weight:700;letter-spacing:.12em;color:var(--gold-soft)}
+.d-form-h h4{margin:4px 0 2px;font:700 20px var(--f-display);color:#fff}
+.d-form-h p{font-size:13.5px;color:#C9D3E3}
+.d-q{padding:12px 22px;border-top:1px solid #EEEBE2}
+.d-q:first-of-type{border-top:none}
+.d-q .lab{font-size:13px;font-weight:600;color:var(--muted)}
+.d-q .ans{margin-top:4px;background:#F7F5EF;border:1px solid #E7E2D5;border-radius:6px;padding:8px 12px;font-size:15px}
+.d-q .ans mark{background:#FDE8E6;color:var(--hold);font-weight:600;padding:0 3px;border-radius:3px}
+.d-read{display:grid;grid-template-columns:minmax(0,760px) minmax(0,1fr);gap:20px;align-items:start}
+.d-flag{background:#FFF9E8;border-left:4px solid var(--gold);border-radius:6px;padding:14px 18px;font-size:14.5px;display:flex;flex-direction:column;gap:8px}
+.d-flag b{color:var(--navy)}
+.d-flag .red{color:var(--hold);font-weight:700}
+.d-qs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.d-qs .card h4{margin:0;font:700 15px var(--f-body);color:var(--navy);display:flex;align-items:center;gap:8px}
+.d-qs .card h4 .ic{width:18px;height:18px;color:var(--gold-ink)}
+.d-qs .card ul{font-size:14.5px;color:#3A4458}
+.d-meta{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:14px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 18px}
+.d-meta b{color:var(--navy)}
+.ppl{display:flex;flex-wrap:wrap;gap:8px}
+.ppl span{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 12px 4px 4px;font-size:13.5px}
+.ppl i{font-style:normal;width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.av-a{background:var(--navy)}.av-p{background:#5B2A67}.av-d{background:#14532D}.av-j{background:#8A4B00}
+.tx{display:flex;flex-direction:column;gap:16px}
+.ex{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.ex-l{padding:18px 22px;display:flex;flex-direction:column;gap:10px}
+.ex-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ex-h .ts{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);background:#F1EEE5;border-radius:4px;padding:1px 7px}
+.ex-h h4{margin:0;font:700 17px var(--f-display);color:var(--navy)}
+.ln{display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;font-size:15px;line-height:1.5}
+.ln i{font-style:normal;width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;margin-top:1px}
+.ln b{color:var(--ink);font-size:13px;margin-right:6px}
+.ln.me p{color:var(--navy)}
+.ln .act{color:var(--muted);font-style:italic}
+.ex-r{background:#F7F5EF;border-left:1px solid var(--line);padding:18px 20px;display:flex;flex-direction:column;gap:12px;font-size:14px;color:#3A4458}
+.ex-r h5{margin:0 0 3px;font:700 11.5px var(--f-body);letter-spacing:.1em;color:var(--muted);display:flex;align-items:center;gap:6px}
+.ex-r h5 .ic{width:15px;height:15px}
+.ex-r .why h5 .ic{color:var(--gold-ink)}
+.ex-r .got h5 .ic{color:var(--pass)}
+.ex-r .led{font-size:13px;font-weight:600;color:var(--navy);border-top:1px solid #E2DDD0;padding-top:10px}
+.ex-r .led a{font-weight:600}
+.newtag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--hold);background:var(--hold-bg);border-radius:4px;padding:2px 7px}
+.ins{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.ins .card{border-top:4px solid var(--hold)}
+.ins .card .from{font-size:13px;color:var(--muted)}
+.ins .card .to{font-size:14.5px;color:var(--ink)}
+.ins .card .to b{color:var(--navy)}
+.reqs{display:flex;flex-direction:column;gap:0;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.req{display:grid;grid-template-columns:52px minmax(0,1fr) minmax(0,.8fr);gap:14px;padding:13px 18px;border-top:1px solid #EEEBE2;align-items:start;font-size:14.5px}
+.req:first-child{border-top:none}
+.req .id{font-family:var(--f-mono);font-weight:700;color:var(--gold-ink)}
+.req strong{color:var(--navy)}
+.req .led{font-size:13.5px;color:var(--muted)}
+.oos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.oos ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14.5px;color:#3A4458}
+.footnote{font-size:13.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px;max-width:85ch}
+.footnote sup,.fn-ref{color:var(--gold-ink);font-weight:700}
+@media (max-width:900px){.d-steps{grid-template-columns:repeat(2,minmax(0,1fr))}.d-read,.ex,.ins,.d-qs,.oos{grid-template-columns:1fr}.ex-r{border-left:none;border-top:1px solid var(--line)}.req{grid-template-columns:44px minmax(0,1fr)}.req .led{grid-column:2}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 21 2M16 7l3 3M18.5 4.5l2 2"/></symbol>
+<symbol id="i-package" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></symbol>
+<symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/></symbol>
+<symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></symbol>
+<symbol id="i-app" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M8 7h8M8 11h6"/></symbol>
+<symbol id="i-flow" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="6" rx="1"/><rect x="14" y="15" width="7" height="6" rx="1"/><path d="M6.5 9v4a2 2 0 0 0 2 2H14"/></symbol>
+<symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 2v6M15 2v6M6 8h12v3a6 6 0 0 1-12 0zM12 17v5"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2 21h20z"/><path d="M12 10v5M12 18h.01"/></symbol>
+<symbol id="i-message" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></symbol>
+<symbol id="i-usercheck" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="m16 11 2 2 4-4"/></symbol>
+<symbol id="i-trend" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+<symbol id="i-printer" viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.7-2.5 2-2.5 3.5M12 17h.01"/></symbol>
+<symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></symbol>
+<symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></symbol>
+<symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+</svg>
+
+<header class="mast">
+  <div class="wrap">
+    <div class="mast-top">
+      <div class="brand">
+        <svg width="44" height="44" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#0F2747" stroke="#C9A227" stroke-width="1.6"/><path d="M20 6.5 L22.4 15.6 L31.5 18 L22.4 20.4 L20 29.5 L17.6 20.4 L8.5 18 L17.6 15.6 Z" fill="#C9A227"/><path d="M10 26.5 q2.5 -1.6 5 0 t5 0 t5 0 t5 0 M11.5 30 q2.1 -1.4 4.2 0 t4.3 0 t4.3 0 t4.2 0" fill="none" stroke="#C9A227" stroke-width="1.2"/></svg>
+        <div class="brand-name">NORTHSTAR HARBOR<span>MORTGAGE</span></div>
+      </div>
+      <div class="byline"><strong>Akeyla Peele-Tembong</strong> · Case study: AI Platform &amp; Enablement at Northstar Harbor Mortgage (fictional)</div>
+    </div>
+    <div class="hero">
+      <div>
+        <div class="eyebrow">AI Platform &amp; Enablement case study</div>
+        <h1>One project. <em>The whole role.</em></h1>
+        <p class="lede">Northstar's compliance team couldn't keep up with loan officer ads. I built an AI pre-screen for every ad, then the rollout around it: the deployment, the training, the data rules and the review workflow.</p>
+        <div class="cta">
+          <a class="btn btn-gold" href="../ad-review-tool/index.html" target="_blank" rel="noopener">Try the tool <span aria-hidden="true">↗</span></a>
+          <button class="btn btn-ghost" type="button" data-go="skills">See how it maps to the role</button>
+        </div>
+        <p class="small" style="color:#AEBBD0;margin-top:10px">No Claude account? Open the tool and choose "Watch a demo run." It needs no sign-in.</p>
+      </div>
+      <div class="split" aria-label="How the project covers the role">
+        <div class="split-title">HOW THE WORK DIVIDES</div>
+        <div class="split-row"><div class="split-pct">40%</div><div><strong><svg class="ic"><use href="#i-sliders"/></svg>Platform administration</strong>Deploy the tool, connect the data, track usage and cost</div></div>
+        <div class="split-row"><div class="split-pct">40%</div><div><strong><svg class="ic"><use href="#i-users"/></svg>Business enablement</strong>Find the bottleneck, build the fix, train the people who use it</div></div>
+        <div class="split-row"><div class="split-pct">20%</div><div><strong><svg class="ic"><use href="#i-shield"/></svg>Governance operations</strong>Data rules, acknowledgments, human sign-off, committee oversight</div></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Case study sections">
+  <div class="wrap">
+    <div class="tablist" role="tablist">
+      <button class="tab" role="tab" id="tab-overview" aria-controls="overview" aria-selected="true">Overview</button>
+      <button class="tab" role="tab" id="tab-discovery" aria-controls="discovery" aria-selected="false">Discovery</button>
+      <button class="tab" role="tab" id="tab-platform" aria-controls="platform" aria-selected="false">Platform Admin</button>
+      <button class="tab" role="tab" id="tab-enablement" aria-controls="enablement" aria-selected="false">Enablement</button>
+      <button class="tab" role="tab" id="tab-governance" aria-controls="governance" aria-selected="false">Governance</button>
+      <button class="tab" role="tab" id="tab-workflow" aria-controls="workflow" aria-selected="false">Workflow</button>
+      <button class="tab" role="tab" id="tab-dashboard" aria-controls="dashboard" aria-selected="false">Dashboard</button>
+      <button class="tab" role="tab" id="tab-skills" aria-controls="skills" aria-selected="false">Skills Map</button>
+      <button class="tab" role="tab" id="tab-evidence" aria-controls="evidence" aria-selected="false">Evidence</button>
+    </div>
+  </div>
+</nav>
+
+<main>
+<div class="wrap">
+
+<!-- ================= OVERVIEW ================= -->
+<section class="panel" id="overview" role="tabpanel" aria-labelledby="tab-overview">
+  <div class="card explainer">
+    <video controls playsinline preload="metadata" poster="video/explainer-poster.jpg" aria-label="60-second explainer video of the Ad Review Assistant, with built-in captions and background music">
+      <source src="video/northstar-ad-review-explainer.mp4" type="video/mp4">
+    </video>
+    <div class="ex-meta">
+      <span class="small">Captions built in, no voiceover · figures are illustrative</span><br><span class="small"><strong>Backup copy:</strong> if the video doesn't play, it isn't in this folder. Watch it on the <a href="https://claude.ai/artifact/3eRUWtX9zD8umwhvwBLeP2#overview" target="_blank" rel="noopener">live case study</a>, or read the captions below.</span>
+    </div>
+    <details>
+      <summary>Read the captions</summary>
+      <ol>
+        <li>Northstar Harbor Mortgage · Ad Review Assistant: an AI pre-screen for mortgage marketing.</li>
+        <li>Every ad needs Compliance sign-off before it goes out.</li>
+        <li>About half came back at least once, mostly for routine fixes.</li>
+        <li>Reviewers ran out of hours, and good ads waited days. (~50% returned, ~1.8 rounds, 3–5 business days per round, 757 reviewer hours needed vs 408 available.)</li>
+        <li>Loan officers now pre-screen their own ad before submitting.</li>
+        <li>Claude checks it against Reg Z and Northstar house standards.</li>
+        <li>Each routine issue comes with a suggested fix to approve.</li>
+        <li>PASS means ready for Compliance review, not approved.</li>
+        <li>A licensed compliance reviewer still signs off on every ad.</li>
+        <li>After 90 days: fewer returns, faster reviews. (Illustrative, March 2027: 23% returned, 1.3 rounds, 11 minutes per ad, ~281 reviewer hours needed.)</li>
+        <li>Reviewer hours needed now fit the time available.</li>
+        <li>See the full case study.</li>
+      </ol>
+    </details>
+  </div>
+  <div class="intro">
+    <div class="eyebrow" style="color:var(--gold-ink)">The scenario</div>
+    <h2>Every ad waits in one inbox, and most come back at least once</h2>
+    <p>Northstar Harbor Mortgage is a fictional lender. Its loan officers write their own social posts, emails and flyers. Every ad must pass a compliance review under Regulation Z before it runs. Ads arrive by email, reviewers check each one from scratch, and about half go back for fixes. Each round adds days.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b>2,032</b><span>loan officers writing their own ads</span></div>
+    <div class="stat"><b>~1,147</b><span>ads submitted each month</span></div>
+    <div class="stat"><b>6</b><span>compliance reviewers, part-time on ads</span></div>
+    <div class="stat"><b>3–5 days</b><span>per review round, ~1.8 rounds per ad</span></div>
+  </div>
+
+  <div class="card">
+    <h3 class="h-ic"><svg class="ic"><use href="#i-clock"/></svg>The capacity gap, in reviewer hours per month</h3>
+    <div class="bars" role="img" aria-label="Reviewer hours needed today 757, available 408, target after rollout 229">
+      <div class="bar-row"><div class="bar-label">Needed today<small>1,147 ads × 1.8 rounds × 22 min</small></div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--hold)"></div></div><div class="bar-val">757 h</div></div>
+      <div class="bar-row"><div class="bar-label">Available<small>6 reviewers × ~68 h on ads</small></div><div class="bar-track"><div class="bar-fill" style="width:53.9%;background:#7F92B0"></div></div><div class="bar-val">408 h</div></div>
+      <div class="bar-row"><div class="bar-label">Target after rollout<small>1,147 ads × 1.2 rounds × 10 min</small></div><div class="bar-track"><div class="bar-fill" style="width:30.3%;background:var(--gold)"></div></div><div class="bar-val">~229 h</div></div>
+    </div>
+    <p class="small">These are planning assumptions for the fictional pilot, not measured results. The targets (20% returned, 10 minutes per ad) are what the rollout would measure against.</p>
+  </div>
+
+  <div class="section">
+    <h3 class="h-ic"><svg class="ic"><use href="#i-layers"/></svg>What I built, and where to find it</h3>
+    <p style="max-width:75ch">Loan officers run a Claude skill on each ad before submitting. They get a PASS, FLAG or HOLD scorecard, approve the fixes, and submit a cleaner ad with the report attached. Reviewers start from that report instead of a blank page. Around the skill, I built everything a real rollout needs.</p>
+    <div class="dir" role="list">
+      <div class="dir-row" role="listitem"><div class="dir-name"><a href="#discovery" data-go="discovery">Discovery session</a></div><div class="dir-desc">Intake form, follow-up questions, annotated session and the summary that reframed the ask</div><button class="btn btn-line dir-tab" type="button" data-go="discovery">Discovery tab</button></div>
+      <div class="dir-row" role="listitem"><div class="dir-name"><a href="../ad-review-tool/index.html" target="_blank" rel="noopener">Ad Review Assistant ↗</a></div><div class="dir-desc">The working tool: four sample ads, a demo run, resubmission mode and a PDF report</div><button class="btn btn-line dir-tab" type="button" data-go="platform">Platform Admin tab</button></div>
+      <div class="dir-row" role="listitem"><div class="dir-name"><a href="../loan-officer-quick-start/index.html" target="_blank" rel="noopener">Loan officer quick-start ↗</a></div><div class="dir-desc">Intranet guide, printable cheat sheet and feedback form</div><button class="btn btn-line dir-tab" type="button" data-go="enablement">Enablement tab</button></div>
+      <div class="dir-row" role="listitem"><div class="dir-name"><a href="../hands-on-lab/index.html" target="_blank" rel="noopener">30-minute lab ↗</a></div><div class="dir-desc">Hands-on HOLD to PASS practice with an exit check and a facilitator guide</div><button class="btn btn-line dir-tab" type="button" data-go="enablement">Enablement tab</button></div>
+      <div class="dir-row" role="listitem"><div class="dir-name"><a href="../compliance-reviewer-guide/index.html" target="_blank" rel="noopener">Compliance reviewer guide ↗</a></div><div class="dir-desc">Working the queue, rating the pre-screen, requesting rule changes, plus a desk card</div><button class="btn btn-line dir-tab" type="button" data-go="enablement">Enablement tab</button></div>
+      <div class="dir-row" role="listitem"><div class="dir-name"><a href="../ai-champion-kit/index.html" target="_blank" rel="noopener">Branch AI champion kit ↗</a></div><div class="dir-desc">Role, train-the-trainer path, answer sheet and monthly branch numbers</div><button class="btn btn-line dir-tab" type="button" data-go="enablement">Enablement tab</button></div>
+      <div class="dir-row" role="listitem"><div class="dir-name"><a href="../service-desk-article/index.html" target="_blank" rel="noopener">Service desk article ↗</a></div><div class="dir-desc">Ticket types, priorities, escalation map and reply templates</div><button class="btn btn-line dir-tab" type="button" data-go="enablement">Enablement tab</button></div>
+      <div class="dir-row" role="listitem"><div class="dir-name"><a href="../leadership-briefing/index.html" target="_blank" rel="noopener">Leadership briefing ↗</a></div><div class="dir-desc">The case, the cost and four dated asks, with a one-pager</div><button class="btn btn-line dir-tab" type="button" data-go="enablement">Enablement tab</button></div>
+      <div class="dir-row" role="listitem"><div class="dir-name"><a href="../rollout-plan/index.html" target="_blank" rel="noopener">Rollout plan ↗</a></div><div class="dir-desc">Pilot, two go-live waves, gates, risks and sample 90-day results</div><button class="btn btn-line dir-tab" type="button" data-go="enablement">Enablement tab</button></div>
+      <div class="dir-row" role="listitem"><div class="dir-name"><a href="../data-rules-card/index.html" target="_blank" rel="noopener">Data Rules card ↗</a></div><div class="dir-desc">Five rules for this tool and a trackable acknowledgment</div><button class="btn btn-line dir-tab" type="button" data-go="governance">Governance tab</button></div>
+      <div class="dir-row" role="listitem"><div class="dir-name"><a href="../workflow-doc/index.html" target="_blank" rel="noopener">Workflow doc ↗</a></div><div class="dir-desc">Before and after flows, ownership and the path from skill to app</div><button class="btn btn-line dir-tab" type="button" data-go="workflow">Workflow tab</button></div>
+      <div class="dir-row" role="listitem"><div class="dir-name"><a href="../usage-dashboard/index.html" target="_blank" rel="noopener">Usage dashboard ↗</a></div><div class="dir-desc">Usage, cost, readiness, quality and access review</div><button class="btn btn-line dir-tab" type="button" data-go="dashboard">Dashboard tab</button></div>
+      <div class="dir-row" role="listitem"><div class="dir-name"><a href="#evidence" data-go="evidence">Field test</a></div><div class="dir-desc">A real flyer from a working loan officer, HOLD to FLAG, details removed</div><button class="btn btn-line dir-tab" type="button" data-go="evidence">Evidence tab</button></div>
+    </div>
+  </div>
+
+  <div class="card art" id="get-skill">
+    <div class="art-head"><div><div class="art-kind"><svg class="ic"><use href="#i-code"/></svg>Try it in your own Claude</div><h3>Get the skill</h3></div><div class="tags"><span class="tag t-admin">Platform admin</span><span class="tag t-enable">Enablement</span></div></div>
+    <p>Download the mortgage-ad-review skill and add it to your own Claude account. The repository's README has the steps: download the zip, turn on code execution, then upload it under Customize › Skills.</p>
+    <div class="dl-row"><a class="btn btn-navy" href="https://github.com/aptembong/northstar-ad-review-assistant" target="_blank" rel="noopener" id="gitLink">Open the repository on GitHub ↗</a></div>
+  </div>
+
+  <div class="callout">
+    <strong>Assumptions behind this case study.</strong> Northstar's AI Governance Committee has already approved the ad review use case. Northstar's own product knowledge (current loan products and approved descriptions) is connected to Claude, so the skill also checks product claims for accuracy. In production, the skill ships in a plugin assigned to the Loan Officer, Marketing and Compliance groups. The prototype runs on my personal Claude account.
+  </div>
+
+  <div class="section">
+    <h3 class="h-ic"><svg class="ic"><use href="#i-layers"/></svg>What's real in the prototype, and what changes at Northstar</h3>
+    <div class="tbl-wrap"><table class="data">
+      <thead><tr><th>Part</th><th>This prototype</th><th>At Northstar</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Where the skill runs</strong></td><td>Uploaded to my personal Claude account</td><td>Northstar's Claude, in a plugin assigned to the Loan Officer, Marketing and Compliance groups</td></tr>
+        <tr><td><strong>Front end</strong></td><td>Branded web tool on the viewer's own Claude sign-in</td><td>Internal tool behind Northstar sign-in</td></tr>
+        <tr><td><strong>Submission</strong></td><td>Downloadable submission packet; email to Compliance assumed connected</td><td>SharePoint review list, Power Automate and Teams alerts</td></tr>
+        <tr><td><strong>Product accuracy</strong></td><td>Assumed connection to product knowledge</td><td>Northstar's product knowledge connected to Claude</td></tr>
+        <tr><td><strong>Publishing</strong></td><td>Described in the workflow</td><td>"Mark as Published" button in the approval email</td></tr>
+        <tr><td><strong>Results</strong></td><td>Planning assumptions and one field test</td><td>Measured in a 90-day pilot against the baseline</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+
+<!-- ================= DISCOVERY ================= -->
+<section class="panel" id="discovery" role="tabpanel" aria-labelledby="tab-discovery" hidden>
+  <div class="intro">
+    <div class="tags"><span class="tag t-enable">Enablement</span><span class="tag t-gov">Governance</span></div>
+    <h2>The request said "have AI approve our ads." Discovery found the real problem.</h2>
+    <p>Before building anything, I ran discovery with the teams who own the process. Marketing's intake form asked for one thing. One conversation with Compliance and Marketing turned it into something Northstar could actually approve, and showed where the real risk was.</p>
+  </div>
+
+  <div class="d-steps" aria-label="Discovery steps">
+    <div class="d-step"><span class="n">STEP 1 · SEP 8</span><b>Intake form</b>Marketing submits a request to AI Enablement</div>
+    <div class="d-step"><span class="n">STEP 2 · SEP 9–15</span><b>Prep</b>I read the request and write follow-up questions</div>
+    <div class="d-step"><span class="n">STEP 3 · SEP 17</span><b>Session</b>45 minutes with Compliance and Marketing</div>
+    <div class="d-step"><span class="n">STEP 4 · SEP 18–21</span><b>Summary</b>Requirements sent back and signed off</div>
+    <div class="d-step last"><span class="n">THEN</span><b>Build</b>Committee review, then the tool and its rollout</div>
+  </div>
+
+  <div class="section">
+    <h3 class="h-ic"><svg class="ic"><use href="#i-clipboard"/></svg>Step 1: The intake form</h3>
+    <p style="max-width:75ch">Every request to AI Enablement starts with the same short Microsoft Form. This is what Marketing sent.</p>
+    <div class="d-read">
+      <div class="d-form" role="group" aria-label="Submitted intake form">
+        <div class="d-form-h"><div class="k">AI ENABLEMENT · INTAKE REQUEST REQ-2026-0091</div><h4>Request help with an AI use case</h4><p>Submitted by Jordan Ellis, Marketing Manager · Tue, Sep 8, 2026</p></div>
+        <div class="d-q"><div class="lab">1. What process do you want help with?</div><div class="ans">Getting loan officer ads approved by Compliance.</div></div>
+        <div class="d-q"><div class="lab">2. What's the problem today?</div><div class="ans">Approvals take a week or more. Loan officers complain constantly and some campaigns miss their window.</div></div>
+        <div class="d-q"><div class="lab">3. What would success look like?</div><div class="ans"><mark>AI reviews and approves ads automatically</mark> so loan officers can post the same day.</div></div>
+        <div class="d-q"><div class="lab">4. How often does this happen?</div><div class="ans">Over 1,000 ads a month.</div></div>
+        <div class="d-q"><div class="lab">5. What information is involved?</div><div class="ans">Ad drafts, flyers, social posts, emails. <mark>No customer info (I think).</mark></div></div>
+        <div class="d-q"><div class="lab">6. Who else is involved?</div><div class="ans">Compliance reviewers, loan officers.</div></div>
+        <div class="d-q"><div class="lab">7. How urgent is this?</div><div class="ans">High. Spring campaigns start planning in January.</div></div>
+      </div>
+      <div class="d-flag"><b>What I noticed before the meeting</b>
+        <span><span class="red">Answer 3</span> proposes a solution, not a goal. "Approves automatically" would remove the licensed reviewer. I needed to find the goal underneath it.</span>
+        <span><span class="red">Answer 5</span> is a guess. "I think" means nobody has checked whether customer data ends up in ads.</span>
+        <span><b>Missing:</b> why approvals take a week. The form says how long, not where the time goes. And Compliance, the team that owns the process, didn't write this request.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3 class="h-ic"><svg class="ic"><use href="#i-search"/></svg>Step 2: The follow-up questions</h3>
+    <p style="max-width:75ch">I grouped what I needed to learn and sent the questions ahead, so people came ready with examples instead of opinions.</p>
+    <div class="d-qs">
+      <div class="card"><h4><svg class="ic"><use href="#i-flow"/></svg>The process today</h4><ul><li>Walk me through one ad from draft to posted.</li><li>Where does it wait, and for how long?</li><li>What happens when an ad is returned?</li></ul></div>
+      <div class="card"><h4><svg class="ic"><use href="#i-alert"/></svg>Why ads come back</h4><ul><li>Think of the last ten you returned. What were they missing?</li><li>Which returns need judgment, and which follow a checklist?</li></ul></div>
+      <div class="card"><h4><svg class="ic"><use href="#i-usercheck"/></svg>Who decides</h4><ul><li>What has to be true for an ad to be approved?</li><li>What can never be handed to software?</li></ul></div>
+      <div class="card"><h4><svg class="ic"><use href="#i-help"/></svg>Workarounds and risk</h4><ul><li>What do loan officers do when they can't wait?</li><li>Has an ad ever run without approval?</li></ul></div>
+      <div class="card"><h4><svg class="ic"><use href="#i-lock"/></svg>Data</h4><ul><li>What's in a typical ad file?</li><li>Could borrower details end up in a draft?</li></ul></div>
+      <div class="card"><h4><svg class="ic"><use href="#i-target"/></svg>Success</h4><ul><li>Three months from now, what tells you this worked?</li><li>Where are approvals recorded today?</li></ul></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3 class="h-ic"><svg class="ic"><use href="#i-message"/></svg>Step 3: The session</h3>
+    <div class="d-meta"><span><b>Thu, Sep 17, 2026</b> · 45 minutes · Teams</span><span>Excerpts, condensed. Notes on the right explain why I asked and what I learned.</span></div>
+    <div class="ppl" aria-label="Attendees">
+      <span><i class="av-a">AP</i>Akeyla Peele-Tembong, AI Platform &amp; Enablement Lead</span>
+      <span><i class="av-p">PL</i>Patricia Lowe, Director of Compliance</span>
+      <span><i class="av-d">DR</i>Dana Reyes, Compliance Reviewer</span>
+      <span><i class="av-j">JE</i>Jordan Ellis, Marketing Manager</span>
+    </div>
+    <p class="small">Why these three: Compliance owns the process and the risk, and Marketing owns the request. Loan officers weren't in this session.<a href="#disc-fn" class="fn-ref" aria-label="See footnote 1">¹</a></p>
+
+    <div class="tx">
+      <div class="ex"><div class="ex-l">
+        <div class="ex-h"><span class="ts">00:02</span><h4>Start with one real ad</h4></div>
+        <div class="ln me"><i class="av-a">AP</i><p><b>Akeyla</b>Jordan, your form says approvals take a week. Before we talk about AI at all, can you walk me through one ad, from the moment a loan officer finishes the draft to the moment it's posted?</p></div>
+        <div class="ln"><i class="av-j">JE</i><p><b>Jordan</b>They email it to the compliance inbox. Then it sits.</p></div>
+        <div class="ln"><i class="av-d">DR</i><p><b>Dana</b>It doesn't sit, it's in a line. I've got about forty in my queue right now.</p></div>
+        <div class="ln me"><i class="av-a">AP</i><p><b>Akeyla</b>So where does the week go? Waiting in line, or going back and forth?</p></div>
+        <div class="ln"><i class="av-d">DR</i><p><b>Dana</b>Back and forth. Half of them come back to me at least once. Some three times. Every round is another few days.</p></div>
+      </div><div class="ex-r">
+        <div class="why"><h5><svg class="ic"><use href="#i-help"/></svg>WHY I ASKED</h5>Start from the process, not the solution. Asking for one concrete ad gets facts instead of complaints.</div>
+        <div class="got"><h5><svg class="ic"><use href="#i-check"/></svg>WHAT I LEARNED</h5>The delay is mostly rework. Ads loop between loan officers and reviewers, and each loop costs days.</div>
+      </div></div>
+
+      <div class="ex"><div class="ex-l">
+        <div class="ex-h"><span class="ts">00:09</span><h4>What actually sends ads back</h4><span class="newtag">NOT ON THE FORM</span></div>
+        <div class="ln me"><i class="av-a">AP</i><p><b>Akeyla</b>Dana, think about the last ten you sent back. What were they missing?</p></div>
+        <div class="ln"><i class="av-d">DR</i><p><b>Dana</b>Honestly? The same things. A rate with no APR. No NMLS number, or the company's but not theirs. No equal housing line. "Low payments" with no terms. Maybe one or two were real judgment calls.</p></div>
+        <div class="ln"><i class="av-p">PL</i><p><b>Patricia</b>That's what bothers me. My reviewers are licensed. They're spending their day finding missing APRs.</p></div>
+        <div class="ln me"><i class="av-a">AP</i><p><b>Akeyla</b>If those routine items were caught before an ad reached you, what would your day look like?</p></div>
+        <div class="ln"><i class="av-d">DR</i><p><b>Dana</b>I'd actually be reviewing. Claims, tone, whether a promotion is misleading.</p></div>
+      </div><div class="ex-r">
+        <div class="why"><h5><svg class="ic"><use href="#i-help"/></svg>WHY I ASKED</h5>"The last ten" pulls from memory of real cases, not a general impression.</div>
+        <div class="got"><h5><svg class="ic"><use href="#i-check"/></svg>WHAT I LEARNED</h5>Most returns are checklist misses, not judgment calls. They can be caught before the ad is ever submitted, which frees reviewers for the work only they can do.</div>
+        <div class="led">Led to: the pre-screen skill's Reg Z and house-standard checks</div>
+      </div></div>
+
+      <div class="ex"><div class="ex-l">
+        <div class="ex-h"><span class="ts">00:17</span><h4>Separate the goal from the proposed fix</h4><span class="newtag">NOT ON THE FORM</span></div>
+        <div class="ln me"><i class="av-a">AP</i><p><b>Akeyla</b>Jordan, the form asks for AI to approve ads. Patricia, what has to be true for an ad to be approved here?</p></div>
+        <div class="ln"><i class="av-p">PL</i><p><b>Patricia</b>A licensed reviewer signs off. That's our policy, and it's what examiners look for. I'm not handing that to software.</p></div>
+        <div class="ln"><i class="av-j">JE</i><p><b>Jordan</b>I'm not trying to cut Compliance out. I just need ads out faster.</p></div>
+        <div class="ln me"><i class="av-a">AP</i><p><b>Akeyla</b>So the goal is speed, and the rule is that a person signs every ad. What if AI did a first pass before submission, and Compliance still made every call?</p></div>
+        <div class="ln"><i class="av-p">PL</i><p><b>Patricia</b>That I can work with. As long as the AI's "pass" never looks like an approval.</p></div>
+      </div><div class="ex-r">
+        <div class="why"><h5><svg class="ic"><use href="#i-help"/></svg>WHY I ASKED</h5>Asking the owner what approval requires puts the constraint on the table without telling Marketing "no."</div>
+        <div class="got"><h5><svg class="ic"><use href="#i-check"/></svg>WHAT I LEARNED</h5>Hard requirement: human sign-off on every ad. The request changed from "AI approver" to "AI pre-screen," and Patricia's condition became the rule that PASS means "ready for review," never "approved."</div>
+        <div class="led">Led to: <a href="../compliance-reviewer-guide/index.html" target="_blank" rel="noopener">Compliance reviewer guide ↗</a> and the tool's wording</div>
+      </div></div>
+
+      <div class="ex"><div class="ex-l">
+        <div class="ex-h"><span class="ts">00:26</span><h4>Ask about workarounds, without blame</h4><span class="newtag">NOT ON THE FORM</span></div>
+        <div class="ln me"><i class="av-a">AP</i><p><b>Akeyla</b>Jordan, when a loan officer can't wait a week, what happens? No wrong answers here.</p></div>
+        <div class="ln"><i class="av-j">JE</i><p><b>Jordan</b><span class="act">(pause)</span> Some of them post anyway. Usually a story or a quick Facebook post. They figure it's small.</p></div>
+        <div class="ln"><i class="av-p">PL</i><p><b>Patricia</b>And that's my real exposure. One unreviewed ad with a teaser rate is an exam finding.</p></div>
+        <div class="ln me"><i class="av-a">AP</i><p><b>Akeyla</b>Any sense of how often?</p></div>
+        <div class="ln"><i class="av-p">PL</i><p><b>Patricia</b>No, and that's the problem. We find out when someone sends us a screenshot.</p></div>
+      </div><div class="ex-r">
+        <div class="why"><h5><svg class="ic"><use href="#i-help"/></svg>WHY I ASKED</h5>People describe workarounds honestly only when it's safe to. I framed it as the process failing, not people.</div>
+        <div class="got"><h5><svg class="ic"><use href="#i-check"/></svg>WHAT I LEARNED</h5>The bigger risk is ads that skip review, not slow ones. Speed is a compliance control. The pre-screen has to be easier than skipping review, and we need to measure how many ads go through it.</div>
+        <div class="led">Led to: a one-line starter prompt, the <a href="../ad-review-tool/index.html" target="_blank" rel="noopener">tool front end ↗</a>, and "% pre-screened" by branch</div>
+      </div></div>
+
+      <div class="ex"><div class="ex-l">
+        <div class="ex-h"><span class="ts">00:33</span><h4>Check the guess on the form</h4></div>
+        <div class="ln me"><i class="av-a">AP</i><p><b>Akeyla</b>The form says "no customer info, I think." Could borrower details end up in a draft?</p></div>
+        <div class="ln"><i class="av-d">DR</i><p><b>Dana</b>It happens. Someone builds a "just closed!" post from a real file, with the buyer's name or the loan amount still in it.</p></div>
+        <div class="ln"><i class="av-p">PL</i><p><b>Patricia</b>That can't go into an AI tool.</p></div>
+        <div class="ln me"><i class="av-a">AP</i><p><b>Akeyla</b>Then the rules need to fit on one page, everyone agrees to them before they get access, and there's a no-blame way to report a slip. Would that cover you?</p></div>
+        <div class="ln"><i class="av-p">PL</i><p><b>Patricia</b>If InfoSec is in that loop, yes.</p></div>
+      </div><div class="ex-r">
+        <div class="why"><h5><svg class="ic"><use href="#i-help"/></svg>WHY I ASKED</h5>"I think" is a gap in the facts. Data questions get answered before anything is built.</div>
+        <div class="got"><h5><svg class="ic"><use href="#i-check"/></svg>WHAT I LEARNED</h5>Customer data can reach drafts. That calls for one-page rules, an acknowledgment before access, and a reporting path that includes InfoSec.</div>
+        <div class="led">Led to: <a href="../data-rules-card/index.html" target="_blank" rel="noopener">Data Rules card ↗</a> and the <a href="../service-desk-article/index.html" target="_blank" rel="noopener">service desk P1 path ↗</a></div>
+      </div></div>
+
+      <div class="ex"><div class="ex-l">
+        <div class="ex-h"><span class="ts">00:39</span><h4>Define success, then play it back</h4></div>
+        <div class="ln me"><i class="av-a">AP</i><p><b>Akeyla</b>Three months from now, what tells each of you this worked?</p></div>
+        <div class="ln"><i class="av-p">PL</i><p><b>Patricia</b>Fewer returns. My team isn't underwater.</p></div>
+        <div class="ln"><i class="av-j">JE</i><p><b>Jordan</b>Loan officers stop asking me where their ad is.</p></div>
+        <div class="ln"><i class="av-d">DR</i><p><b>Dana</b>And a real record. Right now an approval is a reply to an email.</p></div>
+        <div class="ln me"><i class="av-a">AP</i><p><b>Akeyla</b>Let me play that back: fewer returns, faster decisions, every ad pre-screened, and one record per ad. I'll turn that into requirements and measures and send them to you tomorrow for sign-off.</p></div>
+      </div><div class="ex-r">
+        <div class="why"><h5><svg class="ic"><use href="#i-help"/></svg>WHY I ASKED</h5>Each person's version of success becomes a measure they'll trust later. Playing it back catches misunderstandings while everyone is still in the room.</div>
+        <div class="got"><h5><svg class="ic"><use href="#i-check"/></svg>WHAT I LEARNED</h5>Four success signals and a new requirement: one locked record per ad, not email replies.</div>
+        <div class="led">Led to: the SharePoint review list (<a href="#workflow" data-go="workflow">Workflow</a>) and the <a href="../rollout-plan/index.html#measures" target="_blank" rel="noopener">rollout measures ↗</a></div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3 class="h-ic"><svg class="ic"><use href="#i-file"/></svg>Step 4: The discovery summary</h3>
+    <p style="max-width:75ch">Sent the next morning to everyone in the session. Patricia signed off on Sep 21, and the use case went to the AI Governance Committee in October.</p>
+
+    <h4 style="margin:4px 0 0;font:700 18px var(--f-display);color:var(--navy)">What we heard that the intake form didn't say</h4>
+    <div class="ins">
+      <div class="card"><span class="newtag" style="align-self:flex-start">INSIGHT 1</span><h3 style="font-size:18px">The ask was AI approval. The need is speed.</h3><p class="from">Form: "AI reviews and approves ads automatically."</p><p class="to"><b>Reframed:</b> an AI pre-screen before submission. A licensed reviewer still signs every ad.</p></div>
+      <div class="card"><span class="newtag" style="align-self:flex-start">INSIGHT 2</span><h3 style="font-size:18px">Routine misses drive most returns</h3><p class="from">Form: "Approvals take a week or more."</p><p class="to"><b>Root cause:</b> missing APRs, NMLS numbers and equal housing lines send ads back for rounds of rework.</p></div>
+      <div class="card"><span class="newtag" style="align-self:flex-start">INSIGHT 3</span><h3 style="font-size:18px">Some ads skip review entirely</h3><p class="from">Form: "Loan officers complain constantly."</p><p class="to"><b>Real risk:</b> when waits are long, some loan officers post without approval. Faster review is a compliance control.</p></div>
+    </div>
+    <p class="small">Also confirmed: customer data can end up in drafts, and approvals live in email replies.</p>
+
+    <h4 style="margin:12px 0 0;font:700 18px var(--f-display);color:var(--navy)">Requirements</h4>
+    <div class="reqs">
+      <div class="req"><span class="id">R1</span><div><strong>A licensed reviewer signs off on every ad.</strong> The tool never approves or publishes. PASS reads "ready for review."</div><div class="led">From Patricia, 00:17</div></div>
+      <div class="req"><span class="id">R2</span><div><strong>Catch routine Reg Z and house-standard issues before submission</strong>, explain why each one matters, and suggest a fix.</div><div class="led">From Dana, 00:09</div></div>
+      <div class="req"><span class="id">R3</span><div><strong>Easier than skipping review.</strong> One starter prompt, a few minutes, any ad format: post, email, flyer or video script.</div><div class="led">From Jordan and Patricia, 00:26</div></div>
+      <div class="req"><span class="id">R4</span><div><strong>No customer data.</strong> One-page rules, acknowledged before access, with a no-blame reporting path that includes InfoSec.</div><div class="led">From Dana and Patricia, 00:33</div></div>
+      <div class="req"><span class="id">R5</span><div><strong>One record per ad</strong> with every version, comment and decision, ready for an exam.</div><div class="led">From Dana, 00:39</div></div>
+      <div class="req"><span class="id">R6</span><div><strong>Measure what matters to each team:</strong> returned rate, time to decision, share of ads pre-screened by branch.</div><div class="led">From all three, 00:39</div></div>
+    </div>
+
+    <div class="oos">
+      <div class="card"><h3 style="font-size:18px;display:flex;align-items:center;gap:8px"><svg class="ic" style="color:var(--hold)"><use href="#i-ban"/></svg>Out of scope</h3><ul><li>AI approving or publishing any ad</li><li>Changing the review rules themselves. Compliance owns rule content</li><li>Writing ads from scratch. Noted as a future idea: approved, compliant templates</li></ul></div>
+      <div class="card"><h3 style="font-size:18px;display:flex;align-items:center;gap:8px"><svg class="ic" style="color:var(--pass)"><use href="#i-check"/></svg>Agreed next steps</h3><ul><li>Summary sent Sep 18; Compliance sign-off Sep 21</li><li>Use case to the AI Governance Committee in October</li><li>Build the pre-screen as a Claude skill first; a custom app only after it proves itself</li></ul></div>
+    </div>
+  </div>
+
+  <p class="footnote" id="disc-fn"><sup>1</sup> <strong>Another way to run this:</strong> three shorter sessions, one each with Compliance, Marketing and a few loan officers. Each group gets its own voice, and loan officers can speak freely about workarounds without Compliance in the room. I'd choose that for a larger or more contested request. Here, loan officer input came later through the pilot cohort, the feedback form and the ease pulse.</p>
+  <p class="small" style="font-style:italic">This conversation is a mock created for the portfolio. The people and dates are fictional.</p>
+</section>
+
+<!-- ================= PLATFORM ADMIN ================= -->
+<section class="panel" id="platform" role="tabpanel" aria-labelledby="tab-platform" hidden>
+  <div class="intro">
+    <div class="tags"><span class="tag t-admin">Platform admin · 40%</span></div>
+    <h2>Deploy it to the right people, connect the right data, and track what it costs</h2>
+    <p>The platform side keeps the tool well run: who gets it, what it can reach, and what it costs to use.</p>
+  </div>
+
+  <div class="card art">
+    <div class="art-head"><div><div class="art-kind"><svg class="ic"><use href="#i-app"/></svg>Working tool</div><h3>Ad Review Assistant</h3></div><div class="tags"><span class="tag t-admin">Platform admin</span><span class="tag t-enable">Enablement</span></div></div>
+    <div class="grid2">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <p>A branded front end for the mortgage-ad-review skill, framed as a future internal tool any signed-in Northstar user could open. A clean interface lowers the barrier for loan officers who will never write a prompt.</p>
+        <ul>
+          <li>Live reviews run on the viewer's own Claude sign-in</li>
+          <li>Four sample ads with known answers: PASS, FLAG and two HOLDs</li>
+          <li>"Watch a demo run" replays a full review with no sign-in</li>
+          <li>Resubmission mode keeps the same Submission ID</li>
+          <li>Full report as a PDF, plus a submission packet</li>
+        </ul>
+        <a class="btn btn-navy" href="../ad-review-tool/index.html" target="_blank" rel="noopener">Open the tool ↗</a>
+      </div>
+      <figure><img src="img/simone-ad.jpg" alt="Sample ad: Simone Washington's Instagram post advertising 3% down and a fixed rate of 5.875%" loading="lazy"><figcaption>Sample ad 1, Simone's Instagram post. The tool returns HOLD for five separate issues.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3 class="h-ic"><svg class="ic"><use href="#i-users"/></svg>Who gets it and how</h3>
+    <div class="grid2">
+      <div class="card who-card"><span class="icb"><svg class="ic"><use href="#i-key"/></svg></span><div style="display:flex;flex-direction:column;gap:6px"><strong>Single sign-on and group sync</strong><p>Users sign in through Northstar's single sign-on (SSO), so access follows their Northstar account. SCIM provisioning keeps the Loan Officer, Marketing and Compliance groups in sync with the HR directory, so access changes automatically when someone joins, changes roles or leaves.</p></div></div>
+      <div class="card who-card"><span class="icb"><svg class="ic"><use href="#i-package"/></svg></span><div style="display:flex;flex-direction:column;gap:6px"><strong>Packaged as a plugin</strong><p>In production, the skill ships inside a plugin assigned to the Loan Officer, Marketing and Compliance groups. Loan officers find it pre-installed and never upload anything.</p></div></div>
+      <div class="card who-card"><span class="icb"><svg class="ic"><use href="#i-clipboard"/></svg></span><div style="display:flex;flex-direction:column;gap:6px"><strong>Gated by acknowledgment</strong><p>Each user acknowledges the Data Rules card before their first live review. Responses go to the rollout dashboard, so admins can see who is cleared to use it.</p></div></div>
+      <div class="card who-card"><span class="icb"><svg class="ic"><use href="#i-file"/></svg></span><div style="display:flex;flex-direction:column;gap:6px"><strong>Rule changes are controlled</strong><p>Compliance owns the rule content and signs off every change. Changes ship once a month as a new skill version with release notes; urgent regulatory changes ship the same week.</p></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3 class="h-ic"><svg class="ic"><use href="#i-plug"/></svg>What each connection can reach</h3>
+    <div class="tbl-wrap"><table class="data">
+      <thead><tr><th>Connection</th><th>What it reaches</th><th>Why it's there</th><th>In the prototype</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Northstar product knowledge</strong></td><td>Current loan products, programs and approved product descriptions</td><td>Accuracy check: flags product claims that don't match what Northstar offers</td><td>Assumed connected</td></tr>
+        <tr><td><strong>SharePoint review list</strong></td><td>Ad file, pre-screen report, Submission ID, versions, status, publish date</td><td>One record per ad replaces scattered email approvals</td><td>Designed; the prototype makes a downloadable packet instead</td></tr>
+        <tr><td><strong>Power Automate</strong></td><td>Status changes on the review list</td><td>Sends the Teams alerts, return messages and approval receipts</td><td>Designed</td></tr>
+        <tr><td><strong>Teams</strong></td><td>Compliance review channel and loan officer chats</td><td>Alerts and comments where people already work</td><td>Designed</td></tr>
+        <tr><td><strong>Email (Outlook)</strong></td><td>Loan officer inboxes, with Marketing on Cc</td><td>Approval receipts with the "Mark as Published" button, sent by Power Automate. Compliance never works from an inbox: new ads reach reviewers through the SharePoint list and Teams alerts</td><td>Assumed connected</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="section">
+    <h3 class="h-ic"><svg class="ic"><use href="#i-chart"/></svg>Usage and cost reporting</h3>
+    <p style="max-width:75ch">The dashboard is shared work. Enablement owns what it measures and how it's used. Engineering owns the data plumbing. Usage is reported by role; a restricted access review lists accounts by name so Platform Admin can confirm only approved Entra groups have access. <a href="#dashboard" data-go="dashboard">See the dashboard</a></p>
+    <div class="tbl-wrap"><table class="data">
+      <thead><tr><th>Part</th><th>Owner</th><th>What it covers</th></tr></thead>
+      <tbody>
+        <tr><td>Skill usage</td><td>Enablement</td><td>Who runs the skill, how often, verdict mix, most common issues</td></tr>
+        <tr><td>Review flow</td><td>Enablement</td><td>Turnaround from submission to approval, return rate, items waiting by due date</td></tr>
+        <tr><td>Platform data</td><td>Engineering</td><td>Claude usage data and SharePoint list data pulled into one reporting source</td></tr>
+        <tr><td>Monthly report</td><td>Enablement</td><td>Published to Compliance leadership and the AI Governance Committee</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ================= ENABLEMENT ================= -->
+<section class="panel" id="enablement" role="tabpanel" aria-labelledby="tab-enablement" hidden>
+  <div class="intro">
+    <div class="tags"><span class="tag t-enable">Business enablement · 40%</span></div>
+    <h2>Find the bottleneck, build the fix, and teach people to use it</h2>
+    <p>The bottleneck was review capacity, and the cause was ads arriving with fixable problems. The fix puts a check in the loan officer's hands before submission. The training makes that check a habit.</p>
+  </div>
+
+  <div class="grid2">
+    <div class="card art">
+      <div class="art-kind"><svg class="ic"><use href="#i-book"/></svg>Training</div>
+      <h3>Loan officer quick-start</h3>
+      <div class="tags"><span class="tag t-enable">Enablement</span></div>
+      <ul>
+        <li>An intranet-style guide plus a one-page printable cheat sheet</li>
+        <li>A fill-in-the-blank starter prompt, and the resubmit prompt word for word</li>
+        <li>Covers draft through Published, with Liam's refinance email (FLAG) as the worked example</li>
+        <li>A "What it won't do" box: it never approves, never notifies, and refuses customer data</li>
+        <li>Help path: branch AI champion, then service desk, then Compliance</li>
+        <li>Steps are described by action, so they carry over to a future app</li>
+      </ul>
+      <a class="btn btn-navy" href="../loan-officer-quick-start/index.html" target="_blank" rel="noopener">Open the guide ↗</a>
+    </div>
+    <div class="card art">
+      <div class="art-kind"><svg class="ic"><use href="#i-target"/></svg>Hands-on lab</div>
+      <h3>30-minute lab: HOLD to PASS</h3>
+      <div class="tags"><span class="tag t-enable">Enablement</span></div>
+      <ul>
+        <li>Self-paced on the page, or facilitator-led in Teams with a minute-by-minute run of show</li>
+        <li>Learners spot the issues in Simone's post before the AI does, then compare</li>
+        <li>They approve or reject each fix, including one choice of their own wording that keeps the ad on HOLD</li>
+        <li>Three "Can I paste this?" data scenarios, a five-question exit check and a tracked completion record</li>
+        <li>AI Enablement leads the pilot cohorts. Branch champions take over after a train-the-trainer session</li>
+      </ul>
+      <a class="btn btn-navy" href="../hands-on-lab/index.html" target="_blank" rel="noopener">Open the lab ↗</a>
+    </div>
+    <div class="card art">
+      <div class="art-kind"><svg class="ic"><use href="#i-shield"/></svg>Reviewer training</div>
+      <h3>Compliance reviewer guide</h3>
+      <div class="tags"><span class="tag t-enable">Enablement</span><span class="tag t-gov">Governance</span></div>
+      <ul>
+        <li>An intranet-style guide plus a one-page printable desk card</li>
+        <li>What the pre-screen checks, and the judgment calls that stay with the reviewer</li>
+        <li>Works Liam's email from Teams alert to approval, with two reviewer comments the AI missed and a version 2 resubmission</li>
+        <li>A required pre-screen accuracy rating on every decision, reviewed monthly by AI Enablement</li>
+        <li>A 1-business-day decision target, and monthly rule releases signed off by Compliance</li>
+      </ul>
+      <a class="btn btn-navy" href="../compliance-reviewer-guide/index.html" target="_blank" rel="noopener">Open the reviewer guide ↗</a>
+    </div>
+    <div class="card art">
+      <div class="art-kind"><svg class="ic"><use href="#i-star"/></svg>Champion network</div>
+      <h3>Branch AI champion kit</h3>
+      <div class="tags"><span class="tag t-enable">Enablement</span></div>
+      <ul>
+        <li>A champion role for every Northstar AI tool, with the Ad Review Assistant as the first one they support</li>
+        <li>What champions do, what they hand off, and ~2 hours a month</li>
+        <li>Nominated by branch managers, trained through train-the-trainer, then a co-led lab before running it solo</li>
+        <li>An Ad Review answer sheet: 14 branch questions, each with an answer and who takes it</li>
+        <li>A repeatable package for each new tool: briefing, lab, answer sheet and branch numbers</li>
+        <li>A monthly checklist with a sample branch's readiness, usage and quality numbers against targets</li>
+        <li>A working sign-up form with manager approval, plus early access, credit and goal recognition</li>
+      </ul>
+      <a class="btn btn-navy" href="../ai-champion-kit/index.html" target="_blank" rel="noopener">Open the champion kit ↗</a>
+    </div>
+    <div class="card art">
+      <div class="art-kind"><svg class="ic"><use href="#i-help"/></svg>Support</div>
+      <h3>Service desk article and escalation path</h3>
+      <div class="tags"><span class="tag t-enable">Enablement</span><span class="tag t-gov">Governance</span></div>
+      <ul>
+        <li>A ServiceNow knowledge article for tier-1 agents, covering every Northstar AI tool, starting with Ad Review</li>
+        <li>Four ticket types with priorities by risk: customer data in a chat (P1, Compliance and InfoSec within 1 hour), access (P2, same day), tool faults (P3, 1 business day), wrong flags (routed to AI Enablement feedback)</li>
+        <li>A four-question escalation map from branch champion to desk to resolver groups</li>
+        <li>A worked P1 incident from report to closure, with no blame and nothing re-shared</li>
+        <li>Copy-ready reply templates and a one-page agent desk card</li>
+      </ul>
+      <a class="btn btn-navy" href="../service-desk-article/index.html" target="_blank" rel="noopener">Open the service desk article ↗</a>
+    </div>
+    <div class="card art">
+      <div class="art-kind"><svg class="ic"><use href="#i-briefcase"/></svg>Leadership</div>
+      <h3>Manager and executive briefing</h3>
+      <div class="tags"><span class="tag t-enable">Enablement</span><span class="tag t-admin">Platform admin</span></div>
+      <ul>
+        <li>A 5-minute briefing page plus a printable one-page leave-behind</li>
+        <li>Before and after: 757 → ~229 reviewer hours a month against 408 available, 50% → 20% returned, 3–5 days → 1 day per round</li>
+        <li>About $30,600 a month in reviewer capacity, with the assumptions shown</li>
+        <li>Four dated asks: protect time and agree to the app gate (executives), nominate champions and own readiness (branch managers)</li>
+        <li>A "coming next" Ad Review app, proposed after 2 months on target</li>
+      </ul>
+      <a class="btn btn-navy" href="../leadership-briefing/index.html" target="_blank" rel="noopener">Open the briefing ↗</a>
+    </div>
+    <div class="card art">
+      <div class="art-kind"><svg class="ic"><use href="#i-clipboard"/></svg>Rollout plan</div>
+      <h3>Rollout plan with before-and-after measures</h3>
+      <div class="tags"><span class="tag t-enable">Enablement</span><span class="tag t-admin">Platform admin</span><span class="tag t-gov">Governance</span></div>
+      <ul>
+        <li>Five phases, each with an owner, an exit gate and a plan if the gate is missed</li>
+        <li>Real baseline first: 3 months of review records plus a 10-day reviewer time study</li>
+        <li>Edmond and Atlanta pilot with a trend-and-safety gate, then two go-live waves</li>
+        <li>Measures table from readiness to capacity, a weekly pilot check-in, a week-by-week checklist and top risks</li>
+        <li>Illustrative 90-day results: mostly on track, every miss with an owner and a date</li>
+      </ul>
+      <a class="btn btn-navy" href="../rollout-plan/index.html" target="_blank" rel="noopener">Open the rollout plan ↗</a>
+    </div>
+    <div class="card art">
+      <div class="art-kind"><svg class="ic"><use href="#i-usercheck"/></svg>Ownership</div>
+      <h3>Every document says who owns it</h3>
+      <div class="tags"><span class="tag t-enable">Enablement</span><span class="tag t-gov">Governance</span></div>
+      <p>Each guide carries an owner block, so users know who to ask and when it was last checked.</p>
+      <ul>
+        <li><strong>Maintained by</strong> AI Enablement</li>
+        <li><strong>Rule content approved by</strong> Compliance</li>
+        <li><strong>Sponsored by</strong> Marketing and loan officer leadership, accountable for use and feedback</li>
+        <li><strong>Includes</strong> a feedback line and a review date</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="wt" data-wt>
+    <div class="wt-head"><h3>Walkthrough: a loan officer's review, HOLD to PASS</h3><div class="wt-dots" role="group" aria-label="Steps"></div></div>
+    <div class="wt-body">
+      <div class="wt-stage">
+        <div class="step on">
+          <div class="mock"><div class="mock-bar mb-ns">AD REVIEW ASSISTANT · NEW REVIEW</div><div class="mock-in">
+            <div class="row-attach"><img src="img/simone-ad.jpg" alt="Simone's Instagram ad"><div><strong>Simone Washington</strong> · NMLS 0000303<br><span class="small">Channel: Instagram · Product: 7/1 ARM</span><br><span class="chip">caption.txt attached</span></div></div>
+            <div class="diff"><span class="small">Caption excerpt</span><br>"Why rent when you can own your dream home with just 3% down? Payments as low as $1,450/mo with a FIXED rate of 5.875%… I'm your mortgage counselor… everyone qualifies with me!"</div>
+          </div></div>
+        </div>
+        <div class="step">
+          <div class="mock"><div class="mock-bar mb-ns">PRE-SCREEN REPORT</div><div class="mock-in">
+            <div class="verdict"><span class="pill p-HOLD">HOLD</span> Not ready to submit</div>
+            <table class="score"><tr><th>Area</th><th>Result</th><th>Why</th></tr>
+            <tr><td>Rates &amp; APR</td><td><span class="pill p-HOLD">HOLD</span></td><td>5.875% with no APR</td></tr>
+            <tr><td>Triggering terms</td><td><span class="pill p-HOLD">HOLD</span></td><td>"3% down" and "$1,450/mo" need full disclosures</td></tr>
+            <tr><td>Prohibited practices</td><td><span class="pill p-HOLD">HOLD</span></td><td>"FIXED" on a 7/1 ARM; "mortgage counselor"</td></tr>
+            <tr><td>House standards</td><td><span class="pill p-FLAG">FLAG</span></td><td>"Everyone qualifies"; no NMLS or Equal Housing Lender</td></tr></table>
+          </div></div>
+        </div>
+        <div class="step">
+          <div class="mock"><div class="mock-bar mb-ns">ACTION PLAN · APPROVE FIXES</div><div class="mock-in">
+            <ul class="checks">
+              <li><span class="box">✓</span>Remove the rate and payment, or add the APR and full terms</li>
+              <li><span class="box">✓</span>Replace "3% down" with "low down payment options"</li>
+              <li><span class="box">✓</span>Remove "FIXED"; describe the loan as adjustable-rate</li>
+              <li><span class="box">✓</span>"Mortgage counselor" → "loan officer"</li>
+              <li><span class="box">✓</span>Remove "everyone qualifies" and "best rate all year"</li>
+              <li><span class="box">✓</span>Add NMLS 0000303 and "Equal Housing Lender"</li>
+            </ul>
+            <span class="btn btn-navy" style="align-self:flex-start;min-height:38px">Apply all and re-check</span>
+          </div></div>
+        </div>
+        <div class="step">
+          <div class="mock"><div class="mock-bar mb-ns">RE-CHECK</div><div class="mock-in">
+            <div class="verdict"><span class="pill p-PASS">PASS</span> Ready to submit for compliance review</div>
+            <div class="diff"><del>with just 3% down</del> <ins>with low down payment options</ins> · <del>FIXED rate of 5.875%</del> <ins>adjustable-rate options</ins> · <del>mortgage counselor</del> <ins>loan officer</del> · <del>everyone qualifies with me!</del> <ins>Simone Washington, NMLS 0000303 · Equal Housing Lender</ins></div>
+            <span class="small">Illustrative revision. A PASS is not approval: a licensed reviewer still signs off.</span>
+          </div></div>
+        </div>
+        <div class="step">
+          <div class="mock"><div class="mock-bar mb-ns">SUBMITTED</div><div class="mock-in">
+            <div class="done"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#14532D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.5l3 3 6-6.5"/></svg><div><strong>Submitted for compliance review</strong><br><span class="small">Submission ID <span class="mono">NHM-20261114-SW-1</span></span></div></div>
+            <div class="dl-row"><span class="btn btn-navy" style="min-height:38px">Download submission packet</span><span class="btn btn-line" style="min-height:38px">Download full report (PDF)</span></div>
+            <span class="small">If it comes back, she pastes "Resubmit NHM-20261114-SW-1" into Claude.</span>
+          </div></div>
+        </div>
+      </div>
+      <div class="wt-side">
+        <div class="cap on"><div class="wt-step-n">STEP 1</div><h4>Attach the ad</h4><p>Simone uploads her post and caption. No prompt writing needed: the skill knows what to check.</p></div>
+        <div class="cap"><div class="wt-step-n">STEP 2</div><h4>Read the scorecard</h4><p>The verdict is the strictest result in the table. Each row names the rule and the exact words that triggered it.</p></div>
+        <div class="cap"><div class="wt-step-n">STEP 3</div><h4>Approve the fixes</h4><p>She decides what changes. The tool suggests; the loan officer stays in charge of her ad.</p></div>
+        <div class="cap"><div class="wt-step-n">STEP 4</div><h4>Re-check the revision</h4><p>The revised ad is checked again. The tracked changes show exactly what moved.</p></div>
+        <div class="cap"><div class="wt-step-n">STEP 5</div><h4>Submit with the report</h4><p>The packet carries the ad, the report and the Submission ID to Compliance.</p></div>
+        <div class="wt-nav"><button class="btn btn-line" type="button" data-prev>Back</button><button class="btn btn-navy" type="button" data-next>Next</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wt" data-wt>
+    <div class="wt-head"><h3>Walkthrough: the feedback loop</h3><div class="wt-dots" role="group" aria-label="Steps"></div></div>
+    <div class="wt-body">
+      <div class="wt-stage">
+        <div class="step on">
+          <div class="mock"><div class="mock-bar mb-forms">MICROSOFT FORMS · AD REVIEW ASSISTANT: FEEDBACK</div><div class="mock-in">
+            <span class="small">Signed in as <strong>Liam Smith</strong> (liam.smith@northstarharbor.example)</span>
+            <div class="form-q"><span class="q">1. What happened?</span><div class="fake-input">It flagged something that was fine</div></div>
+            <div class="form-q"><span class="q">2. Submission ID</span><div class="fake-input mono">NHM-20261114-LS-1</div></div>
+            <div class="form-q"><span class="q">3. Tell us more</span><div class="fake-input">It flagged "30-year" as a triggering term in my email signature line, but that was my years of experience, not a loan term.</div></div>
+          </div></div>
+        </div>
+        <div class="step">
+          <div class="mock"><div class="mock-bar mb-forms">MICROSOFT FORMS · RECEIVED</div><div class="mock-in">
+            <strong style="font-size:18px;color:var(--navy)">Thanks, Liam. We've got it.</strong>
+            <div class="ticket"><div><span class="small">YOUR FEEDBACK TICKET</span><br><b>FB-0137</b></div><span class="status">Status: New</span></div>
+            <span class="small">Track it in the Ad Review Feedback tracker, pinned in the AI Enablement Teams channel.</span>
+          </div></div>
+        </div>
+        <div class="step">
+          <div class="mock"><div class="mock-bar mb-teams">TEAMS · AI ENABLEMENT</div><div class="mock-in">
+            <div class="teams-msg"><strong>FB-0137 · False flag · "30-year" in signature</strong><span>Reviewed within 2 business days. The rule touches Regulation Z triggers, so Compliance weighs in before anything changes.</span><span class="chip" style="align-self:flex-start">Compliance consulted</span></div>
+          </div></div>
+        </div>
+        <div class="step">
+          <div class="mock"><div class="mock-bar mb-teams">TEAMS · RELEASE NOTES</div><div class="mock-in">
+            <div class="teams-msg" style="border-left-color:var(--pass)"><strong>Next skill version: what changed</strong><span>The skill ignores years-of-experience phrases in signature lines. Fixes FB-0137.</span></div>
+            <span class="small">Liam gets an update when it ships. Feedback themes also feed the monthly report.</span>
+          </div></div>
+        </div>
+      </div>
+      <div class="wt-side">
+        <div class="cap on"><div class="wt-step-n">STEP 1</div><h4>A loan officer reports a wrong flag</h4><p>The form is pinned in the AI Enablement Teams channel and linked from the guide. Customer data mistakes go to the service desk instead.</p></div>
+        <div class="cap"><div class="wt-step-n">STEP 2</div><h4>A ticket number right away</h4><p>The confirmation gives a ticket number, so the report doesn't disappear into an inbox.</p></div>
+        <div class="cap"><div class="wt-step-n">STEP 3</div><h4>Enablement triages, Compliance decides</h4><p>Enablement owns the tool. Compliance owns the rules. A rule change needs both.</p></div>
+        <div class="cap"><div class="wt-step-n">STEP 4</div><h4>The fix ships in a versioned release</h4><p>Release notes close the loop and show users their feedback changes the tool. These release notes are illustrative.</p></div>
+        <div class="wt-nav"><button class="btn btn-line" type="button" data-prev>Back</button><button class="btn btn-navy" type="button" data-next>Next</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GOVERNANCE ================= -->
+<section class="panel" id="governance" role="tabpanel" aria-labelledby="tab-governance" hidden>
+  <div class="intro">
+    <div class="tags"><span class="tag t-gov">Governance operations · 20%</span></div>
+    <h2>Put the policy where the work happens</h2>
+    <p>An AI Acceptable Use Policy only works if people can apply it in the moment. The Data Rules card turns it into five rules for this one tool, and every user signs off before their first live review.</p>
+  </div>
+
+  <div class="grid2">
+    <div class="card art">
+      <div class="art-kind"><svg class="ic"><use href="#i-shield"/></svg>Policy in practice</div>
+      <h3>Data Rules for Ad Review</h3>
+      <div class="tags"><span class="tag t-gov">Governance</span></div>
+      <ol style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px">
+        <li><strong>Never paste customer information.</strong> The assistant stops and asks you to remove it.</li>
+        <li><strong>Know what's fine to use:</strong> your ad copy, your own NMLS ID and work contact details, sample numbers.</li>
+        <li><strong>Only use Northstar's Claude,</strong> never a personal account or another AI tool.</li>
+        <li><strong>A PASS is not approval.</strong> Publish only the exact version Compliance approves.</li>
+        <li><strong>Report mistakes right away. No blame.</strong></li>
+      </ol>
+      <a class="btn btn-navy" href="../data-rules-card/index.html" target="_blank" rel="noopener">Open the card ↗</a>
+    </div>
+    <div class="card">
+      <h3 class="h-ic"><svg class="ic"><use href="#i-alert"/></svg>Two kinds of mistakes, two routes</h3>
+      <div style="background:var(--hold-bg);border-radius:8px;padding:12px 14px"><strong style="color:var(--hold)">Customer information pasted by mistake</strong><br>Stop, open a service desk ticket marked "AI data incident" and copy Compliance, then delete the chat.</div>
+      <div style="background:#EEF2F8;border-radius:8px;padding:12px 14px"><strong style="color:var(--navy)">Wrong flag or missed rule</strong><br>Tell AI Enablement through the feedback form.</div>
+      <h3 class="h-ic" style="margin-top:8px"><svg class="ic"><use href="#i-shield"/></svg>Controls built into the process</h3>
+      <ul>
+        <li>A licensed reviewer signs off on every ad, including PASS ads</li>
+        <li>The skill never approves and never notifies anyone</li>
+        <li>Compliance signs off every rule change before it ships</li>
+        <li>Each ad keeps one locked record for audits</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="wt" data-wt>
+    <div class="wt-head"><h3>Walkthrough: acknowledging the data rules</h3><div class="wt-dots" role="group" aria-label="Steps"></div></div>
+    <div class="wt-body">
+      <div class="wt-stage">
+        <div class="step on">
+          <div class="mock"><div class="mock-bar mb-ns">DATA RULES FOR AD REVIEW · 2-MINUTE READ</div><div class="mock-in">
+            <div style="border:2px solid var(--hold);border-radius:8px;padding:8px 12px;background:#FFF7F6;font-size:13px"><strong style="color:var(--hold)">1. Never paste customer information.</strong><br>No borrower names, addresses, loan numbers, credit details or a rate quote for a real person.</div>
+            <div style="border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:13px"><strong>2. Know what's fine to use.</strong> Your ad copy, your own NMLS ID and work contact details, sample numbers.</div>
+            <div style="border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:13px"><strong>3. Only use Northstar's Claude.</strong> Never a personal account or another AI tool.</div>
+            <div style="border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:13px"><strong>4. A PASS is not approval.</strong> Publish only the exact version Compliance approves.</div>
+            <div style="border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:13px"><strong>5. Report mistakes right away. No blame.</strong> Customer data goes to the service desk; wrong flags go to AI Enablement.</div>
+            <span class="btn btn-navy" style="align-self:flex-start;min-height:38px">Acknowledge in the Microsoft Form →</span>
+          </div></div>
+        </div>
+        <div class="step">
+          <div class="mock"><div class="mock-bar mb-forms">MICROSOFT FORMS · ACKNOWLEDGMENT</div><div class="mock-in">
+            <span class="small">Signed in as <strong>Liam Smith</strong> (liam.smith@northstarharbor.example). Name and email are recorded automatically.</span>
+            <div class="form-q"><span class="q">1. Your role</span><div class="fake-input">Loan officer</div></div>
+            <div class="form-q"><span class="q">2. Branch</span><div class="fake-input">Edmond, OK</div></div>
+            <ul class="checks"><li><span class="box">✓</span>I will never paste customer information into Claude.</li><li><span class="box">✓</span>I will review Northstar ads only in Northstar's Claude.</li><li><span class="box">✓</span>I understand a PASS is not approval.</li><li><span class="box">✓</span>I know how to report a data mistake.</li></ul>
+          </div></div>
+        </div>
+        <div class="step">
+          <div class="mock"><div class="mock-bar mb-forms">MICROSOFT FORMS · CONFIRMATION</div><div class="mock-in">
+            <div class="done"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#14532D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.5l3 3 6-6.5"/></svg><div><strong>Thanks, Liam. You're all set.</strong><br><span class="small">You can now run the Ad Review Assistant on live ads.</span></div></div>
+            <table class="score"><tr><td>Data Rules card</td><td>Version 1.0</td></tr><tr><td>Confirmation #</td><td class="mono"><strong>ACK-2026-0412</strong></td></tr></table>
+            <span class="small">If the card changes version, everyone acknowledges again.</span>
+          </div></div>
+        </div>
+      </div>
+      <div class="wt-side">
+        <div class="cap on"><div class="wt-step-n">STEP 1</div><h4>Read the card</h4><p>A two-minute read, printable, linked from the guide and the SharePoint page.</p></div>
+        <div class="cap"><div class="wt-step-n">STEP 2</div><h4>Sign the form</h4><p>A trackable Microsoft Form records role and branch, so adoption can be reported by group.</p></div>
+        <div class="cap"><div class="wt-step-n">STEP 3</div><h4>Cleared for live reviews</h4><p>The confirmation number and card version create an audit trail of who agreed to which rules.</p></div>
+        <div class="wt-nav"><button class="btn btn-line" type="button" data-prev>Back</button><button class="btn btn-navy" type="button" data-next>Next</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= WORKFLOW ================= -->
+<section class="panel" id="workflow" role="tabpanel" aria-labelledby="tab-workflow" hidden>
+  <div class="intro">
+    <div class="tags"><span class="tag t-enable">Enablement</span><span class="tag t-admin">Platform admin</span><span class="tag t-gov">Governance</span></div>
+    <h2>From one inbox to one queue</h2>
+    <p>Before, every ad travels by email and each fix means a new attachment. After, problems are fixed before submission, reviewers get one sorted queue, and Marketing publishes only approved versions.</p>
+    <div><a class="btn btn-navy" href="../workflow-doc/index.html" target="_blank" rel="noopener">Read the full workflow doc ↗</a></div>
+  </div>
+
+  <div class="flows">
+    <div class="flow before">
+      <div class="flow-head"><div class="eyebrow" style="color:var(--muted)">Before</div><h3>Email-driven review</h3></div>
+      <div class="node"><span class="sys s-person">Loan officer</span><span>Drafts the ad, guessing at the rules</span></div>
+      <div class="arrow"></div>
+      <div class="node"><span class="sys s-email">Email</span><span>Sends it to the shared Compliance inbox</span></div>
+      <div class="arrow"></div>
+      <div class="node pain"><span class="sys s-email">Inbox</span><span>Waits with no priority or due date</span></div>
+      <div class="arrow"></div>
+      <div class="node pain"><span class="sys s-person">Reviewer</span><span>Checks every rule from scratch</span></div>
+      <div class="arrow"></div>
+      <div class="node decision"><span class="sys s-person">Decision</span><span>Issues found?</span></div>
+      <div class="loop">Yes: redlines by email, then a new attachment goes back into the inbox. About half of ads loop at least once.</div>
+      <div class="arrow"></div>
+      <div class="node"><span class="sys s-email">Email</span><span>Approval arrives as an email reply</span></div>
+      <div class="arrow"></div>
+      <div class="node pain"><span class="sys s-person">Loan officer</span><span>Posts it themselves; nobody confirms it's the approved version</span></div>
+      <div class="arrow"></div>
+      <div class="node pain"><span class="sys s-email">Audit</span><span>No central record; audits mean searching inboxes</span></div>
+    </div>
+    <div class="flow after">
+      <div class="flow-head"><div class="eyebrow" style="color:var(--gold-ink)">After</div><h3>Pre-screened, one queue, one record</h3></div>
+      <div class="node"><span class="sys s-claude">Claude</span><span>Loan officer runs the skill; gets a scorecard and action plan</span></div>
+      <div class="arrow"></div>
+      <div class="node"><span class="sys s-claude">Claude</span><span>Approves fixes; Claude revises and re-checks</span></div>
+      <div class="arrow"></div>
+      <div class="node"><span class="sys s-sp">SharePoint</span><span>Item created: Submitted, with report and publish date</span></div>
+      <div class="arrow"></div>
+      <div class="node"><span class="sys s-pa">Power Automate</span><span>New item triggers an alert</span></div>
+      <div class="arrow"></div>
+      <div class="node"><span class="sys s-teams">Teams</span><span>Compliance sees a queue sorted by verdict and deadline</span></div>
+      <div class="arrow"></div>
+      <div class="node decision"><span class="sys s-person">Reviewer</span><span>Approve, or request changes</span></div>
+      <div class="loop">Changes requested: comments, Submission ID and a resubmit prompt arrive in Teams. The fix returns as version 2 on the same item.</div>
+      <div class="arrow"></div>
+      <div class="node"><span class="sys s-email">Email</span><span>Approved and locked; receipt to loan officer, copying Marketing</span></div>
+      <div class="arrow"></div>
+      <div class="node"><span class="sys s-mkt">Marketing</span><span>Publishes the approved version; loan officers may post it on their own social accounts</span></div>
+      <div class="arrow"></div>
+      <div class="node"><span class="sys s-dash">Dashboard</span><span>Marked Published with the live link; usage and turnaround tracked</span></div>
+    </div>
+  </div>
+
+  <div class="tbl-wrap"><table class="data">
+    <thead><tr><th>Who</th><th>Before</th><th>After</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Loan officer</strong></td><td>No way to check an ad before submitting</td><td>Catches issues in minutes, before Compliance sees the ad</td></tr>
+      <tr><td><strong>Reviewer</strong></td><td>Unsorted inbox, every ad reviewed from zero</td><td>One sorted queue with a scorecard as a head start</td></tr>
+      <tr><td><strong>Marketing</strong></td><td>Can't confirm which version was approved</td><td>Publishes only items marked Approved</td></tr>
+      <tr><td><strong>Compliance leadership</strong></td><td>Approvals scattered across inboxes</td><td>One record per ad: versions, reviewer, dates, approved file</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="wt" data-wt>
+    <div class="wt-head"><h3>Walkthrough: one ad, start to finish</h3><div class="wt-dots" role="group" aria-label="Steps"></div></div>
+    <div class="wt-body">
+      <div class="wt-stage">
+        <div class="step on">
+          <div class="mock"><div class="mock-bar mb-claude">CLAUDE · NORTHSTAR WORKSPACE</div><div class="mock-in">
+            <div class="chat-user">Here's my Instagram post for review. <span class="chip">ad1-simone-instagram.png</span> <span class="chip">caption.txt</span></div>
+            <div class="verdict"><span class="pill p-HOLD">HOLD</span> 4 areas need work before you submit</div>
+            <table class="score"><tr><th>Area</th><th>Result</th></tr><tr><td>Rates &amp; APR</td><td><span class="pill p-HOLD">HOLD</span></td></tr><tr><td>Triggering terms</td><td><span class="pill p-HOLD">HOLD</span></td></tr><tr><td>Prohibited practices</td><td><span class="pill p-HOLD">HOLD</span></td></tr><tr><td>House standards</td><td><span class="pill p-FLAG">FLAG</span></td></tr></table>
+          </div></div>
+        </div>
+        <div class="step">
+          <div class="mock"><div class="mock-bar mb-claude">CLAUDE · ACTION PLAN</div><div class="mock-in">
+            <strong>Approve the fixes you want</strong>
+            <ul class="checks"><li><span class="box">✓</span>Remove the rate, or add the APR next to it</li><li><span class="box">✓</span>Replace "3% down" and "$1,450/mo" with general wording</li><li><span class="box">✓</span>Drop "FIXED" (this is a 7/1 ARM)</li><li><span class="box">✓</span>Change "mortgage counselor" to "loan officer"</li><li><span class="box">✓</span>Add NMLS ID and Equal Housing Lender</li></ul>
+            <div class="verdict"><span class="pill p-PASS">PASS</span> Revised version re-checked</div>
+          </div></div>
+        </div>
+        <div class="step">
+          <div class="mock"><div class="mock-bar mb-sp">SHAREPOINT · AD REVIEW QUEUE</div><div class="mock-in">
+            <table class="sp-table"><tr><th>Submission ID</th><th>Loan officer</th><th>Pre-screen</th><th>Status</th></tr>
+            <tr class="hl"><td class="mono">NHM-20261114-SW-1</td><td>Simone Washington</td><td><span class="pill p-PASS">PASS</span></td><td><span class="status">Submitted</span></td></tr>
+            <tr><td class="mono">NHM-20261114-LS-1</td><td>Liam Smith</td><td><span class="pill p-FLAG">FLAG</span></td><td><span class="status">Submitted</span></td></tr></table>
+            <span class="small">Report, ad file and planned publish date attached to the item.</span>
+          </div></div>
+        </div>
+        <div class="step">
+          <div class="mock"><div class="mock-bar mb-teams">TEAMS · COMPLIANCE REVIEW</div><div class="mock-in">
+            <div class="teams-msg"><span class="small">Power Automate · just now</span><strong>New ad in the queue: NHM-20261114-SW-1</strong><span>Simone Washington · Instagram · Pre-screen <span class="pill p-PASS">PASS</span> · Publish by Nov 20</span><span class="chip" style="align-self:flex-start">Open in queue</span></div>
+            <span class="small">The queue is sorted by verdict and deadline. PASS items get a quick confirmation, so reviewer time goes to FLAG items.</span>
+          </div></div>
+        </div>
+        <div class="step">
+          <div class="mock"><div class="mock-bar mb-teams">TEAMS · MESSAGE TO LOAN OFFICER</div><div class="mock-in">
+            <div class="teams-msg" style="border-left-color:var(--flag)"><strong>Changes requested: NHM-20261114-SW-1</strong><span>"Please use the standard Equal Housing Lender logo in the image, not just the caption."</span><span>Paste this into Claude to resubmit:</span><span class="mono" style="background:#F1EEE5;padding:6px 8px;border-radius:4px">Resubmit NHM-20261114-SW-1</span></div>
+            <span class="small">The fix comes back as version 2 on the same queue item, never as a new email.</span>
+          </div></div>
+        </div>
+        <div class="step">
+          <div class="mock"><div class="mock-bar mb-mail">OUTLOOK · APPROVAL RECEIPT</div><div class="mock-in">
+            <div><span class="small">To: Simone Washington · Cc: Marketing</span><br><strong>Approved: NHM-20261114-SW-1 (version 2)</strong></div>
+            <p>Your ad is approved. Publish only this exact version.</p>
+            <span class="btn btn-navy" style="align-self:flex-start;min-height:38px">Mark as Published</span>
+            <span class="small">The record is now locked with its versions, reviewer, dates and approved file.</span>
+          </div></div>
+        </div>
+        <div class="step">
+          <div class="mock"><div class="mock-bar mb-sp">SHAREPOINT · AD REVIEW QUEUE</div><div class="mock-in">
+            <table class="sp-table"><tr><th>Submission ID</th><th>Version</th><th>Status</th><th>Live link</th></tr>
+            <tr class="hl"><td class="mono">NHM-20261114-SW-1</td><td>2</td><td><span class="status st-pub">Published</span></td><td>instagram.com/p/…</td></tr></table>
+            <span class="small">Every status change feeds the usage and review dashboard: turnaround, return rate and verdict mix.</span>
+          </div></div>
+        </div>
+      </div>
+      <div class="wt-side">
+        <div class="cap on"><div class="wt-step-n">STEP 1 · CLAUDE</div><h4>The loan officer pre-screens the ad</h4><p>Simone attaches her Instagram post. The skill checks it against Regulation Z, house standards and Northstar's product information, and explains each finding.</p></div>
+        <div class="cap"><div class="wt-step-n">STEP 2 · CLAUDE</div><h4>She approves fixes and re-checks</h4><p>She taps the fixes she wants. Claude revises the ad and runs the check again before anything goes to Compliance.</p></div>
+        <div class="cap"><div class="wt-step-n">STEP 3 · SHAREPOINT</div><h4>One submission, one record</h4><p>Submitting creates a queue item with a Submission ID. The report travels with the ad.</p></div>
+        <div class="cap"><div class="wt-step-n">STEP 4 · POWER AUTOMATE + TEAMS</div><h4>Compliance gets an alert</h4><p>A low-code flow, built by Enablement, posts each new item to the Compliance channel.</p></div>
+        <div class="cap"><div class="wt-step-n">STEP 5 · TEAMS</div><h4>If changes are needed</h4><p>The reviewer's comments reach the loan officer in Teams with a ready-to-paste resubmit prompt.</p></div>
+        <div class="cap"><div class="wt-step-n">STEP 6 · EMAIL</div><h4>Approved, with a receipt</h4><p>A human reviewer approves every ad, including PASS ads. The receipt copies Marketing.</p></div>
+        <div class="cap"><div class="wt-step-n">STEP 7 · PUBLISH</div><h4>Published and tracked</h4><p>Marketing publishes on company channels. Loan officers may post the exact approved version on their own accounts, then mark it Published.</p></div>
+        <div class="wt-nav"><button class="btn btn-line" type="button" data-prev>Back</button><button class="btn btn-navy" type="button" data-next>Next</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3 class="h-ic"><svg class="ic"><use href="#i-trend"/></svg>Path to scale: the tool grows only when the data says so</h3>
+    <div class="grid3">
+      <div class="card"><div class="wt-step-n">PHASE 1 · THIS BUILD</div><strong>Skill</strong><p class="small">Built by Enablement. Gate: 2 months in a row, company-wide, with 20% or fewer ads returned, 90% or more pre-screened and no open P1 data incidents. Earliest proposal: June 2027.</p></div>
+      <div class="card"><div class="wt-step-n">PHASE 2</div><strong>Ad Review app</strong><p class="small">An interactive review app built by Engineering or in Power Apps, from requirements written by Enablement. Gate: turnaround drops further and adoption holds.</p></div>
+      <div class="card"><div class="wt-step-n">PHASE 3</div><strong>Template generator</strong><p class="small">Compliant, brand-aligned templates. Compliance and the AI Governance Committee decide whether they get a lighter review.</p></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================= DASHBOARD ================= -->
+<section class="panel" id="dashboard" role="tabpanel" aria-labelledby="tab-dashboard" hidden>
+  <div class="intro">
+    <div class="tags"><span class="tag t-admin">Platform admin</span><span class="tag t-enable">Enablement</span><span class="tag t-gov">Governance</span></div>
+    <h2>One dashboard for usage, cost, readiness and quality</h2>
+    <p>A dummy Northstar dashboard covering the pilot through full rollout, December 2026 to March 2027. Every number matches the rollout plan, so the March view is the same story the 90-day readout tells.</p>
+  </div>
+
+  <div class="card art">
+    <div class="art-head"><div><div class="art-kind"><svg class="ic"><use href="#i-chart"/></svg>Interactive dashboard</div><h3>Ad Review Assistant: Usage Dashboard</h3></div><div class="tags"><span class="tag t-admin">Platform admin</span></div></div>
+    <div class="grid2">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <p>Four reporting views with a month filter, plus a restricted access review. Hover any chart for details, and every chart has a data table.</p>
+        <ul>
+          <li><strong>Overview:</strong> scorecard against targets, returned rate trend, reviewer hours compared with the 408 available</li>
+          <li><strong>Usage and cost by role:</strong> loan officers, Compliance reviewers and Marketing. Active users, runs, estimated usage cost, and cost compared with reviewer capacity freed</li>
+          <li><strong>Branches and readiness:</strong> Data Rules acknowledgments, lab completion and pre-screen rate by branch and wave</li>
+          <li><strong>Feedback and quality:</strong> reviewer accuracy ratings, first-run verdicts, top issues caught, feedback themes with status, P1s and tickets</li>
+          <li><strong>Access review</strong> (Platform Admin and Compliance only): who has access by name and Entra group, flags for accounts outside approved groups, leavers, shared logins and contractors past their end date, and the quarterly sign-off by branch managers</li>
+        </ul>
+        <a class="btn btn-navy" href="../usage-dashboard/index.html" target="_blank" rel="noopener">Open the dashboard ↗</a>
+      </div>
+      <figure><button type="button" class="zoom" data-src="img/dashboard-overview.jpg" style="padding:0;border:none;background:none;cursor:zoom-in"><img src="img/dashboard-overview.jpg" alt="Dashboard overview for March 2027: 91% of ads pre-screened, 23% returned, 1.3 rounds, 11 minutes per ad, 92% decided within one business day, about 281 reviewer hours needed against 408 available" loading="lazy"></button><figcaption>Overview, March 2027. Click to enlarge.</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3 class="h-ic"><svg class="ic"><use href="#i-sliders"/></svg>Design choices</h3>
+    <div class="grid2">
+      <div class="card who-card"><span class="icb"><svg class="ic"><use href="#i-users"/></svg></span><div style="display:flex;flex-direction:column;gap:6px"><strong>Usage by role, access by name</strong><p>Usage is reported by role and branch, because using the tool is optional and the dashboard drives adoption, not surveillance. Access is reviewed by name, because you can't confirm the right people have access, or catch accounts that shouldn't, without seeing who they are.</p></div></div>
+      <div class="card who-card"><span class="icb"><svg class="ic"><use href="#i-chart"/></svg></span><div style="display:flex;flex-direction:column;gap:6px"><strong>Cost shown next to value</strong><p>Seats are already licensed, so cost is estimated usage per ad. In March, about $261 in usage freed about $28,900 in reviewer capacity.</p></div></div>
+      <div class="card who-card"><span class="icb"><svg class="ic"><use href="#i-file"/></svg></span><div style="display:flex;flex-direction:column;gap:6px"><strong>Every number names its source</strong><p>Claude workspace usage, the SharePoint review list, Microsoft Forms or ServiceNow. Enablement owns the measures; Engineering owns the data plumbing.</p></div></div>
+      <div class="card who-card"><span class="icb"><svg class="ic"><use href="#i-target"/></svg></span><div style="display:flex;flex-direction:column;gap:6px"><strong>Status on every measure</strong><p>On target, near or short, with the change from last month. Feedback themes show what's fixed, planned or logged for the app.</p></div></div>
+    </div>
+    <figure style="margin-top:4px"><button type="button" class="zoom" data-src="img/dashboard-usage.jpg" style="padding:0;border:none;background:none;cursor:zoom-in"><img src="img/dashboard-usage.jpg" alt="Usage and cost by role for March 2027: 1,892 active users, 3,118 review runs, about $261 estimated usage cost, $0.24 per ad pre-screened, and $111 of reviewer capacity freed for every $1 of usage" loading="lazy"></button><figcaption>Usage and cost by role, March 2027. All figures are illustrative.</figcaption></figure>
+  </div>
+</section>
+
+<!-- ================= SKILLS MAP ================= -->
+<section class="panel" id="skills" role="tabpanel" aria-labelledby="tab-skills" hidden>
+  <div class="intro">
+    <h2>The role's responsibilities, and where each one shows up</h2>
+    <p>Each row is a responsibility of an AI Platform &amp; Enablement Lead, with the piece of this project that demonstrates it.</p>
+  </div>
+  <div class="tbl-wrap"><table class="data">
+    <thead><tr><th style="width:38%">Responsibility</th><th>Evidence in this project</th></tr></thead>
+    <tbody>
+      <tr><td class="grp" colspan="2">Platform administration <span class="pct">40%</span></td></tr>
+      <tr><td>Enable features for the right groups, with the controls they need</td><td>Plugin assigned to Loan Officer, Marketing and Compliance groups; use gated by acknowledgment. <a href="#platform" data-go="platform">Platform Admin</a></td></tr>
+      <tr><td>Configure connectors and document the data each can reach</td><td>Connection table: product knowledge, SharePoint, Power Automate, Teams, email. <a href="#platform" data-go="platform">Platform Admin</a></td></tr>
+      <tr><td>Track usage, adoption and cost, and report monthly</td><td>Dashboard ownership split and monthly report to Compliance leadership and the Governance Committee. <a href="../workflow-doc/index.html" target="_blank" rel="noopener">Workflow doc ↗</a> · <a href="../leadership-briefing/index.html" target="_blank" rel="noopener">Leadership briefing ↗</a> · <a href="../rollout-plan/index.html#results" target="_blank" rel="noopener">Sample monthly results ↗</a> · <a href="#dashboard" data-go="dashboard">Dashboard</a></td></tr>
+      <tr><td>Assess new capabilities and recommend how to enable them</td><td>Branded front end framed as a future internal tool; phased path from skill to app with gates. <a href="../ad-review-tool/index.html" target="_blank" rel="noopener">Tool ↗</a> · <a href="#workflow" data-go="workflow">Workflow</a></td></tr>
+
+      <tr><td class="grp" colspan="2">Business enablement <span class="pct">40%</span></td></tr>
+      <tr><td>Find repetitive, high-volume work AI can improve</td><td>~1,147 ads a month against a 757-vs-408-hour reviewer gap, plus an intake form and a discovery session that found the real cause: routine misses sending ads back. <a href="#overview" data-go="overview">Overview</a> · <a href="#discovery" data-go="discovery">Discovery</a></td></tr>
+      <tr><td>Build working solutions: skills, templates, connector-based workflows</td><td>The mortgage-ad-review skill, the Ad Review Assistant, the starter prompt and the Microsoft 365 flow. <a href="../ad-review-tool/index.html" target="_blank" rel="noopener">Tool ↗</a></td></tr>
+      <tr><td>Measure results before and after</td><td>Baseline and targets (return rate, minutes per ad, reviewer hours, illustrative dollar value), plus a real field test. A rollout plan captures the real baseline first (records plus a reviewer time study), compares the pilot with branches still on the old process, and reports monthly against targets. <a href="#evidence" data-go="evidence">Evidence</a> · <a href="../leadership-briefing/index.html" target="_blank" rel="noopener">Leadership briefing ↗</a> · <a href="../rollout-plan/index.html#measures" target="_blank" rel="noopener">Rollout plan ↗</a></td></tr>
+      <tr><td>Design role-specific training</td><td>Loan officer quick-start guide, printable cheat sheet, and a 30-minute hands-on lab with an exit check. A compliance reviewer guide and desk card for the people who sign off. A service desk article and agent desk card so tier-1 agents route AI tickets correctly. <a href="../loan-officer-quick-start/index.html" target="_blank" rel="noopener">Quick-start ↗</a> · <a href="../hands-on-lab/index.html" target="_blank" rel="noopener">Lab ↗</a> · <a href="../compliance-reviewer-guide/index.html" target="_blank" rel="noopener">Reviewer guide ↗</a> · <a href="../service-desk-article/index.html" target="_blank" rel="noopener">Service desk article ↗</a></td></tr>
+      <tr><td>Write clear, short guidance on what data is allowed where</td><td>Data Rules card: five rules, one page. <a href="../data-rules-card/index.html" target="_blank" rel="noopener">Data Rules card ↗</a></td></tr>
+      <tr><td>Work through a network of AI champions</td><td>Branch AI champion is the first stop in the help path, and champions lead the lab after a train-the-trainer session. A champion kit sets up the role for every AI tool, starting with Ad Review: answer sheet, monthly checklist with branch numbers, and sign-up. <a href="../ai-champion-kit/index.html" target="_blank" rel="noopener">Champion kit ↗</a> · <a href="../hands-on-lab/index.html#facilitator" target="_blank" rel="noopener">Facilitator guide ↗</a></td></tr>
+      <tr><td>Hand off to engineering with a clear problem statement</td><td>"What gets built and by whom" and the phase 2 hand-off, built on signed-off discovery requirements (R1–R6). <a href="#workflow" data-go="workflow">Workflow</a> · <a href="#discovery" data-go="discovery">Discovery</a></td></tr>
+
+      <tr><td class="grp" colspan="2">Governance operations <span class="pct">20%</span></td></tr>
+      <tr><td>Apply the AI Acceptable Use Policy in practice</td><td>Data Rules card, trackable acknowledgment, and a no-blame incident route: the service desk treats customer data in a chat as a P1 for Compliance and InfoSec. <a href="#governance" data-go="governance">Governance</a> · <a href="../service-desk-article/index.html#example" target="_blank" rel="noopener">Service desk article ↗</a></td></tr>
+      <tr><td>Work through the AI Governance Committee</td><td>Use case assumed approved; the Committee gets the monthly report and decides the gate for the Ad Review app. <a href="#governance" data-go="governance">Governance</a> · <a href="../rollout-plan/index.html#plan" target="_blank" rel="noopener">Rollout plan gates ↗</a></td></tr>
+      <tr><td>Keep human oversight and an audit trail</td><td>Human sign-off on every ad; one locked record per ad; reviewers rate the pre-screen's accuracy on every decision. <a href="#workflow" data-go="workflow">Workflow</a> · <a href="../compliance-reviewer-guide/index.html" target="_blank" rel="noopener">Reviewer guide ↗</a></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ================= EVIDENCE ================= -->
+<section class="panel" id="evidence" role="tabpanel" aria-labelledby="tab-evidence" hidden>
+  <div class="intro">
+    <h2>A field test with a working loan officer</h2>
+    <p>I ran the skill live with a licensed loan officer on a real co-marketing flyer for a home listed in Douglasville, Georgia. The skill was on, the flyer was attached, and there was no prompt. The skill returned a HOLD and seven action items. She approved every fix, and the revised mockup came back as a FLAG with only a few items left for a person to finish. Below the real test, an illustrative third round shows how the last items would be cleared.</p>
+  </div>
+
+  <div class="privacy">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0F2747" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+    <div><strong>Real flyer and real reports, shared with the loan officer's permission.</strong> To protect the people and companies involved, I blurred names, faces, phone numbers, emails, license and NMLS numbers, company names and logos, the QR code and the street address. In the reports, those details are replaced with labels like [Agent] and [Lender].</div>
+  </div>
+
+  <div class="compare">
+    <figure>
+      <div class="fig-top"><strong>Original flyer</strong><span class="pill p-HOLD">HOLD</span></div>
+      <button type="button" class="zoom" data-src="img/flyer-original.jpg" style="padding:0;border:none;background:none;cursor:zoom-in"><img src="img/flyer-original.jpg" alt="Original flyer, identifying details blurred. The financing table lists down payment percentages such as As low as 0% and 3.5% / 10%." loading="lazy"></button>
+      <figcaption>The financing table lists down payment percentages. Under Regulation Z (1026.24(d)), those require full repayment terms and an APR, and the flyer had neither.</figcaption>
+    </figure>
+    <figure>
+      <div class="fig-top"><strong>Revised mockup</strong><span class="pill p-FLAG">FLAG</span></div>
+      <button type="button" class="zoom" data-src="img/flyer-revised.jpg" style="padding:0;border:none;background:none;cursor:zoom-in"><img src="img/flyer-revised.jpg" alt="Revised mockup, identifying details blurred. The down payment column now reads Low down payment options and Varies by program." loading="lazy"></button>
+      <figcaption>All seven fixes applied. The down payment issue is gone and the fine print is readable. Placeholders and a borderline VA phrase remain.</figcaption>
+    </figure>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3 class="h-ic"><svg class="ic"><use href="#i-search"/></svg>What the skill caught</h3>
+      <ul>
+        <li><span class="pill p-HOLD">HOLD</span> Down payment percentages with no repayment terms or APR</li>
+        <li><span class="pill p-FLAG">FLAG</span> Unclear company NMLS label; "Equal Housing Lender" missing</li>
+        <li><span class="pill p-FLAG">FLAG</span> Spelling mismatches and a broken email address with a space in it</li>
+        <li><span class="pill p-FLAG">FLAG</span> Tiny, letter-spaced, low-contrast fine print</li>
+        <li><span class="pill p-FLAG">FLAG</span> A phone number that looked like a placeholder, and an unconfirmed QR destination</li>
+      </ul>
+      <p class="small">It also noted for the reviewer that a co-marketing piece needs a RESPA Section 8 cost-split check, plus Georgia's own ad rules.</p>
+    </div>
+    <div class="card">
+      <h3 class="h-ic"><svg class="ic"><use href="#i-star"/></svg>What she valued</h3>
+      <ul>
+        <li>The report explained <em>why</em> each item was flagged, not just what</li>
+        <li>It caught empty placeholders and copy-paste errors a busy person skims past</li>
+        <li>She approved all the fixes and was happy with the mockup</li>
+      </ul>
+      <h3 class="h-ic" style="margin-top:8px"><svg class="ic"><use href="#i-usercheck"/></svg>Where it stopped, on purpose</h3>
+      <p>The re-check left the "[GA license]" and "[apply URL]" placeholders and safer VA wording for a person to finish. <strong>Next step in production:</strong> the designer finalizes, and Compliance signs off.</p>
+    </div>
+  </div>
+
+
+  <div class="section" id="round-three">
+    <div class="callout" style="background:#EEF2F8;border-left-color:var(--navy)"><strong>Illustrative example, not part of the field test.</strong> The real test ended at FLAG. This third round is a made-up example of a loan officer resubmitting a second time after missing details, so you can see what a clean PASS looks like.</div>
+    <div class="compare">
+      <figure>
+        <div class="fig-top"><strong>Round 3 mockup (illustrative)</strong><span class="pill p-PASS">PASS</span></div>
+        <button type="button" class="zoom" data-src="img/flyer-round3.jpg" style="padding:0;border:none;background:none;cursor:zoom-in"><img src="img/flyer-round3.jpg" alt="Illustrative round 3 flyer, identifying details blurred. The VA row now reads No-down-payment option available for eligible borrowers." loading="lazy"></button>
+        <figcaption>VA wording changed to the safer phrase, placeholders filled in (blurred like the other contact details), and the mockup label removed.</figcaption>
+      </figure>
+      <div class="card">
+        <div class="fig-top"><strong>Pre-screen report: round 3 (illustrative)</strong><span class="pill p-PASS">PASS</span></div>
+        <p><strong>Verdict: PASS (was FLAG).</strong> No triggering terms remain, and every required disclosure is present and readable.</p>
+        <table class="score">
+          <tr><th>Area</th><th>Was</th><th>Now</th><th>Why</th></tr>
+          <tr><td>Rates &amp; APR</td><td><span class="pill p-PASS">PASS</span></td><td><span class="pill p-PASS">PASS</span></td><td>No rates stated</td></tr>
+          <tr><td>Triggering terms</td><td><span class="pill p-FLAG">FLAG</span></td><td><span class="pill p-PASS">PASS</span></td><td>"No-down-payment option available" is general wording, not a "0% down" trigger</td></tr>
+          <tr><td>Prohibited practices</td><td><span class="pill p-PASS">PASS</span></td><td><span class="pill p-PASS">PASS</span></td><td>No change</td></tr>
+          <tr><td>House standards</td><td><span class="pill p-FLAG">FLAG</span></td><td><span class="pill p-PASS">PASS</span></td><td>State license and apply link filled in; company NMLS confirmed; agent license labeled</td></tr>
+          <tr><td>Clarity &amp; placement</td><td><span class="pill p-PASS">PASS</span></td><td><span class="pill p-PASS">PASS</span></td><td>Fine print readable; spacing fixed</td></tr>
+        </table>
+        <p class="small"><strong>For the reviewer:</strong> still confirm the RESPA Section 8 cost split between agent and lender, and Georgia's state ad rules. This is an automated pre-screen, not an approval.</p>
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <h3 class="h-ic"><svg class="ic"><use href="#i-file"/></svg>The two field-test reports</h3>
+    <div class="thumbs">
+      <button type="button" class="zoom" data-src="img/report-hold_0.jpg"><img src="img/report-hold_0.jpg" alt="Original report page 1: verdict HOLD and scorecard" loading="lazy"></button>
+      <button type="button" class="zoom" data-src="img/report-hold_1.jpg"><img src="img/report-hold_1.jpg" alt="Original report page 2: action plan" loading="lazy"></button>
+      <button type="button" class="zoom" data-src="img/report-flag_0.jpg"><img src="img/report-flag_0.jpg" alt="Mockup report page 1: verdict FLAG, was HOLD" loading="lazy"></button>
+      <button type="button" class="zoom" data-src="img/report-flag_1.jpg"><img src="img/report-flag_1.jpg" alt="Mockup report page 2: remaining action items" loading="lazy"></button>
+    </div>
+    <div class="dl-row">
+      <button class="btn btn-line" type="button" data-dl="files/field-test-report-HOLD-redacted.pdf">Download original report (PDF)</button>
+      <button class="btn btn-line" type="button" data-dl="files/field-test-report-FLAG-redacted.pdf">Download mockup report (PDF)</button>
+      <span class="dl-msg" aria-live="polite"></span>
+    </div>
+  </div>
+
+</section>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <h2>About the builder</h2>
+        <p class="motto">Humans first, technology second.</p>
+        <p>I'm Akeyla Peele-Tembong, an AI Workflow &amp; Automation Architect. I've spent 18 years in K-12 education, first as an elementary classroom teacher and then as a learning designer. Along the way I watched good tools go unused because nobody asked how people actually work. That's why I start with discovery and training, not just the build.</p>
+        <p style="margin-top:10px">Now I build AI that takes routine checks off people's plates, so they have more time for judgment and creative work. I build with Claude and other models, including vibe-coded internal tools.</p>
+        <p style="margin-top:10px">This case study focuses on Claude, and everything in it is my work: the skill, the tool, the guides, the data rules and the workflow. I chose on purpose to meet people where they already work. Claude does the pre-screen, and Microsoft 365 carries the rest, with Teams alerts, a SharePoint review queue and Outlook approval receipts. Compliance still decides every ad. AI just makes sure their time goes to the hard calls.</p>
+      </div>
+      <div class="contact">
+        <div><span class="small" style="color:#AEBBD0">Email</span><br><a href="mailto:akeyla.tembong@gmail.com">akeyla.tembong@gmail.com</a></div>
+        <div><span class="small" style="color:#AEBBD0">LinkedIn</span><br><a href="https://www.linkedin.com/in/akeylatembong" target="_blank" rel="noopener">linkedin.com/in/akeylatembong</a></div>
+        <button class="btn btn-gold" type="button" data-dl="files/Akeyla_Peele-Tembong_Resume.pdf">Download resume (PDF)</button>
+        <span class="dl-msg" aria-live="polite" style="color:#C9D3E3"></span>
+      </div>
+    </div>
+    <div class="fine">Northstar Harbor Mortgage is a fictional company created for portfolio purposes. Names, NMLS numbers, branches, policies and figures are illustrative. The field test used a real flyer, shown with identifying details removed.</div>
+  </div>
+</footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Enlarged image"><img alt=""><button class="btn btn-gold" type="button" id="lbClose">Close</button></div>
+
+<script>
+(function(){
+  var ids=["overview","discovery","platform","enablement","governance","workflow","dashboard","skills","evidence"];
+  var tabs=document.querySelectorAll('.tab');
+  function show(id,scroll){
+    if(ids.indexOf(id)<0) id="overview";
+    ids.forEach(function(x){ document.getElementById(x).hidden=(x!==id); });
+    tabs.forEach(function(t){ t.setAttribute('aria-selected', t.getAttribute('aria-controls')===id ? 'true':'false'); t.tabIndex = t.getAttribute('aria-controls')===id ? 0 : -1; });
+    if(scroll){ var nav=document.querySelector('.tabs'); window.scrollTo({top:nav.offsetTop,behavior:'smooth'}); }
+  }
+  function go(id){ if(location.hash!=='#'+id){ history.replaceState(null,'','#'+id); } show(id,true); }
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){ go(t.getAttribute('aria-controls')); });
+    t.addEventListener('keydown',function(e){
+      var n=null; if(e.key==='ArrowRight') n=(i+1)%tabs.length; if(e.key==='ArrowLeft') n=(i-1+tabs.length)%tabs.length;
+      if(n!==null){ e.preventDefault(); tabs[n].focus(); go(tabs[n].getAttribute('aria-controls')); }
+    });
+  });
+  document.querySelectorAll('[data-go]').forEach(function(b){ b.addEventListener('click',function(e){ e.preventDefault(); go(b.getAttribute('data-go')); }); });
+  window.addEventListener('hashchange',function(){ show(location.hash.slice(1),false); });
+  show(location.hash.slice(1),false);
+  document.querySelectorAll('.fn-ref').forEach(function(a){ a.addEventListener('click',function(e){ e.preventDefault(); var t=document.getElementById(a.getAttribute('href').slice(1)); if(t) t.scrollIntoView({behavior:'smooth',block:'center'}); }); });
+
+  // Walkthroughs
+  document.querySelectorAll('[data-wt]').forEach(function(w){
+    var steps=w.querySelectorAll('.step'), caps=w.querySelectorAll('.cap'), dots=w.querySelector('.wt-dots');
+    var prev=w.querySelector('[data-prev]'), next=w.querySelector('[data-next]'), i=0;
+    steps.forEach(function(_,k){ var d=document.createElement('button'); d.type='button'; d.className='wt-dot'; d.textContent=k+1; d.setAttribute('aria-label','Step '+(k+1)); d.addEventListener('click',function(){ set(k); }); dots.appendChild(d); });
+    var ds=dots.querySelectorAll('.wt-dot');
+    function set(k){ i=k; steps.forEach(function(s,j){ s.classList.toggle('on',j===k); }); caps.forEach(function(c,j){ c.classList.toggle('on',j===k); });
+      ds.forEach(function(d,j){ if(j===k) d.setAttribute('aria-current','step'); else d.removeAttribute('aria-current'); });
+      prev.disabled=(k===0); next.textContent=(k===steps.length-1)?'Start over':'Next'; }
+    prev.addEventListener('click',function(){ if(i>0) set(i-1); });
+    next.addEventListener('click',function(){ set(i===steps.length-1?0:i+1); });
+    set(0);
+  });
+
+  // Lightbox
+  var lb=document.getElementById('lb'), lbImg=lb.querySelector('img'), last=null;
+  document.querySelectorAll('.zoom').forEach(function(b){ b.addEventListener('click',function(){ last=b; lbImg.src=b.getAttribute('data-src'); lbImg.alt=(b.querySelector('img')||{}).alt||''; lb.classList.add('on'); document.getElementById('lbClose').focus(); }); });
+  function closeLb(){ lb.classList.remove('on'); if(last) last.focus(); }
+  document.getElementById('lbClose').addEventListener('click',closeLb);
+  lb.addEventListener('click',function(e){ if(e.target===lb) closeLb(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape' && lb.classList.contains('on')) closeLb(); });
+
+  // Downloads (platform capability, with an open-in-new-tab fallback)
+  var dlNs=null;
+  try{ if(window.claude && window.claude.use){ window.claude.use('downloads').then(function(ns){ dlNs=ns; }).catch(function(){}); } }catch(e){}
+  document.querySelectorAll('[data-dl]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var path=b.getAttribute('data-dl'), name=path.split('/').pop();
+      var msg=b.parentNode.querySelector('.dl-msg');
+      function say(t){ if(msg) msg.textContent=t; }
+      if(!dlNs){ say(''); var a=document.createElement('a'); a.href=path; a.target='_blank'; a.rel='noopener'; document.body.appendChild(a); a.click(); a.remove(); return; }
+      fetch(path).then(function(r){ if(!r.ok) throw new Error(); return r.blob(); })
+        .then(function(blob){ return dlNs.save({filename:name,data:blob}); })
+        .then(function(){ say('Saved.'); })
+        .catch(function(err){ if(err && err.code==='declined'){ say(''); } else { say('Download isn’t available here. Opening the file instead.'); window.open(path,'_blank'); } });
+    });
+  });
+})();
+</script>
+</body>
+</html>

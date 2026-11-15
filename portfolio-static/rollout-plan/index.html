@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ad Review Assistant: Rollout Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Northstar intranet look: navy bar, gold rule, warm paper background. Single theme on purpose (brand world). */
+:root{
+  --navy:#0F2747;--navy-2:#16335E;--gold:#C9A227;--gold-soft:#E3C766;--gold-ink:#8A6A12;
+  --paper:#F4F2EC;--card:#FFFFFF;--line:#DCD7CA;--ink:#1B2333;--muted:#4A5468;
+  --pass:#14532D;--pass-bg:#DCF2E3;--flag:#7A4F00;--flag-bg:#FFF1D1;--hold:#9B1C1C;--hold-bg:#FDE8E6;
+  --f-display:"Source Serif 4",Georgia,serif;--f-body:Inter,"Segoe UI",system-ui,sans-serif;--f-mono:ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+a{color:var(--navy)}a:hover{color:var(--gold-ink)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--f-display);color:var(--navy);text-wrap:balance;line-height:1.2;margin:0}
+p{margin:0}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-4px}
+.icb{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:9px;background:#FBF1D2;color:var(--navy);flex:none}
+.icb .ic{width:21px;height:21px}
+.top{background:var(--navy);color:#fff}
+.top-in{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:14px 24px;max-width:1160px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:12px}
+.bn{font-family:var(--f-display);font-weight:700;font-size:17px;letter-spacing:.04em;line-height:1.1}
+.bn span{display:block;font-family:var(--f-body);font-size:10px;letter-spacing:.3em;color:var(--gold-soft);font-weight:600}
+.divider{width:1px;height:30px;background:#3A5276}
+.hub{font-weight:600;font-size:15px}
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--gold-soft);font-weight:600;font-size:14px;text-decoration:none}
+.back:hover{color:#fff}
+.views{background:#fff;border-bottom:1px solid var(--line)}
+.views-in{max-width:1160px;margin:0 auto;padding:0 24px;display:flex;gap:4px;overflow-x:auto}
+.vtab{display:inline-flex;align-items:center;gap:8px;padding:12px 12px 9px;border-bottom:3px solid transparent;color:var(--muted);font-weight:600;font-size:14px;text-decoration:none;white-space:nowrap}
+.vtab:hover{color:var(--navy)}
+.vtab[aria-current="page"]{color:var(--navy);border-bottom-color:var(--gold)}
+.vtab .ic{width:17px;height:17px}
+.view[hidden]{display:none}
+.crumb{font-size:13px;color:var(--muted);padding:10px 0}
+.crumb strong{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 20px;border-radius:6px;font:700 15px var(--f-body);text-decoration:none;border:2px solid transparent;cursor:pointer}
+.btn-navy{background:var(--navy);color:#fff}.btn-navy:hover{background:var(--navy-2);color:#fff}
+.btn-gold{background:var(--gold);color:var(--navy)}.btn-gold:hover{background:var(--gold-soft);color:var(--navy)}
+.btn-line{border-color:var(--navy);color:var(--navy);background:#fff}.btn-line:hover{background:#F1EEE5}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.pill{display:inline-block;font-size:12px;font-weight:700;border-radius:4px;padding:2px 8px;text-align:center}
+.p-PASS{background:var(--pass-bg);color:var(--pass)}.p-FLAG{background:var(--flag-bg);color:var(--flag)}.p-HOLD{background:var(--hold-bg);color:var(--hold)}
+.fine{font-size:13px;color:#5B6577;font-style:italic}
+/* Letter-size sheets shown on screen */
+.sheet-stage{padding:28px 16px 48px;display:flex;justify-content:center}
+.sheet{width:100%;max-width:816px;background:#fff;box-shadow:0 8px 28px rgba(15,39,71,.14);display:flex;flex-direction:column}
+.sheet-head{background:var(--navy);color:#fff;border-bottom:5px solid var(--gold);padding:24px 40px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.sheet-title{text-align:right}
+.sheet-title h1{color:#fff;font-size:28px}
+.sheet-title div{font-size:12px;color:var(--gold-soft);font-weight:600;letter-spacing:.06em;margin-top:4px}
+.sheet-body{padding:22px 40px 0;display:flex;flex-direction:column;gap:13px;font-size:14px;line-height:1.45}
+.sheet-foot{margin:18px 40px 0;padding:10px 0 26px;border-top:2px solid var(--gold);font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+/* Microsoft Forms mockups */
+.form-stage{padding:28px 16px 48px;display:flex;justify-content:center}
+.mform{width:100%;max-width:640px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.mform-head{background:var(--navy);color:#fff;padding:20px 26px;border-bottom:5px solid var(--gold)}
+.mform-kicker{font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--gold-soft)}
+.mform-head h1{color:#fff;font-size:25px;margin:6px 0 4px}
+.mform-head p{font-size:14px;color:#E6EBF3}
+.mform-body{padding:22px 26px 26px;display:flex;flex-direction:column;gap:18px}
+.who{background:#F4F2EC;border-radius:8px;padding:10px 14px;font-size:14px;color:#3A4458}
+.q{display:flex;flex-direction:column;gap:6px}
+.q>label,.q legend{font-weight:600}
+.req{color:var(--hold)}
+select,input[type=text],textarea{font:15px var(--f-body);border:1px solid #B9B3A3;border-radius:6px;padding:0 10px;background:#fff;color:var(--ink)}
+select,input[type=text]{height:44px}
+textarea{min-height:110px;padding:10px;resize:vertical}
+fieldset{border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.ck{display:flex;gap:10px;align-items:flex-start;min-height:30px;cursor:pointer}
+.ck input{width:20px;height:20px;margin-top:1px;flex:none;accent-color:var(--navy)}
+.radios{display:flex;flex-wrap:wrap;gap:16px}
+.radios label{display:flex;gap:8px;align-items:center;min-height:40px;cursor:pointer}
+.radios input{width:18px;height:18px;accent-color:var(--navy)}
+.done-head{display:flex;align-items:center;gap:14px}
+.done-head h2{font-size:27px}
+.resp{width:100%;border-collapse:collapse;font-size:14px;border:1px solid #E4E0D5}
+.resp th{text-align:left;padding:8px 12px;width:40%;color:var(--muted);font-weight:600;background:#F7F5EF;border-bottom:1px solid #E4E0D5}
+.resp td{padding:8px 12px;border-bottom:1px solid #E4E0D5}
+.note{background:#F4F2EC;border-radius:8px;padding:14px 16px;font-size:14px;color:#3A4458;display:flex;flex-direction:column;gap:6px}
+.next-link{display:flex;align-items:center;justify-content:space-between;min-height:48px;padding:0 16px;border-radius:6px;font-weight:700;text-decoration:none}
+.portfolio-note{text-align:center;padding:0 16px 28px}
+@media (max-width:600px){.sheet-head,.sheet-body{padding-left:20px;padding-right:20px}.sheet-foot{margin-left:20px;margin-right:20px}.sheet-title{text-align:left}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.hero{background:var(--navy);color:#fff;border-bottom:6px solid var(--gold)}
+.hero-in{max-width:1160px;margin:0 auto;padding:52px 24px 48px;display:flex;flex-wrap:wrap;gap:40px;align-items:center}
+.badge{display:inline-block;background:var(--gold);color:var(--navy);font-size:12px;font-weight:700;letter-spacing:.12em;padding:5px 10px;border-radius:4px}
+.hero h1{color:#fff;font-size:46px;line-height:1.1;margin:18px 0 14px}
+.glance{flex:1 1 300px;min-width:0;background:var(--navy-2);border:1px solid #2E4C7A;border-radius:10px;padding:22px 24px}
+.glance-t{font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--gold-soft);margin-bottom:12px}
+.glance-row{display:flex;gap:10px;align-items:flex-start;font-size:15px;color:#E6EBF3}
+.glance-row .ic{color:var(--gold-soft);margin-top:2px}
+.glance-row strong{color:#fff}
+.strip{margin-top:28px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px 18px;display:flex;flex-wrap:wrap;gap:10px 24px;font-size:14px;color:#3A4458;align-items:center}
+section.blk{padding-top:52px}
+.h2row{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.h2row h2{font-size:31px}
+.sub{color:var(--muted);margin:0 0 22px;max-width:760px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px}
+.card h3{font-size:19px;margin:12px 0 6px}
+.card p{font-size:15px;color:#3A4458}
+.tagx{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;padding:4px 9px;border-radius:4px}
+.step{background:#fff;border:1px solid var(--line);border-radius:12px;padding:26px;display:flex;flex-wrap:wrap;gap:28px}
+.step-l{flex:1 1 340px;min-width:0}
+.step-r{flex:1 1 380px;min-width:0;background:var(--paper);border-radius:10px;padding:18px}
+.num{width:36px;height:36px;border-radius:50%;background:var(--navy);color:var(--gold-soft);display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.step-h{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.step-h h3{font-size:21px}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.1em;color:#5B6577;margin-bottom:10px}
+.prompt{background:#F7F5EF;border:1px dashed var(--gold-ink);border-radius:8px;padding:14px 16px;font-family:var(--f-mono);font-size:14px;line-height:1.6}
+.box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:15px}
+.legend{display:flex;flex-direction:column;gap:8px;font-size:14px;margin-top:12px}
+.legend div{display:flex;gap:10px;align-items:baseline}
+.legend .pill{flex:none;width:52px}
+table.sc{width:100%;border-collapse:collapse;background:#fff;font-size:13.5px}
+table.sc th{background:var(--navy);color:#fff;text-align:left;padding:8px 10px}
+table.sc td{padding:8px 10px;border-bottom:1px solid #E4E0D5;vertical-align:top}
+.r-pass{color:var(--pass);font-weight:700}.r-flag{color:var(--flag);font-weight:700}
+.fix{display:flex;gap:10px;align-items:center;background:#fff;border:2px solid var(--navy);border-radius:8px;padding:10px 12px;font-size:14px}
+.fix input{width:18px;height:18px;accent-color:var(--navy)}
+del{color:var(--hold);text-decoration:line-through}
+ins{color:var(--pass);background:var(--pass-bg);text-decoration:none;font-weight:600}
+table.qi{width:100%;border-collapse:collapse;background:#fff;font-size:13.5px}
+table.qi th{text-align:left;padding:7px 10px;width:42%;color:var(--muted);font-weight:600;border-bottom:1px solid #E4E0D5}
+table.qi td{padding:7px 10px;border-bottom:1px solid #E4E0D5}
+.decide{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
+.won{background:var(--navy);color:#fff;border-radius:12px;padding:30px;display:flex;flex-wrap:wrap;gap:28px}
+.won h2{color:#fff;font-size:28px;margin-bottom:8px}
+.won-g{flex:2 1 520px;min-width:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.won-g div{border-left:3px solid var(--gold);padding-left:14px}
+.won-g b{display:block;color:var(--gold-soft);margin-bottom:4px}
+.won-g span{font-size:14px;color:#E6EBF3}
+.faq{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.faq div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.faq h3{font-family:var(--f-body);font-size:16px;margin-bottom:6px}
+.help{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.help .card h3{margin-top:6px}
+.kick{font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--gold-ink);display:flex;align-items:center;gap:8px}
+.incident{margin-top:16px;background:var(--hold-bg);border:1px solid #E8B4AE;border-radius:10px;padding:16px 20px;font-size:15px;color:#3A1512;display:flex;gap:10px}
+.owner{margin:56px 0 0;padding:26px 0 40px;border-top:2px solid var(--gold)}
+.owner-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;font-size:14px}
+.owner-g b{display:block;color:var(--navy)}
+.owner-g span{color:var(--muted)}
+/* cheat sheet */
+.cs-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.cs-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cs-step{border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;gap:10px}
+.cs-step .num{width:26px;height:26px;font-size:13px}
+.cs-step b{display:block;color:var(--navy);font-size:14px}
+@media (max-width:700px){.cs-3,.cs-2{grid-template-columns:1fr}.hero h1{font-size:36px}}
+
+
+.split2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.list{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:9px;font-size:15px;color:#3A4458}
+.list li{display:flex;gap:10px;align-items:flex-start}
+.list li .ic{margin-top:2px;width:18px;height:18px}
+.yes .ic{color:var(--pass)}.no .ic{color:var(--hold)}
+.vrow{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid #E4E0D5;font-size:15px}
+.vrow:first-child{border-top:none;padding-top:0}
+.vrow .pill{flex:none;width:52px;margin-top:2px}
+/* Teams alert mock */
+.teams{background:#fff;border:1px solid #D6D3E8;border-left:5px solid #5B5FC7;border-radius:8px;padding:14px 16px;font-size:14px}
+.teams-top{display:flex;align-items:center;gap:8px;font-size:12px;color:#5B6577;margin-bottom:8px}
+.teams-av{width:26px;height:26px;border-radius:6px;background:var(--navy);color:var(--gold-soft);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
+.teams h4{margin:0 0 8px;font:700 15px var(--f-body);color:var(--ink)}
+.teams .kv{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:13.5px;margin-bottom:12px}
+.teams .kv span:nth-child(odd){color:#5B6577}
+.teams .tbtn{display:inline-flex;align-items:center;min-height:34px;padding:0 14px;border:1px solid #5B5FC7;border-radius:4px;color:#3D3F9E;font-weight:600;font-size:13px;margin-right:6px;background:#fff}
+.teams .tbtn.pri{background:#5B5FC7;color:#fff}
+/* comment cards */
+.cmt{background:#fff;border:1px solid var(--line);border-left:4px solid var(--flag);border-radius:8px;padding:12px 14px;font-size:14.5px}
+.cmt b{color:var(--navy)}
+.cmt q{font-style:italic}
+.acc{display:flex;flex-direction:column;gap:8px}
+.acc label{display:flex;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:6px;padding:9px 12px;font-size:14.5px;cursor:pointer;min-height:44px}
+.acc label.on{border:2px solid var(--navy);background:#F7F5EF}
+.acc input{width:18px;height:18px;accent-color:var(--navy);flex:none}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13.5px;font-weight:600}
+.flow .st{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 12px;color:var(--navy)}
+.flow .st.you{background:var(--navy);color:#fff;border-color:var(--navy)}
+.flow .ar{color:var(--gold-ink)}
+table.res{width:100%;border-collapse:collapse;background:#fff;font-size:14px}
+table.res th{background:var(--navy);color:#fff;text-align:left;padding:8px 10px}
+table.res td{padding:9px 10px;border-bottom:1px solid #E4E0D5;vertical-align:top}
+.timeline{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.tl{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px;border-top:5px solid var(--navy)}
+.tl .when{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--gold-ink)}
+.tl h3{font-size:18px;margin:6px 0 6px}
+.tl p{font-size:14.5px;color:#3A4458}
+.rel{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;counter-reset:r}
+.rel>div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px 18px 18px}
+.rel h3{font-size:17px;margin:10px 0 6px}
+.rel p{font-size:14.5px;color:#3A4458}
+.ex{margin-top:18px;background:#FFF6E0;border:1px solid #E2C47A;border-radius:10px;padding:16px 20px;font-size:15px;color:#3A2E0A;display:flex;gap:12px}
+.mini{font-size:12px;font-weight:700;letter-spacing:.08em}
+
+/* ---- leadership briefing ---- */
+.from{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:14px;color:#C9D3E3;margin-bottom:24px}
+.from b{color:#fff}
+.bottom{background:#fff;border:1px solid var(--line);border-left:6px solid var(--gold);border-radius:10px;padding:20px 24px;display:flex;flex-wrap:wrap;gap:18px 36px;align-items:center;margin-top:18px}
+.bottom .big{font-family:var(--f-display);font-size:40px;font-weight:700;color:var(--navy);line-height:1}
+.bottom .big small{font-size:17px;color:var(--muted);font-family:var(--f-body);font-weight:600}
+.bottom p{font-size:15px;color:#3A4458;flex:1 1 320px}
+.sum3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.sum3 .card{border-top:5px solid var(--navy)}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.k{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.k .lab{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted)}
+.k .ba{display:flex;align-items:baseline;gap:10px;margin-top:8px;flex-wrap:wrap}
+.k .b4{font-size:20px;color:#7A8395;text-decoration:line-through;text-decoration-thickness:1.5px}
+.k .af{font-family:var(--f-display);font-size:32px;font-weight:700;color:var(--navy)}
+.k .ar{color:var(--gold-ink);font-weight:700}
+.k p{font-size:13.5px;color:var(--muted);margin-top:4px}
+.cap{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px 24px}
+.cap-row{display:grid;grid-template-columns:160px minmax(0,1fr);gap:14px;align-items:center;margin:12px 0}
+.cap-row .nm{font-weight:600;font-size:14.5px}
+.cap-row .nm span{display:block;font-weight:500;font-size:12.5px;color:var(--muted)}
+.track{position:relative;height:30px;background:#F1EEE5;border-radius:6px}
+.fillb{position:absolute;left:0;top:0;bottom:0;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;color:#fff;font-weight:700;font-size:13.5px}
+.capline{position:absolute;top:-8px;bottom:-8px;width:0;border-left:2.5px dashed var(--hold)}
+.caplabel{position:absolute;top:-26px;transform:translateX(-50%);font-size:12px;font-weight:700;color:var(--hold);white-space:nowrap}
+@media (max-width:600px){.cap-row{grid-template-columns:1fr}}
+.asks{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
+.askcol{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.askcol-h{background:var(--navy);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-size:20px;font-weight:700}
+.askcol-h .ic{color:var(--gold-soft)}
+.ask{display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;padding:16px 20px;border-top:1px solid #E4E0D5}
+.ask:first-of-type{border-top:none}
+.ask h3{font-family:var(--f-body);font-size:16px;margin:4px 0 4px}
+.ask p{font-size:14.5px;color:#3A4458}
+.ask .due{display:inline-block;margin-top:6px;font-size:12.5px;font-weight:700;color:var(--gold-ink);background:#FBF1D2;border-radius:4px;padding:2px 8px}
+.guard{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.guard div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px;font-size:14.5px;color:#3A4458}
+.guard b{display:flex;align-items:center;gap:8px;color:var(--navy);margin-bottom:6px;font-size:15.5px}
+.guard .ic{color:var(--pass)}
+.next{background:var(--navy);color:#E6EBF3;border-radius:12px;padding:28px;display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}
+.next h2{color:#fff;font-size:28px;margin:12px 0 8px}
+.next-l{flex:1 1 420px;min-width:0}
+.next-r{flex:1 1 320px;min-width:0;background:var(--navy-2);border:1px solid #2E4C7A;border-radius:10px;padding:18px 20px}
+.gate{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;margin-top:10px}
+.gate .ic{color:var(--gold-soft);margin-top:2px}
+.assume{margin-top:18px;background:#F7F5EF;border:1px dashed #B9B3A3;border-radius:10px;padding:14px 18px;font-size:13.5px;color:#3A4458}
+.assume b{color:var(--navy)}
+.links{display:flex;flex-wrap:wrap;gap:10px}
+.links a{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-weight:600;font-size:14px;text-decoration:none}
+.links a:hover{border-color:var(--navy)}
+/* one-pager */
+.op-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.op-k{border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:12.5px}
+.op-k b{display:block;font-size:11px;letter-spacing:.06em;color:var(--muted)}
+.op-k .v{font-family:var(--f-display);font-size:20px;font-weight:700;color:var(--navy)}
+.op-k .v s{font-size:14px;color:#7A8395;font-weight:600;margin-right:4px}
+.op-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.op-box{border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:12.8px;line-height:1.45}
+.op-box h4{margin:0 0 6px;font:700 15px var(--f-display);color:var(--navy)}
+.op-box ul{margin:0;padding-left:17px;display:flex;flex-direction:column;gap:3px}
+@media (max-width:700px){.op-g,.op-2{grid-template-columns:1fr}}
+
+@media print{.top,.views,.noprint{display:none!important}body{background:#fff}.sheet-stage{padding:0}.sheet{box-shadow:none;max-width:none}}
+
+/* ---- rollout plan ---- */
+.gantt{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px 22px 16px;overflow-x:auto}
+.g-inner{min-width:760px}
+.g-head,.g-row{display:grid;grid-template-columns:190px minmax(0,1fr);gap:14px;align-items:center}
+.g-months{position:relative;height:22px;border-bottom:1px solid #E4E0D5}
+.g-months span{position:absolute;top:0;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--muted);padding-left:6px;border-left:1px solid #E4E0D5;height:22px}
+.g-row{padding:7px 0;border-bottom:1px dashed #EAE6DA}
+.g-row:last-child{border-bottom:none}
+.g-name{font-weight:600;font-size:14px;color:var(--ink)}
+.g-name span{display:block;font-weight:500;font-size:12px;color:var(--muted)}
+.g-track{position:relative;height:28px}
+.g-bar{position:absolute;top:3px;height:22px;border-radius:5px;font-size:11.5px;font-weight:700;color:#fff;display:flex;align-items:center;padding:0 8px;white-space:nowrap;overflow:visible}
+.g-ms{position:absolute;top:1px;width:0;height:26px}
+.g-ms::before{content:"";position:absolute;left:-7px;top:6px;width:14px;height:14px;background:var(--gold);transform:rotate(45deg);border:2px solid var(--navy)}
+.g-ms b{position:absolute;left:12px;top:5px;font-size:11.5px;color:var(--navy);white-space:nowrap}
+.g-today{position:absolute;top:0;bottom:0;border-left:2px dotted var(--hold)}
+.phases{display:flex;flex-direction:column;gap:16px}
+.ph{background:#fff;border:1px solid var(--line);border-radius:12px;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);overflow:hidden}
+.ph-l{padding:22px 24px;border-left:6px solid var(--navy)}
+.ph-r{padding:20px 22px;background:#F7F5EF;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:14px}
+.ph-top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-bottom:8px}
+.ph-top h3{font-size:22px}
+.ph .when{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--gold-ink);background:#FBF1D2;border-radius:4px;padding:3px 8px}
+.ph p{font-size:15px;color:#3A4458}
+.ph ul{margin:10px 0 0;padding-left:18px;font-size:14.5px;color:#3A4458;display:flex;flex-direction:column;gap:4px}
+.owners{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.own{font-size:12px;font-weight:600;background:#EEF1F6;color:var(--navy);border-radius:999px;padding:3px 10px}
+.own.lead{background:var(--navy);color:#fff}
+.gatebox h4,.measbox h4{margin:0 0 6px;font:700 12px var(--f-body);letter-spacing:.1em;color:var(--muted);display:flex;align-items:center;gap:6px}
+.gatebox h4 .ic,.measbox h4 .ic{width:16px;height:16px}
+.gl{display:flex;gap:8px;align-items:flex-start;font-size:14px;margin-top:6px;color:var(--ink)}
+.gl .ic{width:17px;height:17px;color:var(--pass);margin-top:2px}
+.miss{margin-top:8px;font-size:13.5px;background:var(--flag-bg);color:#4A3300;border-radius:6px;padding:8px 10px}
+.measbox .chips{display:flex;flex-wrap:wrap;gap:6px}
+.measbox .chips span{font-size:12.5px;background:#fff;border:1px solid var(--line);border-radius:4px;padding:2px 8px}
+@media (max-width:820px){.ph{grid-template-columns:1fr}.ph-r{border-left:none;border-top:1px solid var(--line)}}
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.roles div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:14px;color:#3A4458}
+.roles b{display:block;color:var(--navy);font-size:15px;margin-bottom:3px}
+/* measures */
+.mt-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:#fff}
+table.mt{width:100%;min-width:860px;border-collapse:collapse;font-size:14px}
+table.mt th{background:var(--navy);color:#fff;text-align:left;padding:10px 12px;font-size:13px}
+table.mt td{padding:10px 12px;border-bottom:1px solid #E4E0D5;vertical-align:top}
+table.mt tr.grp td{background:#F4F2EC;font-weight:700;color:var(--navy);font-size:12.5px;letter-spacing:.08em;padding:7px 12px}
+table.mt td.b4{color:#6A7386}
+table.mt td.tg{font-weight:700;color:var(--navy)}
+table.mt .src{font-size:12.5px;color:var(--muted);display:block;margin-top:2px}
+.lead-lag{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13.5px;font-weight:600;margin-bottom:14px}
+.lead-lag .st{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 12px;color:var(--navy)}
+.lead-lag .ar{color:var(--gold-ink)}
+.base2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.base2 .card{border-top:5px solid var(--navy)}
+.base2 .card:nth-child(2){border-top-color:var(--gold)}
+.kv2{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;font-size:14px;margin-top:12px}
+.kv2 span:nth-child(odd){color:var(--muted);font-weight:600}
+.compare{margin-top:18px;background:#fff;border:1px solid var(--line);border-left:6px solid var(--gold);border-radius:10px;padding:18px 22px;font-size:15px;color:#3A4458}
+/* results */
+.illus{display:inline-flex;align-items:center;gap:8px;background:var(--flag-bg);color:#4A3300;border:1px solid #E2C47A;border-radius:6px;padding:6px 12px;font-size:13.5px;font-weight:600}
+.rk{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.rk .k{position:relative}
+.stat{position:absolute;top:14px;right:14px;font-size:11.5px;font-weight:700;border-radius:4px;padding:2px 8px}
+.s-on{background:var(--pass-bg);color:var(--pass)}.s-near{background:#FBF1D2;color:var(--gold-ink)}.s-short{background:var(--hold-bg);color:var(--hold)}
+.k .tgt{font-size:12.5px;color:var(--muted);font-weight:600;margin-top:2px}
+.prog{height:8px;background:#F1EEE5;border-radius:4px;margin-top:10px;position:relative}
+.prog i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--navy)}
+.prog em{position:absolute;top:-4px;bottom:-4px;border-left:2px solid var(--gold-ink)}
+table.bt{width:100%;min-width:720px;border-collapse:collapse;font-size:14px}
+table.bt th{background:var(--navy);color:#fff;text-align:left;padding:9px 12px;font-size:13px}
+table.bt td{padding:9px 12px;border-bottom:1px solid #E4E0D5}
+table.bt td.n{font-variant-numeric:tabular-nums}
+table.bt .miss-c{color:var(--hold);font-weight:700}
+table.bt .ok-c{color:var(--pass);font-weight:700}
+.actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.act{background:#fff;border:1px solid var(--line);border-left:5px solid var(--hold);border-radius:10px;padding:16px 18px;font-size:14.5px;color:#3A4458}
+.act.near{border-left-color:var(--gold)}
+.act h3{font-family:var(--f-body);font-size:16px;margin-bottom:6px}
+.act .who2{margin-top:8px;font-size:12.5px;font-weight:700;color:var(--gold-ink)}
+.gatestat{background:var(--navy);color:#E6EBF3;border-radius:12px;padding:24px 26px;display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+.gatestat h2{color:#fff;font-size:25px;margin:10px 0 8px}
+.months3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;flex:1 1 380px}
+.months3 div{background:var(--navy-2);border:1px solid #2E4C7A;border-radius:8px;padding:12px 14px;font-size:13.5px}
+.months3 b{display:block;color:var(--gold-soft);font-size:12px;letter-spacing:.08em;margin-bottom:4px}
+/* pilot check-in */
+.agenda{display:flex;flex-direction:column;gap:0;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.ag{display:grid;grid-template-columns:70px minmax(0,1fr) minmax(0,1.2fr);gap:16px;padding:14px 20px;border-top:1px solid #E4E0D5;align-items:start;font-size:14.5px}
+.ag:first-child{border-top:none}
+.ag .min{font-family:var(--f-display);font-weight:700;font-size:20px;color:var(--navy)}
+.ag .min small{display:block;font:600 11px var(--f-body);color:var(--muted);letter-spacing:.06em}
+.ag h3{font-family:var(--f-body);font-size:16px;margin-bottom:2px}
+.ag p{color:#3A4458}
+@media (max-width:700px){.ag{grid-template-columns:60px minmax(0,1fr)}.ag>div:last-child{grid-column:2}}
+table.wk{width:100%;min-width:760px;border-collapse:collapse;font-size:14px;background:#fff}
+table.wk th{background:var(--navy);color:#fff;padding:9px 10px;text-align:center;font-size:13px}
+table.wk th:first-child{text-align:left}
+table.wk td{padding:9px 10px;border-bottom:1px solid #E4E0D5;text-align:center;font-variant-numeric:tabular-nums}
+table.wk td:first-child{text-align:left;font-weight:600}
+table.wk td.cur{background:#FFF6E0;font-weight:700}
+table.wk td.gt{font-weight:700;color:var(--navy);background:#F4F2EC}
+.cellbar{display:block;height:5px;border-radius:3px;background:#C9D3E3;margin:4px auto 0;max-width:60px}
+.cellbar i{display:block;height:5px;border-radius:3px;background:var(--navy)}
+.notes{background:#fff;border:1px solid var(--line);border-radius:12px;padding:0;overflow:hidden}
+.notes-h{background:#F7F5EF;border-bottom:1px solid var(--line);padding:14px 20px;display:flex;flex-wrap:wrap;gap:6px 20px;font-size:13.5px;color:var(--muted)}
+.notes-h b{color:var(--navy)}
+.notes-b{padding:16px 20px;display:flex;flex-direction:column;gap:14px;font-size:14.5px;color:#3A4458}
+.notes-b h4{margin:0 0 4px;font:700 13px var(--f-body);letter-spacing:.08em;color:var(--navy)}
+.dec{width:100%;border-collapse:collapse;font-size:14px}
+.dec th{text-align:left;font-size:12px;letter-spacing:.06em;color:var(--muted);padding:6px 8px;border-bottom:1px solid #E4E0D5}
+.dec td{padding:8px;border-bottom:1px solid #E4E0D5;vertical-align:top}
+/* checklist */
+.cl-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:16px}
+.cl-prog{display:flex;align-items:center;gap:12px;font-weight:600;font-size:14px;color:var(--navy)}
+.cl-prog .bar{width:200px;height:10px;background:#E4E0D5;border-radius:5px;overflow:hidden}
+.cl-prog .bar i{display:block;height:100%;width:0;background:var(--pass);transition:width .2s}
+.filters{display:flex;flex-wrap:wrap;gap:6px}
+.filters button{font:600 13px var(--f-body);border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:999px;padding:7px 13px;cursor:pointer;min-height:36px}
+.filters button[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.clp{background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:16px;overflow:hidden}
+.clp-h{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;padding:14px 20px;background:#F7F5EF;border-bottom:1px solid var(--line)}
+.clp-h h3{font-size:19px}
+.clp-h .when{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--gold-ink)}
+.cli{display:grid;grid-template-columns:30px minmax(0,1fr) 190px 110px;gap:12px;align-items:center;padding:10px 20px;border-top:1px solid #EEEBE2;font-size:14.5px}
+.cli:first-of-type{border-top:none}
+.cli input{width:20px;height:20px;accent-color:var(--pass);cursor:pointer}
+.cli label{cursor:pointer}
+.cli.done label{color:#7A8395;text-decoration:line-through}
+.cli .o{font-size:12.5px;font-weight:600;color:var(--navy)}
+.cli .d{font-size:12.5px;font-weight:700;color:var(--gold-ink);text-align:right}
+.cli .gate-i{font-size:11px;font-weight:700;background:var(--navy);color:var(--gold-soft);border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:1px}
+.cli[hidden]{display:none}
+@media (max-width:760px){.cli{grid-template-columns:30px minmax(0,1fr)}.cli .o,.cli .d{grid-column:2;text-align:left}}
+/* risks */
+.risks{display:flex;flex-direction:column;gap:14px}
+.rsk{background:#fff;border:1px solid var(--line);border-radius:12px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);overflow:hidden}
+.rsk-l{padding:18px 22px}
+.rsk-r{padding:18px 22px;background:#F7F5EF;border-left:1px solid var(--line);font-size:14.5px;color:#3A4458}
+.rsk h3{font-size:19px;margin:8px 0 6px}
+.rsk p{font-size:14.5px;color:#3A4458}
+.lvl{display:flex;flex-wrap:wrap;gap:6px}
+.lvl span{font-size:11.5px;font-weight:700;letter-spacing:.06em;border-radius:4px;padding:2px 8px}
+.l-hi{background:var(--hold-bg);color:var(--hold)}.l-md{background:var(--flag-bg);color:var(--flag)}.l-lo{background:var(--pass-bg);color:var(--pass)}
+.rsk-r h4{margin:0 0 6px;font:700 12px var(--f-body);letter-spacing:.1em;color:var(--muted)}
+.rsk-r ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.trig{margin-top:10px;font-size:13.5px}
+.trig b{color:var(--navy)}
+@media (max-width:820px){.rsk{grid-template-columns:1fr}.rsk-r{border-left:none;border-top:1px solid var(--line)}}
+
+.clp[hidden]{display:none}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 21 2M16 7l3 3M18.5 4.5l2 2"/></symbol>
+<symbol id="i-package" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></symbol>
+<symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/></symbol>
+<symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></symbol>
+<symbol id="i-app" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M8 7h8M8 11h6"/></symbol>
+<symbol id="i-flow" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="6" rx="1"/><rect x="14" y="15" width="7" height="6" rx="1"/><path d="M6.5 9v4a2 2 0 0 0 2 2H14"/></symbol>
+<symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 2v6M15 2v6M6 8h12v3a6 6 0 0 1-12 0zM12 17v5"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2 21h20z"/><path d="M12 10v5M12 18h.01"/></symbol>
+<symbol id="i-message" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></symbol>
+<symbol id="i-usercheck" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="m16 11 2 2 4-4"/></symbol>
+<symbol id="i-trend" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+<symbol id="i-printer" viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.7-2.5 2-2.5 3.5M12 17h.01"/></symbol>
+<symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></symbol>
+<symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+
+<symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8M4 4v4h4M4 13a8 8 0 0 0 14.3 4.9L20 16M20 20v-4h-4"/></symbol>
+<symbol id="i-edit" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></symbol>
+<symbol id="i-megaphone" viewBox="0 0 24 24"><path d="M3 11v2a1 1 0 0 0 1 1h3l6 5V5L7 10H4a1 1 0 0 0-1 1z"/><path d="M17 8a5 5 0 0 1 0 8"/></symbol>
+<symbol id="i-ticket" viewBox="0 0 24 24"><path d="M3 8a2 2 0 0 0 0 4v0a2 2 0 0 1 0 4v2h18v-2a2 2 0 0 1 0-4 2 2 0 0 0 0-4V6H3z"/><path d="M14 6v12" stroke-dasharray="2 2"/></symbol>
+<symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></symbol>
+<symbol id="i-rocket" viewBox="0 0 24 24"><path d="M5 15c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.8-.9.8-2.3-.1-3.1a2.2 2.2 0 0 0-2.9.1z"/><path d="m12 15-3-3a22 22 0 0 1 2-4A12.9 12.9 0 0 1 22 2c0 2.7-.8 7.5-6 11a22.4 22.4 0 0 1-4 2z"/><path d="M9 12H4s.6-3 2-4c1.6-1.1 5 0 5 0M12 15v5s3-.6 4-2c1.1-1.6 0-5 0-5"/></symbol>
+<symbol id="i-gradcap" viewBox="0 0 24 24"><path d="m22 9-10-5L2 9l10 5z"/><path d="M6 11v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5M22 9v6"/></symbol>
+
+<symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></symbol>
+</svg>
+<header class="top"><div class="top-in">
+  <div class="brand"><svg width="44" height="44" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#0F2747" stroke="#C9A227" stroke-width="1.6"/><path d="M20 6.5 L22.4 15.6 L31.5 18 L22.4 20.4 L20 29.5 L17.6 20.4 L8.5 18 L17.6 15.6 Z" fill="#C9A227"/><path d="M10 26.5 q2.5 -1.6 5 0 t5 0 t5 0 t5 0 M11.5 30 q2.1 -1.4 4.2 0 t4.3 0 t4.3 0 t4.2 0" fill="none" stroke="#C9A227" stroke-width="1.2"/></svg><div class="bn">NORTHSTAR HARBOR<span>MORTGAGE</span></div><div class="divider"></div><div class="hub">Harbor Hub · AI Program</div></div>
+  <a class="back" href="../case-study/index.html#enablement" target="_blank" rel="noopener"><svg class="ic"><use href="#i-arrow-left"/></svg>Back to case study</a>
+</div></header>
+<nav class="views" aria-label="Pages in this piece"><div class="views-in">
+  <a class="vtab" href="#plan" data-view="plan"><svg class="ic"><use href="#i-calendar"/></svg>Plan</a>
+  <a class="vtab" href="#measures" data-view="measures"><svg class="ic"><use href="#i-target"/></svg>Measures</a>
+  <a class="vtab" href="#pilot-check-in" data-view="pilot-check-in"><svg class="ic"><use href="#i-users"/></svg>Weekly pilot check-in</a>
+  <a class="vtab" href="#checklist" data-view="checklist"><svg class="ic"><use href="#i-clipboard"/></svg>Week-by-week checklist</a>
+  <a class="vtab" href="#risks" data-view="risks"><svg class="ic"><use href="#i-alert"/></svg>Top risks</a>
+  <a class="vtab" href="#results" data-view="results"><svg class="ic"><use href="#i-chart"/></svg>Sample 90-day results</a>
+</div></nav>
+
+<!-- ================= PLAN ================= -->
+<div class="view" id="plan">
+  <div style="background:#fff;border-bottom:1px solid var(--line)"><div class="wrap crumb">Harbor Hub › AI Program › Ad Review Assistant › <strong>Rollout plan</strong></div></div>
+  <div class="hero"><div class="hero-in">
+    <div style="flex:999 1 560px;min-width:0">
+      <span class="badge">ROLLOUT PLAN · v1.0 · NOVEMBER 2026</span>
+      <h1>From pilot to every branch by March 31.</h1>
+      <p style="font-size:19px;color:#E6EBF3;max-width:700px;margin-bottom:18px">The working plan for the project team. Five phases, each with an owner, an exit gate and the numbers we watch. We measure the real "before" first, so every "after" has something honest to compare against.</p>
+      <div class="from"><span><b>For:</b> AI Enablement, Compliance, Marketing, Engineering, Service Desk, pilot branch managers</span><span><b>Plan owner:</b> Akeyla Peele-Tembong, AI Platform &amp; Enablement Lead</span></div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px"><a class="btn btn-gold" href="#phases" data-scroll="phases"><svg class="ic"><use href="#i-flow"/></svg>Jump to the phases</a><a class="btn" href="#measures" style="color:#fff;border-color:#8DA2C0"><svg class="ic"><use href="#i-target"/></svg>See the measures</a></div>
+    </div>
+    <div class="glance"><div class="glance-t">KEY DATES</div><div style="display:flex;flex-direction:column;gap:12px">
+      <div class="glance-row"><svg class="ic"><use href="#i-search"/></svg><div><strong>Nov 16 – Dec 4, 2026:</strong> capture the real baseline</div></div>
+      <div class="glance-row"><svg class="ic"><use href="#i-flow"/></svg><div><strong>Dec 7 – Jan 22:</strong> pilot in Edmond and Atlanta. Go/no-go Jan 28</div></div>
+      <div class="glance-row"><svg class="ic"><use href="#i-star"/></svg><div><strong>Feb 2–10, 2027:</strong> champion train-the-trainer</div></div>
+      <div class="glance-row"><svg class="ic"><use href="#i-rocket"/></svg><div><strong>Feb 15 and Mar 8:</strong> Wave 1 and Wave 2 go live</div></div>
+      <div class="glance-row"><svg class="ic"><use href="#i-chart"/></svg><div><strong>April onward:</strong> monthly results and the app decision gate</div></div>
+    </div></div>
+  </div></div>
+
+  <div class="wrap">
+    <div class="strip"><svg class="ic" style="color:var(--navy)"><use href="#i-shield"/></svg><span><strong style="color:var(--navy)">Approved for use</strong> by the Northstar AI Governance Committee</span><span>Matches the dates and targets in the leadership briefing</span><span>Template for every tool in Northstar's AI program</span></div>
+
+    <section class="blk">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-calendar"/></svg></span><h2>Timeline</h2></div>
+      <p class="sub">November 2026 through April 2027. Diamonds are decision points.</p>
+      <div class="gantt" role="img" aria-label="Gantt timeline: baseline Nov 16 to Dec 4, pilot Dec 7 to Jan 22 with go/no-go Jan 28, champion nominations due Jan 15, train-the-trainer Feb 2 to 10, Wave 1 live Feb 15, Wave 2 go/no-go Mar 4 and live Mar 8, stabilize to Mar 31, steady state from April with first monthly report Apr 7."><div class="g-inner"><div class="g-head"><div></div><div class="g-months"><span style="left:0">NOV 16</span><span style="left:9.09%">DEC</span><span style="left:27.88%">JAN</span><span style="left:46.67%">FEB</span><span style="left:63.64%">MAR</span><span style="left:82.42%">APR</span></div></div><div class="g-row"><div class="g-name">0 · Baseline<span>Records + time study</span></div><div class="g-track"><div class="g-bar" style="left:0.00%;width:10.91%;background:#5B6577;color:#fff">Baseline</div><div class="g-ms" style="left:10.91%"><b>Readout Dec 4</b></div></div></div><div class="g-row"><div class="g-name">1 · Pilot<span>Edmond + Atlanta, 150 LOs</span></div><div class="g-track"><div class="g-bar" style="left:12.73%;width:27.88%;background:var(--gold);color:var(--navy)">Pilot · 7 weeks</div><div class="g-ms" style="left:44.24%"><b>Go/no-go Jan 28</b></div></div></div><div class="g-row"><div class="g-name">2 · Champions<span>Nominate, then train</span></div><div class="g-track"><div class="g-bar" style="left:16.97%;width:19.39%;background:#8DA2C0;color:var(--navy)">Nominations</div><div class="g-bar" style="left:47.27%;width:6.06%;background:var(--navy-2);color:#fff">Train</div></div></div><div class="g-row"><div class="g-name">3a · Wave 1<span>Edmond, Atlanta, Dallas</span></div><div class="g-track"><div class="g-bar" style="left:55.15%;width:44.85%;background:var(--pass);color:#fff">Live Feb 15</div></div></div><div class="g-row"><div class="g-name">3b · Wave 2<span>Irvine, Charlotte, Corp/Remote</span></div><div class="g-track"><div class="g-ms" style="left:65.45%"><b style="left:auto;right:12px">Gate Mar 4</b></div><div class="g-bar" style="left:67.88%;width:32.12%;background:#2F7A4D;color:#fff">Live Mar 8</div></div></div><div class="g-row"><div class="g-name">4 · Steady state<span>Monthly reporting</span></div><div class="g-track"><div class="g-bar" style="left:67.88%;width:13.94%;background:#C9D3E3;color:var(--navy)">Buffer</div><div class="g-bar" style="left:82.42%;width:17.58%;background:var(--navy);color:#fff">Monthly reports from Apr 7</div></div></div></div></div>
+    </section>
+
+    <section class="blk" id="phases">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-flow"/></svg></span><h2>The five phases</h2></div>
+      <p class="sub">No phase starts until the one before it clears its gate. Each gate has a plan for what happens if it's missed, so a slip never turns into a scramble.</p>
+      <div class="phases">
+
+        <div class="ph"><div class="ph-l">
+          <div class="ph-top"><span class="num">0</span><h3>Prepare and capture the baseline</h3><span class="when">NOV 16 – DEC 4, 2026</span></div>
+          <p>Before anyone uses the assistant, we measure today's review process for real. Planning assumptions get replaced by Northstar's own numbers.</p>
+          <ul><li>Pull 3 months of review history (Aug–Oct 2026) and run a 10-business-day reviewer time study</li><li>Add the "Minutes spent" and "Pre-screen accuracy" fields to the SharePoint review list</li><li>Create the pilot Entra group and assign the plugin to it</li><li>Run a tabletop test of the P1 customer-data path with the Service Desk and InfoSec</li><li>Pilot loan officers acknowledge the Data Rules and take the lab</li></ul>
+          <div class="owners"><span class="own lead">AI Enablement (lead)</span><span class="own">Compliance</span><span class="own">Engineering – Identity</span><span class="own">Service Desk</span><span class="own">Pilot branch managers</span></div>
+        </div><div class="ph-r">
+          <div class="gatebox"><h4><svg class="ic"><use href="#i-check"/></svg>EXIT GATE</h4>
+            <div class="gl"><svg class="ic"><use href="#i-check"/></svg><span>Baseline readout published (Dec 4)</span></div>
+            <div class="gl"><svg class="ic"><use href="#i-check"/></svg><span>100% of the pilot cohort acknowledged the Data Rules; 80% or more completed the lab</span></div>
+            <div class="gl"><svg class="ic"><use href="#i-check"/></svg><span>P1 tabletop passed; executives confirmed protected time</span></div>
+            <div class="miss"><strong>If missed:</strong> the pilot starts with the loan officers who are ready. Nobody gets access without the acknowledgment.</div></div>
+          <div class="measbox"><h4><svg class="ic"><use href="#i-target"/></svg>WATCH</h4><div class="chips"><span>Time study sample size</span><span>Data Rules ack %</span><span>Lab %</span></div></div>
+        </div></div>
+
+        <div class="ph"><div class="ph-l" style="border-left-color:var(--gold)">
+          <div class="ph-top"><span class="num">1</span><h3>Pilot: Edmond and Atlanta</h3><span class="when">DEC 7, 2026 – JAN 22, 2027</span></div>
+          <p>A cohort of 150 loan officers (75 per branch) and 2 Compliance reviewers use the assistant on real ads for 7 weeks. AI Enablement runs the labs and the weekly check-in. The rest of the company keeps working the old way, which gives us a comparison group.</p>
+          <ul><li>Weekly 30-minute check-in every Thursday (<a href="#pilot-check-in">agenda and sample</a>)</li><li>Reviewers log minutes and rate pre-screen accuracy on every pilot ad</li><li>January rule release fixes what the pilot finds</li><li>Pilot readout and go/no-go on Thursday, Jan 28</li></ul>
+          <div class="owners"><span class="own lead">AI Enablement (lead)</span><span class="own">Compliance reviewers</span><span class="own">Pilot branch managers</span><span class="own">Marketing</span></div>
+        </div><div class="ph-r">
+          <div class="gatebox"><h4><svg class="ic"><use href="#i-check"/></svg>EXIT GATE · TREND + SAFETY</h4>
+            <div class="gl"><svg class="ic"><use href="#i-check"/></svg><span>30% or fewer ads returned, and falling week over week</span></div>
+            <div class="gl"><svg class="ic"><use href="#i-check"/></svg><span>80% or more of pilot ads pre-screened</span></div>
+            <div class="gl"><svg class="ic"><use href="#i-check"/></svg><span>Reviewers rate the pre-screen "Accurate" on 85% or more of items</span></div>
+            <div class="gl"><svg class="ic"><use href="#i-check"/></svg><span>No unresolved P1 data incidents</span></div>
+            <div class="miss"><strong>If missed:</strong> extend the pilot 2 weeks and re-check Feb 5. Wave 1 still goes Feb 15 if the re-check passes. A second miss goes to the AI Governance Committee for a re-plan.</div></div>
+          <div class="measbox"><h4><svg class="ic"><use href="#i-target"/></svg>WATCH WEEKLY</h4><div class="chips"><span>Returned %</span><span>Pre-screened %</span><span>Accuracy %</span><span>Minutes per ad</span><span>P1s</span><span>Tickets</span></div></div>
+        </div></div>
+
+        <div class="ph"><div class="ph-l" style="border-left-color:var(--navy-2)">
+          <div class="ph-top"><span class="num">2</span><h3>Champions nominated and trained</h3><span class="when">DEC 14, 2026 – FEB 12, 2027</span></div>
+          <p>Runs alongside the end of the pilot. Branch managers nominate champions; champions learn to run the lab, answer questions and bring their branch numbers to their manager.</p>
+          <ul><li>Nominations open Dec 14, due Jan 15 (1 per branch, 2 if more than 75 loan officers)</li><li>Train-the-trainer sessions Feb 2–10 (about 3 hours, using the <a href="../ai-champion-kit/index.html" target="_blank" rel="noopener">champion kit</a>)</li><li>Each champion co-leads one lab with Enablement before running one alone, by Feb 12</li></ul>
+          <div class="owners"><span class="own lead">AI Enablement (lead)</span><span class="own">Branch managers</span><span class="own">Champions</span></div>
+        </div><div class="ph-r">
+          <div class="gatebox"><h4><svg class="ic"><use href="#i-check"/></svg>EXIT GATE</h4>
+            <div class="gl"><svg class="ic"><use href="#i-check"/></svg><span>Every branch has a trained champion</span></div>
+            <div class="gl"><svg class="ic"><use href="#i-check"/></svg><span>Every champion has co-led a lab</span></div>
+            <div class="miss"><strong>If missed:</strong> an Enablement team member covers that branch's labs until its champion is trained. The branch can still go live.</div></div>
+          <div class="measbox"><h4><svg class="ic"><use href="#i-target"/></svg>WATCH</h4><div class="chips"><span>Branches with a champion</span><span>Champions trained</span></div></div>
+        </div></div>
+
+        <div class="ph"><div class="ph-l" style="border-left-color:var(--pass)">
+          <div class="ph-top"><span class="num">3</span><h3>Go live in two waves</h3><span class="when">FEB 15 – MAR 31, 2027</span></div>
+          <p><strong>Wave 1, Feb 15:</strong> Edmond and Atlanta go branch-wide, plus Dallas. <strong>Wave 2, Mar 8:</strong> Irvine, Charlotte and Corporate/Remote. The rest of March is buffer for catch-up labs and fixes.</p>
+          <ul><li>A branch goes live only when it meets readiness: 100% Data Rules acknowledged, 80% or more completed the lab, champion trained, group assigned</li><li>15-minute daily stand-up during each wave's first week</li><li>Wave 2 go/no-go on Thursday, Mar 4</li></ul>
+          <div class="owners"><span class="own lead">AI Enablement (lead)</span><span class="own">Branch managers</span><span class="own">Champions</span><span class="own">Engineering</span><span class="own">Service Desk</span><span class="own">Compliance</span></div>
+        </div><div class="ph-r">
+          <div class="gatebox"><h4><svg class="ic"><use href="#i-check"/></svg>WAVE 2 GATE (MAR 4)</h4>
+            <div class="gl"><svg class="ic"><use href="#i-check"/></svg><span>No unresolved P1s in Wave 1 branches</span></div>
+            <div class="gl"><svg class="ic"><use href="#i-check"/></svg><span>80% or more of Wave 1 ads pre-screened</span></div>
+            <div class="gl"><svg class="ic"><use href="#i-check"/></svg><span>85% or more of review decisions made within 1 business day</span></div>
+            <div class="gl"><svg class="ic"><use href="#i-check"/></svg><span>No open P2 parent incident; 5 or fewer tickets per 100 users</span></div>
+            <div class="miss"><strong>If missed:</strong> Wave 2 moves to Mar 22, still inside the March window. A branch that misses readiness joins the next wave or the buffer.</div></div>
+          <div class="measbox"><h4><svg class="ic"><use href="#i-target"/></svg>WATCH</h4><div class="chips"><span>Readiness by branch</span><span>Pre-screened %</span><span>Decision time</span><span>Tickets</span></div></div>
+        </div></div>
+
+        <div class="ph"><div class="ph-l" style="border-left-color:#5B6577">
+          <div class="ph-top"><span class="num">4</span><h3>Steady state</h3><span class="when">APRIL 2027 ONWARD</span></div>
+          <p>The assistant becomes part of normal work. We report monthly, ship rule changes monthly, and watch the decision gate for the Ad Review app.</p>
+          <ul><li>Monthly results to Compliance leadership and the AI Governance Committee, first report Apr 7</li><li>Monthly rule release (urgent fixes the same week); champions call the first Tuesday of each month</li><li>Data Rules and lab added to new-hire onboarding</li><li>Two-week reviewer time sample once a quarter</li></ul>
+          <div class="owners"><span class="own lead">AI Enablement (lead)</span><span class="own">Compliance</span><span class="own">Champions</span><span class="own">Engineering</span></div>
+        </div><div class="ph-r">
+          <div class="gatebox"><h4><svg class="ic"><use href="#i-check"/></svg>APP DECISION GATE</h4>
+            <p style="font-size:14px">Company-wide, 2 months in a row:</p>
+            <div class="gl"><svg class="ic"><use href="#i-check"/></svg><span>20% or fewer ads returned</span></div>
+            <div class="gl"><svg class="ic"><use href="#i-check"/></svg><span>90% or more pre-screened</span></div>
+            <div class="gl"><svg class="ic"><use href="#i-check"/></svg><span>No unresolved P1s</span></div>
+            <div class="miss" style="background:#EEF1F6;color:var(--navy)"><strong>Then:</strong> Enablement and Engineering bring the app build proposal to the AI Governance Committee. Earliest: June 2027.</div></div>
+          <div class="measbox"><h4><svg class="ic"><use href="#i-target"/></svg>WATCH MONTHLY</h4><div class="chips"><span>Full scorecard</span><span>Branch numbers</span><span>Usage and cost</span></div></div>
+        </div></div>
+
+      </div>
+    </section>
+
+    <section class="blk">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-users"/></svg></span><h2>Who does what</h2></div>
+      <p class="sub">One lead per phase. Everyone else knows their part.</p>
+      <div class="roles">
+        <div><b>AI Enablement</b>Owns the plan, labs, check-ins, rule releases, reporting and the champion program.</div>
+        <div><b>Compliance</b>Owns the rules and signs off every change. Reviewers run the time study, log minutes and rate accuracy.</div>
+        <div><b>Marketing and loan officer leadership</b>Sponsors. Accountable for use and for acting on reviewer feedback.</div>
+        <div><b>Engineering</b>Entra groups, SSO, plugin assignment and the Power Automate flows, working with Enablement.</div>
+        <div><b>Service Desk</b>Tier 1 for all AI tools using <a href="../service-desk-article/index.html" target="_blank" rel="noopener">KB0012047</a>. Joins the P1 tabletop.</div>
+        <div><b>Branch managers and champions</b>Own branch readiness and bring branch numbers to each monthly review.</div>
+      </div>
+      <div class="assume"><b>Same playbook for every AI tool.</b> When the next tool rolls out, this plan is copied: baseline first, a two-branch pilot with a trend-and-safety gate, champions trained, waves gated on readiness, then monthly reporting.</div>
+    </section>
+
+    <section class="blk">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-book"/></svg></span><h2>The rollout package</h2></div>
+      <p class="sub">Everything each phase relies on.</p>
+      <div class="links">
+        <a href="../leadership-briefing/index.html" target="_blank" rel="noopener"><svg class="ic"><use href="#i-briefcase"/></svg>Leadership briefing ↗</a>
+        <a href="../loan-officer-quick-start/index.html" target="_blank" rel="noopener"><svg class="ic"><use href="#i-book"/></svg>Loan officer quick-start ↗</a>
+        <a href="../data-rules-card/index.html" target="_blank" rel="noopener"><svg class="ic"><use href="#i-lock"/></svg>Data Rules card ↗</a>
+        <a href="../hands-on-lab/index.html" target="_blank" rel="noopener"><svg class="ic"><use href="#i-gradcap"/></svg>30-minute lab ↗</a>
+        <a href="../compliance-reviewer-guide/index.html" target="_blank" rel="noopener"><svg class="ic"><use href="#i-shield"/></svg>Compliance reviewer guide ↗</a>
+        <a href="../ai-champion-kit/index.html" target="_blank" rel="noopener"><svg class="ic"><use href="#i-star"/></svg>Branch AI champion kit ↗</a>
+        <a href="../service-desk-article/index.html" target="_blank" rel="noopener"><svg class="ic"><use href="#i-ticket"/></svg>Service desk article ↗</a>
+      </div>
+    </section>
+    <footer class="owner">
+      <div class="owner-g"><div><b>Maintained by AI Enablement</b><span>Akeyla Peele-Tembong, AI Platform &amp; Enablement Lead. Questions or changes: post in the AI Enablement Teams channel.</span></div><div><b>Sponsored by Marketing and loan officer leadership</b><span>Accountable for use and for acting on reviewer feedback.</span></div><div><b>Gates reviewed by Compliance</b><span>The Compliance lead approved the pilot and wave gates and the P1 path.</span></div></div>
+      <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:8px 24px;font-size:13px;color:var(--muted)"><span>Rollout plan version 1.0 · November 2026</span><span>Next review: Dec 4, 2026, after the baseline readout</span><span>Numbers are planning assumptions until the baseline replaces them</span></div>
+      <p class="fine" style="margin-top:16px">Northstar Harbor Mortgage is a fictional company created for portfolio purposes.</p>
+    </footer>
+  </div>
+</div>
+
+<!-- ================= MEASURES ================= -->
+<div class="view" id="measures" hidden>
+  <div style="background:#fff;border-bottom:1px solid var(--line)"><div class="wrap crumb">Harbor Hub › AI Program › Ad Review Assistant › Rollout plan › <strong>Measures</strong></div></div>
+  <div class="wrap">
+    <section class="blk" style="padding-top:36px">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-target"/></svg></span><h2>Before-and-after measures</h2></div>
+      <p class="sub">Read left to right: people get ready, then they use the tool, then quality improves, then reviewer capacity comes back. Safety is watched the whole way. If a later number lags, look at the earlier ones first.</p>
+      <div class="lead-lag"><span class="st">Readiness</span><span class="ar">→</span><span class="st">Adoption</span><span class="ar">→</span><span class="st">Quality</span><span class="ar">→</span><span class="st">Capacity</span><span class="ar">+</span><span class="st" style="background:var(--hold-bg);color:var(--hold);border-color:#E8B4AE">Safety, always</span></div>
+      <div class="mt-wrap"><table class="mt">
+        <thead><tr><th style="width:24%">Measure</th><th>Before</th><th>Target</th><th style="width:26%">How we measure it</th><th>Owner</th><th>How often</th></tr></thead>
+        <tbody>
+          <tr class="grp"><td colspan="6">READINESS</td></tr>
+          <tr><td>Data Rules acknowledged</td><td class="b4">—</td><td class="tg">100% before go-live</td><td>Microsoft Forms acknowledgment<span class="src">Matched to the Entra group roster</span></td><td>Branch managers</td><td>Weekly during rollout, then monthly</td></tr>
+          <tr><td>Lab completed</td><td class="b4">—</td><td class="tg">80% or more before go-live</td><td>Lab completion form<span class="src">Self-paced and facilitator-led both count</span></td><td>Branch managers</td><td>Weekly during rollout, then monthly</td></tr>
+          <tr class="grp"><td colspan="6">ADOPTION</td></tr>
+          <tr><td>Ads pre-screened</td><td class="b4">0%</td><td class="tg">90% or more</td><td>Queue items with a Submission ID ÷ all submitted ads<span class="src">SharePoint review list</span></td><td>AI Enablement</td><td>Weekly in pilot, then monthly</td></tr>
+          <tr><td>Loan officer ease score</td><td class="b4">—</td><td class="tg">4.0 or higher out of 5</td><td>One-question pulse in Teams: "How easy was it to get your ad ready?"</td><td>AI Enablement</td><td>End of pilot, then quarterly</td></tr>
+          <tr class="grp"><td colspan="6">QUALITY</td></tr>
+          <tr><td>Ads returned at least once</td><td class="b4">~50%</td><td class="tg">20% or fewer</td><td>Status history on each queue item</td><td>Compliance</td><td>Weekly in pilot, then monthly</td></tr>
+          <tr><td>Review rounds per ad</td><td class="b4">~1.8</td><td class="tg">1.2</td><td>Versions per approved ad</td><td>Compliance</td><td>Weekly in pilot, then monthly</td></tr>
+          <tr><td>Pre-screen rated "Accurate"</td><td class="b4">New</td><td class="tg">85% in pilot, 90% after</td><td>Required "Pre-screen accuracy" field on each decision</td><td>Compliance + AI Enablement</td><td>Weekly in pilot, then monthly</td></tr>
+          <tr class="grp"><td colspan="6">CAPACITY</td></tr>
+          <tr><td>Reviewer minutes per ad</td><td class="b4">~22 min</td><td class="tg">10 min</td><td>"Minutes spent" field<span class="src">Every ad in the pilot, then a 2-week sample each quarter</span></td><td>Compliance</td><td>Weekly in pilot, then quarterly</td></tr>
+          <tr><td>Decision within 1 business day</td><td class="b4">3–5 days per round</td><td class="tg">90% or more</td><td>Submitted and decided timestamps</td><td>Compliance</td><td>Weekly in pilot, then monthly</td></tr>
+          <tr><td>Reviewer hours needed per month</td><td class="b4">~757 h (408 available)</td><td class="tg">~229 h</td><td>Ads × rounds × minutes ÷ 60</td><td>AI Enablement</td><td>Monthly</td></tr>
+          <tr class="grp"><td colspan="6">SAFETY AND SUPPORT</td></tr>
+          <tr><td>Unresolved P1 data incidents</td><td class="b4">—</td><td class="tg">0</td><td>ServiceNow, P1 category for AI tools</td><td>Compliance – Privacy + InfoSec</td><td>Weekly, any P1 reported same day</td></tr>
+          <tr><td>AI tool tickets per 100 users</td><td class="b4">—</td><td class="tg">3 or fewer per month</td><td>ServiceNow tickets tagged to KB0012047</td><td>Service Desk</td><td>Weekly in rollout, then monthly</td></tr>
+          <tr><td>Claude usage and cost per ad</td><td class="b4">—</td><td class="tg">Set from pilot</td><td>Claude workspace usage, shown on the usage dashboard</td><td>AI Enablement + Engineering</td><td>Monthly</td></tr>
+        </tbody>
+      </table></div>
+      <p class="fine" style="margin-top:10px">"Before" values are planning assumptions until the baseline readout on Dec 4 replaces them.</p>
+    </section>
+
+    <section class="blk">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-search"/></svg></span><h2>How we capture the "before"</h2></div>
+      <p class="sub">Two sources, because records and stopwatches answer different questions. Past records tell us how many rounds and days. Only a time study tells us how many minutes.</p>
+      <div class="base2">
+        <div class="card"><span class="tagx" style="background:#EEF1F6;color:var(--navy)">SOURCE 1 · PAST RECORDS</span><h3>3 months of review history</h3><p>Compliance operations and AI Enablement pull every ad submitted from the Compliance review mailbox and the current tracking list.</p>
+          <div class="kv2"><span>Period</span><span>Aug 1 – Oct 31, 2026</span><span>Gives us</span><span>Ad volume, % returned, rounds per ad, days per round, by branch</span><span>Due</span><span>Nov 20, 2026</span></div></div>
+        <div class="card"><span class="tagx" style="background:#FBF1D2;color:var(--gold-ink)">SOURCE 2 · TIME STUDY</span><h3>10 business days of logged minutes</h3><p>All 6 reviewers log the minutes they spend on each ad in a new "Minutes spent" field. About 500 ads are expected.</p>
+          <div class="kv2"><span>Period</span><span>Nov 16 – Dec 1, 2026 (skips Nov 26–27 for Thanksgiving)</span><span>Gives us</span><span>Minutes per ad and per round, by ad type</span><span>Due</span><span>Dec 1, 2026</span></div></div>
+      </div>
+      <div class="compare"><strong style="color:var(--navy)">Baseline readout, Friday, Dec 4.</strong> The real numbers replace the planning assumptions in this plan, the briefing and the dashboard. During the pilot we compare the pilot cohort with its own baseline <em>and</em> with the branches still working the old way, so a slow holiday month doesn't get mistaken for a win.</div>
+    </section>
+    <footer class="owner">
+      <div class="owner-g"><div><b>Maintained by AI Enablement</b><span>Akeyla Peele-Tembong, AI Platform &amp; Enablement Lead. Questions or changes: post in the AI Enablement Teams channel.</span></div><div><b>Sponsored by Marketing and loan officer leadership</b><span>Accountable for use and for acting on reviewer feedback.</span></div><div><b>Gates reviewed by Compliance</b><span>The Compliance lead approved the pilot and wave gates and the P1 path.</span></div></div>
+      <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:8px 24px;font-size:13px;color:var(--muted)"><span>Rollout plan version 1.0 · November 2026</span><span>Next review: Dec 4, 2026, after the baseline readout</span><span>Numbers are planning assumptions until the baseline replaces them</span></div>
+      <p class="fine" style="margin-top:16px">Northstar Harbor Mortgage is a fictional company created for portfolio purposes.</p>
+    </footer>
+  </div>
+</div>
+
+<!-- ================= PILOT CHECK-IN ================= -->
+<div class="view" id="pilot-check-in" hidden>
+  <div style="background:#fff;border-bottom:1px solid var(--line)"><div class="wrap crumb">Harbor Hub › AI Program › Ad Review Assistant › Rollout plan › <strong>Weekly pilot check-in</strong></div></div>
+  <div class="wrap">
+    <section class="blk" style="padding-top:36px">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-users"/></svg></span><h2>Weekly pilot check-in</h2></div>
+      <p class="sub">Thursdays, 30 minutes, in the AI Enablement Teams channel's meeting. Dec 10 and 17, then Jan 7, 14 and 21. Over the holidays the scorecard is posted in the channel instead.</p>
+      <div class="strip" style="margin-top:0;margin-bottom:18px"><svg class="ic" style="color:var(--navy)"><use href="#i-users"/></svg><span><strong style="color:var(--navy)">Attendees:</strong> Akeyla Peele-Tembong (chair) · 2 pilot reviewers · Edmond and Atlanta branch managers or delegates · Marketing · Service Desk lead · Engineering when needed</span></div>
+      <div class="agenda">
+        <div class="ag"><div class="min">5<small>MIN</small></div><div><h3>1. Safety first</h3><p>Any P1s or near misses?</p></div><div><p>Every P1 gets reviewed: what happened, how fast it closed, what changes. No blame for reporting.</p></div></div>
+        <div class="ag"><div class="min">10<small>MIN</small></div><div><h3>2. The scorecard</h3><p>This week vs last week vs the gate.</p></div><div><p>Returned %, pre-screened %, accuracy %, minutes per ad, decisions within 1 day, tickets. Focus on direction, not one week's number.</p></div></div>
+        <div class="ag"><div class="min">5<small>MIN</small></div><div><h3>3. What reviewers see</h3><p>Misses and false flags.</p></div><div><p>Reviewers bring the "Missed an issue" and "Flagged something fine" notes, plus the top reasons ads went back.</p></div></div>
+        <div class="ag"><div class="min">5<small>MIN</small></div><div><h3>4. Loan officer voice</h3><p>Feedback form themes and tickets.</p></div><div><p>What's confusing, what's slow, who is submitting without a pre-screen and why.</p></div></div>
+        <div class="ag"><div class="min">5<small>MIN</small></div><div><h3>5. Decisions and owners</h3><p>Every action gets an owner and a date.</p></div><div><p>Rule fixes go into the next release. Notes are posted in the channel within 1 hour.</p></div></div>
+      </div>
+    </section>
+
+    <section class="blk">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-chart"/></svg></span><h2>Pilot scorecard, week by week</h2></div>
+      <p class="sub">Illustrative. Week 4 is the sample check-in below. Week 3 covers two holiday weeks. With about 20 ads a week, one week can swing, so we read the trend.</p>
+      <div class="mt-wrap"><table class="wk">
+        <thead><tr><th>Measure</th><th>Wk 1<br><small>Dec 7</small></th><th>Wk 2<br><small>Dec 14</small></th><th>Wk 3<br><small>Dec 21–Jan 1</small></th><th>Wk 4<br><small>Jan 4</small></th><th>Wk 5<br><small>Jan 11</small></th><th>Wk 6<br><small>Jan 18</small></th><th>Gate</th></tr></thead>
+        <tbody><tr><td>Ads submitted</td><td>18</td><td>21</td><td>24</td><td class="cur">22</td><td>23</td><td>21</td><td class="gt">—</td></tr><tr><td>Returned at least once</td><td>41%<span class="cellbar"><i style="width:41%"></i></span></td><td>36%<span class="cellbar"><i style="width:36%"></i></span></td><td>33%<span class="cellbar"><i style="width:33%"></i></span></td><td class="cur">30%<span class="cellbar"><i style="width:30%"></i></span></td><td>27%<span class="cellbar"><i style="width:27%"></i></span></td><td>26%<span class="cellbar"><i style="width:26%"></i></span></td><td class="gt">≤30%, falling</td></tr><tr><td>Pre-screened</td><td>64%<span class="cellbar"><i style="width:64%"></i></span></td><td>72%<span class="cellbar"><i style="width:72%"></i></span></td><td>79%<span class="cellbar"><i style="width:79%"></i></span></td><td class="cur">83%<span class="cellbar"><i style="width:83%"></i></span></td><td>86%<span class="cellbar"><i style="width:86%"></i></span></td><td>88%<span class="cellbar"><i style="width:88%"></i></span></td><td class="gt">≥80%</td></tr><tr><td>Rated "Accurate"</td><td>82%<span class="cellbar"><i style="width:82%"></i></span></td><td>84%<span class="cellbar"><i style="width:84%"></i></span></td><td>86%<span class="cellbar"><i style="width:86%"></i></span></td><td class="cur">87%<span class="cellbar"><i style="width:87%"></i></span></td><td>88%<span class="cellbar"><i style="width:88%"></i></span></td><td>89%<span class="cellbar"><i style="width:89%"></i></span></td><td class="gt">≥85%</td></tr><tr><td>Minutes per ad</td><td>21</td><td>17</td><td>15</td><td class="cur">13</td><td>12</td><td>11</td><td class="gt">watch</td></tr><tr><td>Decided within 1 day</td><td>78%</td><td>83%</td><td>71%</td><td class="cur">88%</td><td>91%</td><td>93%</td><td class="gt">watch</td></tr><tr><td>P1s (open)</td><td>0</td><td>1 (0)</td><td>0</td><td class="cur">0</td><td>0</td><td>0</td><td class="gt">0 open</td></tr><tr><td>Tickets</td><td>6</td><td>4</td><td>2</td><td class="cur">3</td><td>2</td><td>1</td><td class="gt">watch</td></tr></tbody>
+      </table></div>
+      <div class="compare"><strong style="color:var(--navy)">Pilot gate result (illustrative): passed.</strong> Returned fell from 41% to 26% (gate: 30% or fewer and falling). Pre-screened reached 88% (gate 80%). Accuracy reached 89% (gate 85%). The one P1, in week 2, closed in 41 minutes. Comparison branches stayed at 48–52% returned over the same weeks.</div>
+    </section>
+
+    <section class="blk">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-file"/></svg></span><h2>Sample notes: check-in 4</h2></div>
+      <p class="sub">What gets posted in the channel within an hour of the meeting.</p>
+      <div class="notes">
+        <div class="notes-h"><span><b>Pilot check-in 4</b></span><span>Thursday, Jan 7, 2027 · 30 min</span><span>Chair: Akeyla Peele-Tembong</span><span>Reviewers: Dana Reyes, Renee Castillo</span></div>
+        <div class="notes-b">
+          <div><h4>1 · SAFETY</h4><p>No new P1s. The week 2 P1 (Edmond, a borrower's first name and loan amount pasted into a draft) is closed: chat deleted, Compliance notified in 12 minutes, not reportable. The loan officer reported it themselves, which is exactly what we want.</p></div>
+          <div><h4>2 · SCORECARD</h4><p>Returned 30% (down from 33%), right at the gate line. Pre-screened 83%, accuracy 87%. Minutes per ad 13, down from 21 in week 1. Holiday weeks were light, so we're watching weeks 5 and 6 before calling a trend.</p></div>
+          <div><h4>3 · WHAT REVIEWERS SEE</h4><p>Top return reason: "rate as of" date doesn't match the send date (4 of 7 returns). Dana flagged a savings claim the pre-screen missed ("could free up hundreds of dollars a month"). One false flag on an equal housing line that was correct.</p></div>
+          <div><h4>4 · LOAN OFFICER VOICE</h4><p>6 feedback forms, mostly positive. Two asked where to find the Submission ID. Four Atlanta loan officers are still emailing ads straight to Compliance.</p></div>
+          <div><h4>5 · DECISIONS</h4>
+            <table class="dec"><thead><tr><th>Action</th><th>Owner</th><th>Due</th></tr></thead><tbody>
+              <tr><td>Add a "send date" line to the starter prompt so the rate date matches</td><td>AI Enablement</td><td>Jan 12 release</td></tr>
+              <tr><td>Add savings-claim check; re-test the sample set; Compliance sign-off</td><td>AI Enablement + Compliance</td><td>Jan 12 release</td></tr>
+              <tr><td>Fix the equal housing false flag</td><td>AI Enablement</td><td>Jan 12 release</td></tr>
+              <tr><td>Highlight where the Submission ID appears in the quick-start</td><td>AI Enablement</td><td>Jan 11</td></tr>
+              <tr><td>Follow up with the four Atlanta loan officers emailing directly</td><td>Atlanta branch manager</td><td>Jan 13</td></tr>
+            </tbody></table></div>
+        </div>
+      </div>
+    </section>
+    <footer class="owner">
+      <div class="owner-g"><div><b>Maintained by AI Enablement</b><span>Akeyla Peele-Tembong, AI Platform &amp; Enablement Lead. Questions or changes: post in the AI Enablement Teams channel.</span></div><div><b>Sponsored by Marketing and loan officer leadership</b><span>Accountable for use and for acting on reviewer feedback.</span></div><div><b>Gates reviewed by Compliance</b><span>The Compliance lead approved the pilot and wave gates and the P1 path.</span></div></div>
+      <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:8px 24px;font-size:13px;color:var(--muted)"><span>Rollout plan version 1.0 · November 2026</span><span>Next review: Dec 4, 2026, after the baseline readout</span><span>Numbers are planning assumptions until the baseline replaces them</span></div>
+      <p class="fine" style="margin-top:16px">Northstar Harbor Mortgage is a fictional company created for portfolio purposes.</p>
+    </footer>
+  </div>
+</div>
+
+<!-- ================= CHECKLIST ================= -->
+<div class="view" id="checklist" hidden>
+  <div style="background:#fff;border-bottom:1px solid var(--line)"><div class="wrap crumb">Harbor Hub › AI Program › Ad Review Assistant › Rollout plan › <strong>Week-by-week checklist</strong></div></div>
+  <div class="wrap">
+    <section class="blk" style="padding-top:36px">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-clipboard"/></svg></span><h2>Week-by-week checklist</h2></div>
+      <p class="sub">Every task with an owner and a due date. Items marked GATE are decision points. Check items off to track progress in your own browser; filter by owner to see just your team's work.</p>
+      <div class="cl-tools">
+        <div class="cl-prog"><span id="clCount">0 of 0 done</span><span class="bar"><i id="clBar"></i></span></div>
+        <div class="filters" role="group" aria-label="Filter by owner" id="clFilters">
+          <button type="button" data-f="all" aria-pressed="true">All</button>
+          <button type="button" data-f="enable" aria-pressed="false">AI Enablement</button>
+          <button type="button" data-f="comp" aria-pressed="false">Compliance</button>
+          <button type="button" data-f="eng" aria-pressed="false">Engineering</button>
+          <button type="button" data-f="branch" aria-pressed="false">Branches</button>
+          <button type="button" data-f="lead" aria-pressed="false">Leadership</button>
+          <button type="button" data-f="desk" aria-pressed="false">Service Desk</button>
+        </div>
+      </div>
+      <div id="clList"><div class="clp"><div class="clp-h"><h3>Phase 0 · Prepare and capture the baseline</h3><span class="when">NOV 16 – DEC 4, 2026</span></div><div class="cli" data-o="enable"><input type="checkbox" id="c1" data-k="c1"><label for="c1">Add &quot;Minutes spent&quot; and &quot;Pre-screen accuracy&quot; fields to the SharePoint review list</label><span class="o">AI Enablement</span><span class="d">Nov 16</span></div><div class="cli" data-o="comp"><input type="checkbox" id="c2" data-k="c2"><label for="c2">Run the reviewer time study (10 business days)</label><span class="o">Compliance</span><span class="d">Nov 16 – Dec 1</span></div><div class="cli" data-o="comp enable"><input type="checkbox" id="c3" data-k="c3"><label for="c3">Pull Aug–Oct 2026 review history from the mailbox and tracking list</label><span class="o">Compliance · AI Enablement</span><span class="d">Nov 20</span></div><div class="cli" data-o="branch"><input type="checkbox" id="c4" data-k="c4"><label for="c4">Name the pilot cohort: 75 loan officers each in Edmond and Atlanta</label><span class="o">Branch managers</span><span class="d">Nov 20</span></div><div class="cli" data-o="eng enable"><input type="checkbox" id="c5" data-k="c5"><label for="c5">Create the pilot Entra group and assign the plugin</label><span class="o">Engineering · AI Enablement</span><span class="d">Dec 2</span></div><div class="cli" data-o="enable desk"><input type="checkbox" id="c6" data-k="c6"><label for="c6">P1 customer-data tabletop with the Service Desk and InfoSec</label><span class="o">AI Enablement · Service Desk</span><span class="d">Dec 3</span></div><div class="cli" data-o="branch enable"><input type="checkbox" id="c7" data-k="c7"><label for="c7">Pilot cohort acknowledges the Data Rules (100%) and takes the lab (80%+)</label><span class="o">Branch managers · AI Enablement</span><span class="d">Dec 4</span></div><div class="cli" data-o="lead"><input type="checkbox" id="c8" data-k="c8"><label for="c8">Executives confirm protected time for labs and champions</label><span class="o">Leadership</span><span class="d">Dec 4</span></div><div class="cli" data-o="enable"><input type="checkbox" id="c9" data-k="c9"><label for="c9">Publish the baseline readout; replace planning numbers<span class="gate-i">GATE</span></label><span class="o">AI Enablement</span><span class="d">Dec 4</span></div></div><div class="clp"><div class="clp-h"><h3>Phase 1 · Pilot</h3><span class="when">DEC 7, 2026 – JAN 22, 2027</span></div><div class="cli" data-o="enable"><input type="checkbox" id="c10" data-k="c10"><label for="c10">Pilot goes live for the cohort</label><span class="o">AI Enablement</span><span class="d">Dec 7</span></div><div class="cli" data-o="enable"><input type="checkbox" id="c11" data-k="c11"><label for="c11">Weekly check-in every Thursday; notes posted within 1 hour</label><span class="o">AI Enablement</span><span class="d">Dec 10 – Jan 21</span></div><div class="cli" data-o="branch"><input type="checkbox" id="c12" data-k="c12"><label for="c12">Open champion nominations</label><span class="o">Branch managers</span><span class="d">Dec 14</span></div><div class="cli" data-o="enable comp"><input type="checkbox" id="c13" data-k="c13"><label for="c13">January rule release: re-test the sample set, Compliance sign-off</label><span class="o">AI Enablement · Compliance</span><span class="d">Jan 12</span></div><div class="cli" data-o="enable"><input type="checkbox" id="c14" data-k="c14"><label for="c14">Loan officer ease pulse to the pilot cohort</label><span class="o">AI Enablement</span><span class="d">Jan 19</span></div><div class="cli" data-o="enable comp lead"><input type="checkbox" id="c15" data-k="c15"><label for="c15">Pilot readout and go/no-go<span class="gate-i">GATE</span></label><span class="o">AI Enablement · Compliance · Leadership</span><span class="d">Jan 28</span></div></div><div class="clp"><div class="clp-h"><h3>Phase 2 · Champions</h3><span class="when">JAN 15 – FEB 12, 2027</span></div><div class="cli" data-o="branch"><input type="checkbox" id="c16" data-k="c16"><label for="c16">Champion nominations due (1 per branch, 2 if over 75 loan officers)</label><span class="o">Branch managers</span><span class="d">Jan 15</span></div><div class="cli" data-o="eng"><input type="checkbox" id="c17" data-k="c17"><label for="c17">Create the Wave 1 and Wave 2 Entra groups</label><span class="o">Engineering</span><span class="d">Jan 29</span></div><div class="cli" data-o="enable branch"><input type="checkbox" id="c18" data-k="c18"><label for="c18">Train-the-trainer sessions</label><span class="o">AI Enablement · Champions</span><span class="d">Feb 2–10</span></div><div class="cli" data-o="branch enable"><input type="checkbox" id="c19" data-k="c19"><label for="c19">Each champion co-leads one lab with Enablement</label><span class="o">Champions · AI Enablement</span><span class="d">Feb 12</span></div></div><div class="clp"><div class="clp-h"><h3>Phase 3a · Wave 1: Edmond, Atlanta, Dallas</h3><span class="when">FEB 15, 2027</span></div><div class="cli" data-o="branch branch"><input type="checkbox" id="c20" data-k="c20"><label for="c20">Wave 1 readiness: 100% ack, 80%+ lab, champion trained, group assigned<span class="gate-i">GATE</span></label><span class="o">Branch managers · Champions</span><span class="d">Feb 12</span></div><div class="cli" data-o="enable desk"><input type="checkbox" id="c21" data-k="c21"><label for="c21">Brief the Service Desk on Wave 1 dates and expected ticket volume</label><span class="o">AI Enablement · Service Desk</span><span class="d">Feb 12</span></div><div class="cli" data-o="enable eng"><input type="checkbox" id="c22" data-k="c22"><label for="c22">Wave 1 goes live</label><span class="o">AI Enablement · Engineering</span><span class="d">Feb 15</span></div><div class="cli" data-o="enable"><input type="checkbox" id="c23" data-k="c23"><label for="c23">Daily 15-minute stand-up</label><span class="o">AI Enablement</span><span class="d">Feb 15–19</span></div><div class="cli" data-o="enable comp"><input type="checkbox" id="c24" data-k="c24"><label for="c24">February rule release</label><span class="o">AI Enablement · Compliance</span><span class="d">Feb 16</span></div><div class="cli" data-o="enable comp lead"><input type="checkbox" id="c25" data-k="c25"><label for="c25">Wave 2 go/no-go<span class="gate-i">GATE</span></label><span class="o">AI Enablement · Compliance · Leadership</span><span class="d">Mar 4</span></div></div><div class="clp"><div class="clp-h"><h3>Phase 3b · Wave 2: Irvine, Charlotte, Corporate/Remote</h3><span class="when">MAR 8 – MAR 31, 2027</span></div><div class="cli" data-o="branch branch"><input type="checkbox" id="c26" data-k="c26"><label for="c26">Wave 2 readiness: 100% ack, 80%+ lab, champion trained, group assigned<span class="gate-i">GATE</span></label><span class="o">Branch managers · Champions</span><span class="d">Mar 5</span></div><div class="cli" data-o="enable eng"><input type="checkbox" id="c27" data-k="c27"><label for="c27">Wave 2 goes live</label><span class="o">AI Enablement · Engineering</span><span class="d">Mar 8</span></div><div class="cli" data-o="enable"><input type="checkbox" id="c28" data-k="c28"><label for="c28">Daily 15-minute stand-up</label><span class="o">AI Enablement</span><span class="d">Mar 8–12</span></div><div class="cli" data-o="enable comp"><input type="checkbox" id="c29" data-k="c29"><label for="c29">March rule release</label><span class="o">AI Enablement · Compliance</span><span class="d">Mar 16</span></div><div class="cli" data-o="branch"><input type="checkbox" id="c30" data-k="c30"><label for="c30">Catch-up labs for anyone who missed one</label><span class="o">Champions</span><span class="d">Mar 15–31</span></div></div><div class="clp"><div class="clp-h"><h3>Phase 4 · Steady state</h3><span class="when">APRIL 2027 ONWARD</span></div><div class="cli" data-o="enable"><input type="checkbox" id="c31" data-k="c31"><label for="c31">First monthly report to Compliance leadership and the AI Governance Committee</label><span class="o">AI Enablement</span><span class="d">Apr 7</span></div><div class="cli" data-o="enable comp"><input type="checkbox" id="c32" data-k="c32"><label for="c32">April rule release (skill v7)</label><span class="o">AI Enablement · Compliance</span><span class="d">Apr 13</span></div><div class="cli" data-o="hr enable"><input type="checkbox" id="c33" data-k="c33"><label for="c33">Add Data Rules and lab to new-hire onboarding</label><span class="o">HR · AI Enablement</span><span class="d">Apr 15</span></div><div class="cli" data-o="comp"><input type="checkbox" id="c34" data-k="c34"><label for="c34">Quarterly reviewer time sample (2 weeks)</label><span class="o">Compliance</span><span class="d">May 3–14</span></div><div class="cli" data-o="enable eng"><input type="checkbox" id="c35" data-k="c35"><label for="c35">App gate check each month; proposal to the Committee if met<span class="gate-i">GATE</span></label><span class="o">AI Enablement · Engineering</span><span class="d">Monthly · earliest Jun</span></div></div></div>
+      <p class="fine">Checkmarks are saved only in this browser, as a personal tracker. The team's source of truth is the plan's Planner board in the AI Enablement Teams channel.</p>
+    </section>
+    <footer class="owner">
+      <div class="owner-g"><div><b>Maintained by AI Enablement</b><span>Akeyla Peele-Tembong, AI Platform &amp; Enablement Lead. Questions or changes: post in the AI Enablement Teams channel.</span></div><div><b>Sponsored by Marketing and loan officer leadership</b><span>Accountable for use and for acting on reviewer feedback.</span></div><div><b>Gates reviewed by Compliance</b><span>The Compliance lead approved the pilot and wave gates and the P1 path.</span></div></div>
+      <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:8px 24px;font-size:13px;color:var(--muted)"><span>Rollout plan version 1.0 · November 2026</span><span>Next review: Dec 4, 2026, after the baseline readout</span><span>Numbers are planning assumptions until the baseline replaces them</span></div>
+      <p class="fine" style="margin-top:16px">Northstar Harbor Mortgage is a fictional company created for portfolio purposes.</p>
+    </footer>
+  </div>
+</div>
+
+<!-- ================= RISKS ================= -->
+<div class="view" id="risks" hidden>
+  <div style="background:#fff;border-bottom:1px solid var(--line)"><div class="wrap crumb">Harbor Hub › AI Program › Ad Review Assistant › Rollout plan › <strong>Top risks</strong></div></div>
+  <div class="wrap">
+    <section class="blk" style="padding-top:36px">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-alert"/></svg></span><h2>Top risks and how we respond</h2></div>
+      <p class="sub">Five risks we expect, each with what we do ahead of time, the signal that tells us it's happening, and who acts. Reviewed at every check-in and monthly after go-live.</p>
+      <div class="risks">
+        <div class="rsk"><div class="rsk-l"><div class="lvl"><span class="l-md">LIKELIHOOD: MEDIUM</span><span class="l-hi">IMPACT: HIGH</span></div><h3>1. Lab completion lags before go-live</h3><p>Loan officers are busy. If the lab slips, branches go live with people who don't know how to read a report or what PASS means.</p></div>
+          <div class="rsk-r"><h4>RESPONSE</h4><ul><li>Branch managers own readiness; it's on their monthly review</li><li>Champions offer 3 lab slots a week, plus the self-paced version</li><li>No exceptions: a branch under 80% moves to the next wave or the buffer</li></ul><div class="trig"><b>Signal:</b> under 60% lab completion 2 weeks before go-live · <b>Acts:</b> branch manager, with Enablement</div></div></div>
+        <div class="rsk"><div class="rsk-l"><div class="lvl"><span class="l-md">LIKELIHOOD: MEDIUM</span><span class="l-hi">IMPACT: HIGH</span></div><h3>2. Reviewers don't trust the pre-screen</h3><p>If reviewers re-check everything from scratch, minutes per ad won't drop and the capacity gain never shows up.</p></div>
+          <div class="rsk-r"><h4>RESPONSE</h4><ul><li>Reviewers rate accuracy on every decision, and their notes drive each release</li><li>Pilot reviewers see their own before-and-after minutes every week</li><li>Clear line: PASS means ready for review, never approved. Reviewers keep full judgment</li></ul><div class="trig"><b>Signal:</b> minutes per ad above 15 after week 4, or accuracy under 85% · <b>Acts:</b> Compliance lead and Enablement</div></div></div>
+        <div class="rsk"><div class="rsk-l"><div class="lvl"><span class="l-lo">LIKELIHOOD: LOW–MEDIUM</span><span class="l-hi">IMPACT: HIGH</span></div><h3>3. Customer data gets pasted in</h3><p>A loan officer drops a borrower's details into a draft, usually by copying from a real file.</p></div>
+          <div class="rsk-r"><h4>RESPONSE</h4><ul><li>Data Rules acknowledged before access; the assistant refuses customer data</li><li>P1 path tested in a tabletop on Dec 3, before anyone has access</li><li>No-blame reporting, so mistakes get reported instead of hidden</li></ul><div class="trig"><b>Signal:</b> any P1 · <b>Acts:</b> Service Desk → Compliance – Privacy + InfoSec within 1 hour</div></div></div>
+        <div class="rsk"><div class="rsk-l"><div class="lvl"><span class="l-md">LIKELIHOOD: MEDIUM</span><span class="l-md">IMPACT: MEDIUM</span></div><h3>4. Loan officers skip the pre-screen</h3><p>Some keep emailing ads straight to Compliance out of habit, so reviewers get the old workload back.</p></div>
+          <div class="rsk-r"><h4>RESPONSE</h4><ul><li>Queue items without a Submission ID are labeled "Not pre-screened"</li><li>Pre-screened % by branch is on every manager report; champions follow up</li><li>If still under 90% after Q2, Compliance decides whether to require a Submission ID</li></ul><div class="trig"><b>Signal:</b> a branch under 80% pre-screened for 2 weeks · <b>Acts:</b> champion, then branch manager</div></div></div>
+        <div class="rsk"><div class="rsk-l"><div class="lvl"><span class="l-md">LIKELIHOOD: MEDIUM</span><span class="l-md">IMPACT: MEDIUM</span></div><h3>5. Spring volume spike or a rule change</h3><p>Spring homebuying season and rate moves push ad volume up just as Wave 2 goes live. A regulation change could also need a fast rule update.</p></div>
+          <div class="rsk-r"><h4>RESPONSE</h4><ul><li>Wave 2 is set for early March, ahead of peak season, with buffer to Mar 31</li><li>Urgent rule changes ship the same week, after re-testing and Compliance sign-off</li><li>Daily stand-ups in each wave's first week catch queue backlogs early</li></ul><div class="trig"><b>Signal:</b> decisions within 1 business day under 85%, or a new regulation · <b>Acts:</b> Compliance lead and Enablement</div></div></div>
+      </div>
+    </section>
+    <footer class="owner">
+      <div class="owner-g"><div><b>Maintained by AI Enablement</b><span>Akeyla Peele-Tembong, AI Platform &amp; Enablement Lead. Questions or changes: post in the AI Enablement Teams channel.</span></div><div><b>Sponsored by Marketing and loan officer leadership</b><span>Accountable for use and for acting on reviewer feedback.</span></div><div><b>Gates reviewed by Compliance</b><span>The Compliance lead approved the pilot and wave gates and the P1 path.</span></div></div>
+      <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:8px 24px;font-size:13px;color:var(--muted)"><span>Rollout plan version 1.0 · November 2026</span><span>Next review: Dec 4, 2026, after the baseline readout</span><span>Numbers are planning assumptions until the baseline replaces them</span></div>
+      <p class="fine" style="margin-top:16px">Northstar Harbor Mortgage is a fictional company created for portfolio purposes.</p>
+    </footer>
+  </div>
+</div>
+
+<!-- ================= RESULTS ================= -->
+<div class="view" id="results" hidden>
+  <div style="background:#fff;border-bottom:1px solid var(--line)"><div class="wrap crumb">Harbor Hub › AI Program › Ad Review Assistant › Rollout plan › <strong>Sample 90-day results</strong></div></div>
+  <div class="wrap">
+    <section class="blk" style="padding-top:36px">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-chart"/></svg></span><h2>End of Q1 2027 readout</h2></div>
+      <p class="sub">What the first monthly report could look like on Apr 7, covering March 2027, the first month every branch was live (Wave 2 for 3 of its 4 weeks).</p>
+      <p style="margin-bottom:20px"><span class="illus"><svg class="ic" style="width:17px;height:17px"><use href="#i-alert"/></svg>Illustrative results for planning. Not real data.</span></p>
+      <div class="bottom" style="margin-top:0;margin-bottom:20px"><div class="big">~281 h<small> needed in March</small></div><p><strong style="color:var(--navy)">Mostly on track.</strong> Reviewers needed about 281 hours for 1,181 ads, against 408 available, down from an estimated 779 hours at the old rates. That's about 498 hours freed, roughly <strong>$28,900</strong> at $58 an hour. The returned rate is the gap: 23% against a 20% target, with a fix in the April release.</p></div>
+      <div class="rk"><div class="k"><span class="stat s-on">ON TARGET</span><div class="lab" style="padding-right:84px">ADS PRE-SCREENED</div><div class="ba"><span class="b4">0%</span><span class="ar">→</span><span class="af">91%</span></div><div class="tgt">Target 90% or more</div><div class="prog" aria-hidden="true"><i style="width:91%"></i><em style="left:90%"></em></div><p>Wave 1 at 93%, Wave 2 at 87% in its first weeks</p></div><div class="k"><span class="stat s-short">SHORT</span><div class="lab" style="padding-right:84px">RETURNED AT LEAST ONCE</div><div class="ba"><span class="b4">50%</span><span class="ar">→</span><span class="af">23%</span></div><div class="tgt">Target 20% or fewer</div><p>Down from 50%. Two return reasons drive most of the gap</p></div><div class="k"><span class="stat s-short">SHORT</span><div class="lab" style="padding-right:84px">REVIEW ROUNDS PER AD</div><div class="ba"><span class="b4">1.8</span><span class="ar">→</span><span class="af">1.3</span></div><div class="tgt">Target 1.2</div><p>Moves with the returned rate</p></div><div class="k"><span class="stat s-near">NEAR</span><div class="lab" style="padding-right:84px">REVIEWER MINUTES PER AD</div><div class="ba"><span class="b4">22</span><span class="ar">→</span><span class="af">11</span></div><div class="tgt">Target 10</div><p>From the March 2-week sample</p></div><div class="k"><span class="stat s-on">ON TARGET</span><div class="lab" style="padding-right:84px">DECIDED WITHIN 1 BUSINESS DAY</div><div class="ba"><span class="b4">3–5 days</span><span class="ar">→</span><span class="af">92%</span></div><div class="tgt">Target 90% or more</div><div class="prog" aria-hidden="true"><i style="width:92%"></i><em style="left:90%"></em></div><p>Teams reminders and the 2-day escalation are working</p></div><div class="k"><span class="stat s-on">ON TARGET</span><div class="lab" style="padding-right:84px">PRE-SCREEN RATED "ACCURATE"</div><div class="ba"><span class="b4">new</span><span class="ar">→</span><span class="af">91%</span></div><div class="tgt">Target 90% or more</div><div class="prog" aria-hidden="true"><i style="width:91%"></i><em style="left:90%"></em></div><p>Missed an issue 6%, flagged something fine 3%</p></div><div class="k"><span class="stat s-near">NEAR</span><div class="lab" style="padding-right:84px">DATA RULES ACKNOWLEDGED</div><div class="ba"><span class="b4">—</span><span class="ar">→</span><span class="af">98%</span></div><div class="tgt">Target 100%</div><div class="prog" aria-hidden="true"><i style="width:98%"></i><em style="left:100%"></em></div><p>Gaps are March new hires</p></div><div class="k"><span class="stat s-on">ON TARGET</span><div class="lab" style="padding-right:84px">LAB COMPLETED</div><div class="ba"><span class="b4">—</span><span class="ar">→</span><span class="af">84%</span></div><div class="tgt">Target 80% or more</div><div class="prog" aria-hidden="true"><i style="width:84%"></i><em style="left:80%"></em></div><p>Self-paced and facilitator-led combined</p></div><div class="k"><span class="stat s-on">ON TARGET</span><div class="lab" style="padding-right:84px">UNRESOLVED P1s</div><div class="ba"><span class="b4">—</span><span class="ar">→</span><span class="af">0</span></div><div class="tgt">Target 0</div><p>2 reported in March, both closed within 1 hour, neither reportable</p></div><div class="k"><span class="stat s-on">ON TARGET</span><div class="lab" style="padding-right:84px">TICKETS PER 100 USERS</div><div class="ba"><span class="b4">—</span><span class="ar">→</span><span class="af">2.1</span></div><div class="tgt">Target 3 or fewer</div><p>Mostly sign-in questions in Wave 2's first week</p></div><div class="k"><span class="stat s-on">ON TARGET</span><div class="lab" style="padding-right:84px">LOAN OFFICER EASE SCORE</div><div class="ba"><span class="b4">—</span><span class="ar">→</span><span class="af">4.3</span></div><div class="tgt">Target 4.0 or higher of 5</div><p>Quarterly pulse, 412 responses</p></div></div>
+    </section>
+
+    <section class="blk">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-users"/></svg></span><h2>By branch, March 2027</h2></div>
+      <p class="sub">Wave 1 branches have had a month longer to settle. Readiness rates include March new hires; every branch met readiness on its go-live date.</p>
+      <div class="mt-wrap"><table class="bt">
+        <thead><tr><th>Branch</th><th>Wave</th><th>Data Rules ack</th><th>Lab</th><th>Pre-screened</th><th>Returned</th><th>Rounds</th></tr></thead>
+        <tbody><tr><td><strong>Edmond, OK</strong></td><td>Wave 1</td><td class="n ok-c">100%</td><td class="n ok-c">92%</td><td class="n ok-c">96%</td><td class="n ok-c">17%</td><td class="n ok-c">1.2</td></tr><tr><td><strong>Atlanta, GA</strong></td><td>Wave 1</td><td class="n ok-c">100%</td><td class="n ok-c">90%</td><td class="n ok-c">95%</td><td class="n ok-c">19%</td><td class="n ok-c">1.2</td></tr><tr><td><strong>Dallas, TX</strong></td><td>Wave 1</td><td class="n miss-c">99%</td><td class="n ok-c">85%</td><td class="n ok-c">91%</td><td class="n miss-c">22%</td><td class="n miss-c">1.3</td></tr><tr><td><strong>Irvine, CA</strong></td><td>Wave 2</td><td class="n miss-c">95%</td><td class="n miss-c">79%</td><td class="n miss-c">88%</td><td class="n miss-c">24%</td><td class="n miss-c">1.3</td></tr><tr><td><strong>Charlotte, NC</strong></td><td>Wave 2</td><td class="n miss-c">97%</td><td class="n ok-c">80%</td><td class="n miss-c">87%</td><td class="n miss-c">26%</td><td class="n miss-c">1.4</td></tr><tr><td><strong>Corporate/Remote</strong></td><td>Wave 2</td><td class="n miss-c">96%</td><td class="n miss-c">78%</td><td class="n miss-c">86%</td><td class="n miss-c">27%</td><td class="n miss-c">1.4</td></tr><tr style="background:#F4F2EC"><td><strong>Company-wide</strong></td><td>—</td><td class="n"><strong>98%</strong></td><td class="n"><strong>84%</strong></td><td class="n"><strong>91%</strong></td><td class="n"><strong>23%</strong></td><td class="n"><strong>1.3</strong></td></tr></tbody>
+      </table></div>
+      <p class="fine" style="margin-top:8px">Targets: ack 100%, lab 80%, pre-screened 90%, returned 20%, rounds 1.2. Red marks a miss.</p>
+    </section>
+
+    <section class="blk">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-target"/></svg></span><h2>What's short and what we're doing</h2></div>
+      <p class="sub">Every miss gets a named action, an owner and a date.</p>
+      <div class="actions">
+        <div class="act"><h3>Returned 23% (target 20%), 1.3 rounds (target 1.2)</h3><p>Top two return reasons: savings claims and "rate as of" dates. Skill v7 adds both checks. Wave 2 branches get a 15-minute refresher on reading the report.</p><div class="who2">AI ENABLEMENT + COMPLIANCE · APRIL RELEASE, APR 13</div></div>
+        <div class="act near"><h3>Data Rules ack 98% (target 100%)</h3><p>All gaps are March new hires. Acknowledgment and the lab move into the new-hire onboarding checklist so access and the rules arrive together.</p><div class="who2">HR + AI ENABLEMENT · BY APR 15</div></div>
+        <div class="act near"><h3>Reviewer minutes 11 per ad (target 10)</h3><p>Wave 2 reviewers are still re-checking more than Wave 1 reviewers. Pilot reviewers Dana and Renee pair with them for one week.</p><div class="who2">COMPLIANCE LEAD · WEEK OF APR 12</div></div>
+      </div>
+    </section>
+
+    <section class="blk">
+      <div class="gatestat">
+        <div style="flex:1 1 320px;min-width:0"><span class="badge">APP DECISION GATE</span><h2>Month 1 of 2: not yet</h2><p style="font-size:15px">The gate needs 2 months in a row, company-wide. March met pre-screened (91%) and safety (no unresolved P1s), but not returned (23%). If April and May both meet all three, the build proposal goes to the June 2027 AI Governance Committee, as planned.</p></div>
+        <div class="months3"><div><b>MARCH</b>Pre-screened ✓<br>No P1s open ✓<br>Returned 23% ✗</div><div><b>APRIL</b>Needs all three after the v7 release</div><div><b>MAY</b>Needs all three. Then June proposal</div></div>
+      </div>
+      <div class="assume"><b>How these were figured.</b> Reviewer hours = ads × rounds × minutes ÷ 60. March: 1,181 × 1.3 × 11 ÷ 60 ≈ 281. At the old rates (1.8 rounds, 22 minutes): 1,181 × 1.8 × 22 ÷ 60 ≈ 779. Dollar value uses the briefing's assumed $58 an hour fully loaded, reviewer time only. All figures are illustrative.</div>
+    </section>
+    <footer class="owner">
+      <div class="owner-g"><div><b>Maintained by AI Enablement</b><span>Akeyla Peele-Tembong, AI Platform &amp; Enablement Lead. Questions or changes: post in the AI Enablement Teams channel.</span></div><div><b>Sponsored by Marketing and loan officer leadership</b><span>Accountable for use and for acting on reviewer feedback.</span></div><div><b>Gates reviewed by Compliance</b><span>The Compliance lead approved the pilot and wave gates and the P1 path.</span></div></div>
+      <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:8px 24px;font-size:13px;color:var(--muted)"><span>Rollout plan version 1.0 · November 2026</span><span>Next review: Dec 4, 2026, after the baseline readout</span><span>Numbers are planning assumptions until the baseline replaces them</span></div>
+      <p class="fine" style="margin-top:16px">Northstar Harbor Mortgage is a fictional company created for portfolio purposes.</p>
+    </footer>
+  </div>
+</div>
+
+<script>
+(function(){
+  var views=["plan","measures","pilot-check-in","checklist","risks","results"];
+  function show(){var h=location.hash.slice(1), v=views.indexOf(h)>=0?h:views[0];
+    if(views.indexOf(h)<0&&h){var t=document.getElementById(h); var p=t&&t.closest('.view'); if(p) v=p.id;}
+    views.forEach(function(x){var el=document.getElementById(x); if(el) el.hidden=(x!==v);});
+    document.querySelectorAll('.vtab').forEach(function(t){ if(t.getAttribute('data-view')===v) t.setAttribute('aria-current','page'); else t.removeAttribute('aria-current'); });
+    if(views.indexOf(h)>=0) window.scrollTo(0,0);
+    else if(h){ var el=document.getElementById(h); if(el) el.scrollIntoView(); }
+  }
+  window.addEventListener('hashchange',show); show();
+  document.querySelectorAll('[data-scroll]').forEach(function(a){ a.addEventListener('click',function(e){ e.preventDefault(); var el=document.getElementById(a.getAttribute('data-scroll')); if(el) el.scrollIntoView({behavior:'smooth'}); }); });
+  /* checklist */
+  var KEY='nh-rollout-checklist', saved={};
+  try{ saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ saved={}; }
+  var boxes=[].slice.call(document.querySelectorAll('.cli input'));
+  function upd(){ var vis=boxes.filter(function(b){return !b.closest('.cli').hidden;}); var d=vis.filter(function(b){return b.checked;}).length;
+    document.getElementById('clCount').textContent=d+' of '+vis.length+' done'; document.getElementById('clBar').style.width=(vis.length?d/vis.length*100:0)+'%'; }
+  boxes.forEach(function(b){ if(saved[b.dataset.k]) b.checked=true; b.closest('.cli').classList.toggle('done',b.checked);
+    b.addEventListener('change',function(){ b.closest('.cli').classList.toggle('done',b.checked); saved[b.dataset.k]=b.checked; try{localStorage.setItem(KEY,JSON.stringify(saved));}catch(e){} upd(); }); });
+  document.querySelectorAll('#clFilters button').forEach(function(btn){ btn.addEventListener('click',function(){
+    document.querySelectorAll('#clFilters button').forEach(function(x){x.setAttribute('aria-pressed', x===btn?'true':'false');});
+    var f=btn.dataset.f; document.querySelectorAll('.cli').forEach(function(r){ r.hidden = !(f==='all' || r.dataset.o.split(' ').indexOf(f)>=0); });
+    document.querySelectorAll('.clp').forEach(function(p){ p.hidden = !p.querySelector('.cli:not([hidden])'); }); upd(); }); });
+  upd();
+})();
+</script>
+</body>
+</html>

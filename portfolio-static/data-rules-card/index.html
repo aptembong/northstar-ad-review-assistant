@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Northstar Data Rules for Ad Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Northstar intranet look: navy bar, gold rule, warm paper background. Single theme on purpose (brand world). */
+:root{
+  --navy:#0F2747;--navy-2:#16335E;--gold:#C9A227;--gold-soft:#E3C766;--gold-ink:#8A6A12;
+  --paper:#F4F2EC;--card:#FFFFFF;--line:#DCD7CA;--ink:#1B2333;--muted:#4A5468;
+  --pass:#14532D;--pass-bg:#DCF2E3;--flag:#7A4F00;--flag-bg:#FFF1D1;--hold:#9B1C1C;--hold-bg:#FDE8E6;
+  --f-display:"Source Serif 4",Georgia,serif;--f-body:Inter,"Segoe UI",system-ui,sans-serif;--f-mono:ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+a{color:var(--navy)}a:hover{color:var(--gold-ink)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--f-display);color:var(--navy);text-wrap:balance;line-height:1.2;margin:0}
+p{margin:0}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-4px}
+.icb{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:9px;background:#FBF1D2;color:var(--navy);flex:none}
+.icb .ic{width:21px;height:21px}
+.top{background:var(--navy);color:#fff}
+.top-in{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:14px 24px;max-width:1160px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:12px}
+.bn{font-family:var(--f-display);font-weight:700;font-size:17px;letter-spacing:.04em;line-height:1.1}
+.bn span{display:block;font-family:var(--f-body);font-size:10px;letter-spacing:.3em;color:var(--gold-soft);font-weight:600}
+.divider{width:1px;height:30px;background:#3A5276}
+.hub{font-weight:600;font-size:15px}
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--gold-soft);font-weight:600;font-size:14px;text-decoration:none}
+.back:hover{color:#fff}
+.views{background:#fff;border-bottom:1px solid var(--line)}
+.views-in{max-width:1160px;margin:0 auto;padding:0 24px;display:flex;gap:4px;overflow-x:auto}
+.vtab{display:inline-flex;align-items:center;gap:8px;padding:12px 12px 9px;border-bottom:3px solid transparent;color:var(--muted);font-weight:600;font-size:14px;text-decoration:none;white-space:nowrap}
+.vtab:hover{color:var(--navy)}
+.vtab[aria-current="page"]{color:var(--navy);border-bottom-color:var(--gold)}
+.vtab .ic{width:17px;height:17px}
+.view[hidden]{display:none}
+.crumb{font-size:13px;color:var(--muted);padding:10px 0}
+.crumb strong{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 20px;border-radius:6px;font:700 15px var(--f-body);text-decoration:none;border:2px solid transparent;cursor:pointer}
+.btn-navy{background:var(--navy);color:#fff}.btn-navy:hover{background:var(--navy-2);color:#fff}
+.btn-gold{background:var(--gold);color:var(--navy)}.btn-gold:hover{background:var(--gold-soft);color:var(--navy)}
+.btn-line{border-color:var(--navy);color:var(--navy);background:#fff}.btn-line:hover{background:#F1EEE5}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.pill{display:inline-block;font-size:12px;font-weight:700;border-radius:4px;padding:2px 8px;text-align:center}
+.p-PASS{background:var(--pass-bg);color:var(--pass)}.p-FLAG{background:var(--flag-bg);color:var(--flag)}.p-HOLD{background:var(--hold-bg);color:var(--hold)}
+.fine{font-size:13px;color:#5B6577;font-style:italic}
+/* Letter-size sheets shown on screen */
+.sheet-stage{padding:28px 16px 48px;display:flex;justify-content:center}
+.sheet{width:100%;max-width:816px;background:#fff;box-shadow:0 8px 28px rgba(15,39,71,.14);display:flex;flex-direction:column}
+.sheet-head{background:var(--navy);color:#fff;border-bottom:5px solid var(--gold);padding:24px 40px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.sheet-title{text-align:right}
+.sheet-title h1{color:#fff;font-size:28px}
+.sheet-title div{font-size:12px;color:var(--gold-soft);font-weight:600;letter-spacing:.06em;margin-top:4px}
+.sheet-body{padding:22px 40px 0;display:flex;flex-direction:column;gap:13px;font-size:14px;line-height:1.45}
+.sheet-foot{margin:18px 40px 0;padding:10px 0 26px;border-top:2px solid var(--gold);font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+/* Microsoft Forms mockups */
+.form-stage{padding:28px 16px 48px;display:flex;justify-content:center}
+.mform{width:100%;max-width:640px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.mform-head{background:var(--navy);color:#fff;padding:20px 26px;border-bottom:5px solid var(--gold)}
+.mform-kicker{font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--gold-soft)}
+.mform-head h1{color:#fff;font-size:25px;margin:6px 0 4px}
+.mform-head p{font-size:14px;color:#E6EBF3}
+.mform-body{padding:22px 26px 26px;display:flex;flex-direction:column;gap:18px}
+.who{background:#F4F2EC;border-radius:8px;padding:10px 14px;font-size:14px;color:#3A4458}
+.q{display:flex;flex-direction:column;gap:6px}
+.q>label,.q legend{font-weight:600}
+.req{color:var(--hold)}
+select,input[type=text],textarea{font:15px var(--f-body);border:1px solid #B9B3A3;border-radius:6px;padding:0 10px;background:#fff;color:var(--ink)}
+select,input[type=text]{height:44px}
+textarea{min-height:110px;padding:10px;resize:vertical}
+fieldset{border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.ck{display:flex;gap:10px;align-items:flex-start;min-height:30px;cursor:pointer}
+.ck input{width:20px;height:20px;margin-top:1px;flex:none;accent-color:var(--navy)}
+.radios{display:flex;flex-wrap:wrap;gap:16px}
+.radios label{display:flex;gap:8px;align-items:center;min-height:40px;cursor:pointer}
+.radios input{width:18px;height:18px;accent-color:var(--navy)}
+.done-head{display:flex;align-items:center;gap:14px}
+.done-head h2{font-size:27px}
+.resp{width:100%;border-collapse:collapse;font-size:14px;border:1px solid #E4E0D5}
+.resp th{text-align:left;padding:8px 12px;width:40%;color:var(--muted);font-weight:600;background:#F7F5EF;border-bottom:1px solid #E4E0D5}
+.resp td{padding:8px 12px;border-bottom:1px solid #E4E0D5}
+.note{background:#F4F2EC;border-radius:8px;padding:14px 16px;font-size:14px;color:#3A4458;display:flex;flex-direction:column;gap:6px}
+.next-link{display:flex;align-items:center;justify-content:space-between;min-height:48px;padding:0 16px;border-radius:6px;font-weight:700;text-decoration:none}
+.portfolio-note{text-align:center;padding:0 16px 28px}
+@media (max-width:600px){.sheet-head,.sheet-body{padding-left:20px;padding-right:20px}.sheet-foot{margin-left:20px;margin-right:20px}.sheet-title{text-align:left}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.rule{display:flex;gap:14px;border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.rule .n{flex:none;width:34px;height:34px;border-radius:50%;background:var(--navy);color:var(--gold-soft);display:flex;align-items:center;justify-content:center;font-weight:700}
+.rule h2{font-family:var(--f-body);font-size:17px;margin-bottom:2px}
+.rule.red{border:2px solid var(--hold);background:#FFF7F6}
+.rule.red .n{background:var(--hold);color:#fff}
+.rule.red h2{color:var(--hold)}
+.routes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:8px}
+.route{border-radius:8px;padding:10px 12px}
+.ack-cta{background:var(--navy);color:#fff;border-radius:10px;padding:16px 20px;display:flex;gap:16px;align-items:center;text-decoration:none}
+.ack-cta:hover{background:var(--navy-2);color:#fff}
+.ack-cta .k{font-weight:700;color:var(--gold-soft);font-size:13px;letter-spacing:.08em}
+@media (max-width:600px){.routes{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 21 2M16 7l3 3M18.5 4.5l2 2"/></symbol>
+<symbol id="i-package" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></symbol>
+<symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/></symbol>
+<symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></symbol>
+<symbol id="i-app" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M8 7h8M8 11h6"/></symbol>
+<symbol id="i-flow" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="6" rx="1"/><rect x="14" y="15" width="7" height="6" rx="1"/><path d="M6.5 9v4a2 2 0 0 0 2 2H14"/></symbol>
+<symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 2v6M15 2v6M6 8h12v3a6 6 0 0 1-12 0zM12 17v5"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2 21h20z"/><path d="M12 10v5M12 18h.01"/></symbol>
+<symbol id="i-message" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></symbol>
+<symbol id="i-usercheck" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="m16 11 2 2 4-4"/></symbol>
+<symbol id="i-trend" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+<symbol id="i-printer" viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.7-2.5 2-2.5 3.5M12 17h.01"/></symbol>
+<symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></symbol>
+<symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+</svg>
+
+<header class="top"><div class="top-in">
+  <div class="brand"><svg width="44" height="44" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#0F2747" stroke="#C9A227" stroke-width="1.6"/><path d="M20 6.5 L22.4 15.6 L31.5 18 L22.4 20.4 L20 29.5 L17.6 20.4 L8.5 18 L17.6 15.6 Z" fill="#C9A227"/><path d="M10 26.5 q2.5 -1.6 5 0 t5 0 t5 0 t5 0 M11.5 30 q2.1 -1.4 4.2 0 t4.3 0 t4.3 0 t4.2 0" fill="none" stroke="#C9A227" stroke-width="1.2"/></svg><div class="bn">NORTHSTAR HARBOR<span>MORTGAGE</span></div><div class="divider"></div><div class="hub">Harbor Hub</div></div>
+  <a class="back" href="../case-study/index.html#governance" target="_blank" rel="noopener"><svg class="ic"><use href="#i-arrow-left"/></svg>Back to case study</a>
+</div></header>
+<nav class="views" aria-label="Pages in this piece"><div class="views-in">
+  <a class="vtab" href="#card" data-view="card"><svg class="ic"><use href="#i-shield"/></svg>Data Rules card</a>
+  <a class="vtab" href="#acknowledge" data-view="acknowledge"><svg class="ic"><use href="#i-clipboard"/></svg>Acknowledgment form</a>
+  <a class="vtab" href="#confirmation" data-view="confirmation"><svg class="ic"><use href="#i-check"/></svg>Confirmation</a>
+</div></nav>
+
+<!-- CARD -->
+<section class="view" id="card">
+  <div class="sheet-stage"><article class="sheet" aria-labelledby="card-title">
+    <div class="sheet-head">
+      <div class="brand"><svg width="44" height="44" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#0F2747" stroke="#C9A227" stroke-width="1.6"/><path d="M20 6.5 L22.4 15.6 L31.5 18 L22.4 20.4 L20 29.5 L17.6 20.4 L8.5 18 L17.6 15.6 Z" fill="#C9A227"/><path d="M10 26.5 q2.5 -1.6 5 0 t5 0 t5 0 t5 0 M11.5 30 q2.1 -1.4 4.2 0 t4.3 0 t4.3 0 t4.2 0" fill="none" stroke="#C9A227" stroke-width="1.2"/></svg><div class="bn">NORTHSTAR HARBOR<span>MORTGAGE</span></div></div>
+      <div class="sheet-title"><h1 id="card-title">Data Rules for Ad Review</h1><div>REQUIRED BEFORE YOUR FIRST LIVE REVIEW · 2-MINUTE READ</div></div>
+    </div>
+    <div class="sheet-body" style="font-size:15px">
+      <p style="color:#3A4458">These five rules apply the Northstar AI Acceptable Use Policy to the Ad Review Assistant. They cover ad review only. The full policy still applies to everything else you do in Claude.</p>
+      <div class="rule red"><span class="n">1</span><div><h2>Never paste customer information.</h2>No borrower names, addresses, phone numbers, emails, loan numbers, credit details, or a rate quote for a real person. Crop or cover them in flyers and screenshots before you attach anything. If the assistant sees customer information, it stops and asks you to remove it.</div></div>
+      <div class="rule"><span class="n">2</span><div><h2>Know what's fine to use.</h2>Your ad copy and images, your own name, NMLS ID and work contact details, Northstar company information, and sample or placeholder numbers.</div></div>
+      <div class="rule"><span class="n">3</span><div><h2>Only use Northstar's Claude.</h2>Sign in with your Northstar account. Never review Northstar ads in a personal Claude account or another AI tool.</div></div>
+      <div class="rule"><span class="n">4</span><div><h2>A PASS is not approval.</h2>Nothing is published until a licensed compliance reviewer approves it, and then only the exact approved version.</div></div>
+      <div class="rule"><span class="n">5</span><div style="flex:1;min-width:0"><h2>Report mistakes right away. No blame.</h2>
+        <div class="routes">
+          <div class="route" style="background:var(--hold-bg);color:#3A1512"><strong style="color:var(--hold);display:flex;gap:6px;align-items:center"><svg class="ic"><use href="#i-alert"/></svg>Pasted customer information?</strong>Stop. Open a service desk ticket marked "AI data incident" and copy Compliance. Then delete the chat.</div>
+          <div class="route" style="background:#EEF2F8"><strong style="color:var(--navy);display:flex;gap:6px;align-items:center"><svg class="ic"><use href="#i-message"/></svg>Wrong flag or missed rule?</strong>Tell AI Enablement in the Ad Review feedback form, pinned in the AI Enablement Teams channel.</div>
+        </div>
+      </div></div>
+      <a class="ack-cta" href="#acknowledge"><svg class="ic" style="width:30px;height:30px;color:var(--gold-soft)"><use href="#i-clipboard"/></svg><div style="flex:1"><div class="k">ACKNOWLEDGE IN THE MICROSOFT FORM →</div><div>"I have read the Data Rules for Ad Review and will follow them and the Northstar AI Acceptable Use Policy."</div><div style="font-size:12px;color:#C9D3E3;margin-top:4px">Printed copy? Find the form at Harbor Hub › AI Enablement › Ad Review Assistant.</div></div></a>
+    </div>
+    <div class="sheet-foot">
+      <div>Full policy: Northstar AI Acceptable Use Policy (Harbor Hub › Policies) · Questions: your branch AI champion</div>
+      <div>Maintained by AI Enablement (Akeyla Peele-Tembong, AI Platform &amp; Enablement Lead) · Approved by Compliance · Card v1.0, November 14, 2026</div>
+      <div style="font-style:italic">Northstar Harbor Mortgage is a fictional company created for portfolio purposes.</div>
+    </div>
+  </article></div>
+</section>
+
+<!-- FORM -->
+<section class="view" id="acknowledge" hidden>
+  <div class="form-stage"><div class="mform">
+    <div class="mform-head"><div class="mform-kicker">MICROSOFT FORM · MOCKUP</div><h1>Data Rules for Ad Review: Acknowledgment</h1><p>Required once before your first live review. About 1 minute.</p></div>
+    <form class="mform-body" id="ackForm" novalidate>
+      <div class="who">Signed in as <strong>Liam Smith</strong> (liam.smith@northstarharbor.example). Your name and email are recorded automatically.</div>
+      <div class="q"><label for="role">1. Your role <span class="req">*</span></label>
+        <select id="role"><option>Loan officer</option><option>Marketing</option><option>Compliance reviewer</option></select></div>
+      <div class="q"><label for="branch">2. Branch <span class="req">*</span></label>
+        <select id="branch"><option value="">Select your branch</option><option>Atlanta, GA</option><option selected>Edmond, OK</option><option>Irvine, CA</option><option>Dallas, TX</option><option>Charlotte, NC</option><option>Corporate / Remote</option></select></div>
+      <fieldset><legend>3. Check each statement <span class="req">*</span></legend>
+        <label class="ck"><input type="checkbox" id="c1" checked>I will never paste customer information into Claude.</label>
+        <label class="ck"><input type="checkbox" id="c2" checked>I will review Northstar ads only in Northstar's Claude.</label>
+        <label class="ck"><input type="checkbox" id="c3" checked>I understand a PASS is not approval, and I will publish only the exact version Compliance approves.</label>
+        <label class="ck"><input type="checkbox" id="c4" checked>I know how to report a data mistake: service desk ticket marked "AI data incident", copying Compliance.</label>
+      </fieldset>
+      <div style="border-top:1px solid #E4E0D5;padding-top:16px"><label class="ck" style="font-weight:600"><input type="checkbox" id="c5" checked>I have read the Data Rules for Ad Review and will follow them and the Northstar AI Acceptable Use Policy.</label></div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center"><button class="btn btn-navy" type="submit" id="ackSubmit">Submit</button><span id="ackMsg" aria-live="polite" style="font-size:14px;color:var(--hold)"></span></div>
+      <div style="font-size:13px;color:var(--muted)">Owner: AI Enablement. Responses go to the rollout dashboard. Questions: your branch AI champion.</div>
+    </form>
+  </div></div>
+</section>
+
+<!-- CONFIRMATION -->
+<section class="view" id="confirmation" hidden>
+  <div class="form-stage"><div class="mform">
+    <div class="mform-head"><div class="mform-kicker">MICROSOFT FORM · MOCKUP</div><h1>Data Rules for Ad Review: Acknowledgment</h1></div>
+    <div class="mform-body">
+      <div class="done-head"><svg class="ic" style="width:52px;height:52px;color:var(--pass)"><use href="#i-check"/></svg><div><h2>Thanks, Liam. You're all set.</h2><div style="color:#3A4458">You can now run the Ad Review Assistant on live ads.</div></div></div>
+      <table class="resp"><caption style="text-align:left;font-weight:700;font-size:13px;letter-spacing:.08em;color:#5B6577;padding-bottom:8px">YOUR RESPONSE</caption><tbody>
+        <tr><th scope="row">Name</th><td>Liam Smith</td></tr>
+        <tr><th scope="row">Role</th><td id="rRole">Loan officer</td></tr>
+        <tr><th scope="row">Branch</th><td id="rBranch">Edmond, OK</td></tr>
+        <tr><th scope="row">Data Rules card</th><td>Version 1.0</td></tr>
+        <tr><th scope="row">Confirmation #</th><td style="font-family:var(--f-mono);font-weight:700;color:var(--navy)">ACK-2026-0412</td></tr>
+        <tr><th scope="row">Acknowledged</th><td id="rWhen">November 14, 2026</td></tr>
+      </tbody></table>
+      <div class="note"><div><strong style="color:var(--navy)">Check your inbox.</strong> A copy of your response is on its way to your Northstar email.</div><div><strong style="color:var(--navy)">Find it later</strong> under Harbor Hub › My training records.</div><div>If the Data Rules card changes version, you'll be asked to acknowledge it again.</div></div>
+      <div style="display:flex;flex-direction:column;gap:10px"><div style="font-weight:700;color:var(--navy)">What's next</div>
+        <a class="next-link" href="../loan-officer-quick-start/index.html" target="_blank" rel="noopener" style="background:var(--navy);color:#fff">Open the quick-start guide<span aria-hidden="true">→</span></a>
+        <a class="next-link" href="../hands-on-lab/index.html" target="_blank" rel="noopener" style="border:2px solid var(--navy);color:var(--navy);background:#fff">Take the 30-minute hands-on lab (recommended)<span aria-hidden="true">→</span></a>
+      </div>
+      <a href="#card" style="font-size:14px">← Back to the Data Rules card</a>
+    </div>
+  </div></div>
+</section>
+
+<p class="fine portfolio-note">Northstar Harbor Mortgage is a fictional company created for portfolio purposes. The forms on this page are mockups; nothing is sent.</p>
+
+<script>
+(function(){
+  var views=["card","acknowledge","confirmation"];
+  function show(){var v=location.hash.slice(1); if(views.indexOf(v)<0) v="card";
+    views.forEach(function(x){document.getElementById(x).hidden=(x!==v);});
+    document.querySelectorAll('.vtab').forEach(function(t){ if(t.getAttribute('data-view')===v) t.setAttribute('aria-current','page'); else t.removeAttribute('aria-current'); });
+    window.scrollTo(0,0);}
+  window.addEventListener('hashchange',show); show();
+  var form=document.getElementById('ackForm'), msg=document.getElementById('ackMsg');
+  form.addEventListener('submit',function(e){ e.preventDefault();
+    var ok=['c1','c2','c3','c4','c5'].every(function(id){return document.getElementById(id).checked;});
+    var br=document.getElementById('branch').value;
+    if(!br){ msg.textContent='Choose your branch to continue.'; document.getElementById('branch').focus(); return; }
+    if(!ok){ msg.textContent='Check every statement to continue.'; return; }
+    msg.textContent='';
+    document.getElementById('rRole').textContent=document.getElementById('role').value;
+    document.getElementById('rBranch').textContent=br;
+    try{ document.getElementById('rWhen').textContent=new Date().toLocaleString('en-US',{dateStyle:'long',timeStyle:'short'}); }catch(err){}
+    location.hash='confirmation';
+  });
+})();
+</script>
+</body>
+</html>

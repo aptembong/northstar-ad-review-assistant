@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ad Review Assistant Hands-On Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Northstar intranet look: navy bar, gold rule, warm paper background. Single theme on purpose (brand world). */
+:root{
+  --navy:#0F2747;--navy-2:#16335E;--gold:#C9A227;--gold-soft:#E3C766;--gold-ink:#8A6A12;
+  --paper:#F4F2EC;--card:#FFFFFF;--line:#DCD7CA;--ink:#1B2333;--muted:#4A5468;
+  --pass:#14532D;--pass-bg:#DCF2E3;--flag:#7A4F00;--flag-bg:#FFF1D1;--hold:#9B1C1C;--hold-bg:#FDE8E6;
+  --f-display:"Source Serif 4",Georgia,serif;--f-body:Inter,"Segoe UI",system-ui,sans-serif;--f-mono:ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+a{color:var(--navy)}a:hover{color:var(--gold-ink)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--f-display);color:var(--navy);text-wrap:balance;line-height:1.2;margin:0}
+p{margin:0}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-4px}
+.icb{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:9px;background:#FBF1D2;color:var(--navy);flex:none}
+.icb .ic{width:21px;height:21px}
+.top{background:var(--navy);color:#fff}
+.top-in{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:14px 24px;max-width:1160px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:12px}
+.bn{font-family:var(--f-display);font-weight:700;font-size:17px;letter-spacing:.04em;line-height:1.1}
+.bn span{display:block;font-family:var(--f-body);font-size:10px;letter-spacing:.3em;color:var(--gold-soft);font-weight:600}
+.divider{width:1px;height:30px;background:#3A5276}
+.hub{font-weight:600;font-size:15px}
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--gold-soft);font-weight:600;font-size:14px;text-decoration:none}
+.back:hover{color:#fff}
+.views{background:#fff;border-bottom:1px solid var(--line)}
+.views-in{max-width:1160px;margin:0 auto;padding:0 24px;display:flex;gap:4px;overflow-x:auto}
+.vtab{display:inline-flex;align-items:center;gap:8px;padding:12px 12px 9px;border-bottom:3px solid transparent;color:var(--muted);font-weight:600;font-size:14px;text-decoration:none;white-space:nowrap}
+.vtab:hover{color:var(--navy)}
+.vtab[aria-current="page"]{color:var(--navy);border-bottom-color:var(--gold)}
+.vtab .ic{width:17px;height:17px}
+.view[hidden]{display:none}
+.crumb{font-size:13px;color:var(--muted);padding:10px 0}
+.crumb strong{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 20px;border-radius:6px;font:700 15px var(--f-body);text-decoration:none;border:2px solid transparent;cursor:pointer}
+.btn-navy{background:var(--navy);color:#fff}.btn-navy:hover{background:var(--navy-2);color:#fff}
+.btn-gold{background:var(--gold);color:var(--navy)}.btn-gold:hover{background:var(--gold-soft);color:var(--navy)}
+.btn-line{border-color:var(--navy);color:var(--navy);background:#fff}.btn-line:hover{background:#F1EEE5}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.pill{display:inline-block;font-size:12px;font-weight:700;border-radius:4px;padding:2px 8px;text-align:center}
+.p-PASS{background:var(--pass-bg);color:var(--pass)}.p-FLAG{background:var(--flag-bg);color:var(--flag)}.p-HOLD{background:var(--hold-bg);color:var(--hold)}
+.fine{font-size:13px;color:#5B6577;font-style:italic}
+/* Letter-size sheets shown on screen */
+.sheet-stage{padding:28px 16px 48px;display:flex;justify-content:center}
+.sheet{width:100%;max-width:816px;background:#fff;box-shadow:0 8px 28px rgba(15,39,71,.14);display:flex;flex-direction:column}
+.sheet-head{background:var(--navy);color:#fff;border-bottom:5px solid var(--gold);padding:24px 40px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
+.sheet-title{text-align:right}
+.sheet-title h1{color:#fff;font-size:28px}
+.sheet-title div{font-size:12px;color:var(--gold-soft);font-weight:600;letter-spacing:.06em;margin-top:4px}
+.sheet-body{padding:22px 40px 0;display:flex;flex-direction:column;gap:13px;font-size:14px;line-height:1.45}
+.sheet-foot{margin:18px 40px 0;padding:10px 0 26px;border-top:2px solid var(--gold);font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+/* Microsoft Forms mockups */
+.form-stage{padding:28px 16px 48px;display:flex;justify-content:center}
+.mform{width:100%;max-width:640px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.mform-head{background:var(--navy);color:#fff;padding:20px 26px;border-bottom:5px solid var(--gold)}
+.mform-kicker{font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--gold-soft)}
+.mform-head h1{color:#fff;font-size:25px;margin:6px 0 4px}
+.mform-head p{font-size:14px;color:#E6EBF3}
+.mform-body{padding:22px 26px 26px;display:flex;flex-direction:column;gap:18px}
+.who{background:#F4F2EC;border-radius:8px;padding:10px 14px;font-size:14px;color:#3A4458}
+.q{display:flex;flex-direction:column;gap:6px}
+.q>label,.q legend{font-weight:600}
+.req{color:var(--hold)}
+select,input[type=text],textarea{font:15px var(--f-body);border:1px solid #B9B3A3;border-radius:6px;padding:0 10px;background:#fff;color:var(--ink)}
+select,input[type=text]{height:44px}
+textarea{min-height:110px;padding:10px;resize:vertical}
+fieldset{border:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.ck{display:flex;gap:10px;align-items:flex-start;min-height:30px;cursor:pointer}
+.ck input{width:20px;height:20px;margin-top:1px;flex:none;accent-color:var(--navy)}
+.radios{display:flex;flex-wrap:wrap;gap:16px}
+.radios label{display:flex;gap:8px;align-items:center;min-height:40px;cursor:pointer}
+.radios input{width:18px;height:18px;accent-color:var(--navy)}
+.done-head{display:flex;align-items:center;gap:14px}
+.done-head h2{font-size:27px}
+.resp{width:100%;border-collapse:collapse;font-size:14px;border:1px solid #E4E0D5}
+.resp th{text-align:left;padding:8px 12px;width:40%;color:var(--muted);font-weight:600;background:#F7F5EF;border-bottom:1px solid #E4E0D5}
+.resp td{padding:8px 12px;border-bottom:1px solid #E4E0D5}
+.note{background:#F4F2EC;border-radius:8px;padding:14px 16px;font-size:14px;color:#3A4458;display:flex;flex-direction:column;gap:6px}
+.next-link{display:flex;align-items:center;justify-content:space-between;min-height:48px;padding:0 16px;border-radius:6px;font-weight:700;text-decoration:none}
+.portfolio-note{text-align:center;padding:0 16px 28px}
+@media (max-width:600px){.sheet-head,.sheet-body{padding-left:20px;padding-right:20px}.sheet-foot{margin-left:20px;margin-right:20px}.sheet-title{text-align:left}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.hero{background:var(--navy);color:#fff;border-bottom:6px solid var(--gold)}
+.hero-in{max-width:1160px;margin:0 auto;padding:52px 24px 48px;display:flex;flex-wrap:wrap;gap:40px;align-items:center}
+.badge{display:inline-block;background:var(--gold);color:var(--navy);font-size:12px;font-weight:700;letter-spacing:.12em;padding:5px 10px;border-radius:4px}
+.hero h1{color:#fff;font-size:46px;line-height:1.1;margin:18px 0 14px}
+.glance{flex:1 1 300px;min-width:0;background:var(--navy-2);border:1px solid #2E4C7A;border-radius:10px;padding:22px 24px}
+.glance-t{font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--gold-soft);margin-bottom:12px}
+.glance-row{display:flex;gap:10px;align-items:flex-start;font-size:15px;color:#E6EBF3}
+.glance-row .ic{color:var(--gold-soft);margin-top:2px}
+.glance-row strong{color:#fff}
+.strip{margin-top:28px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px 18px;display:flex;flex-wrap:wrap;gap:10px 24px;font-size:14px;color:#3A4458;align-items:center}
+section.blk{padding-top:52px}
+.h2row{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.h2row h2{font-size:31px}
+.sub{color:var(--muted);margin:0 0 22px;max-width:760px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:22px}
+.card h3{font-size:19px;margin:12px 0 6px}
+.card p{font-size:15px;color:#3A4458}
+.tagx{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;padding:4px 9px;border-radius:4px}
+.step{background:#fff;border:1px solid var(--line);border-radius:12px;padding:26px;display:flex;flex-wrap:wrap;gap:28px}
+.step-l{flex:1 1 340px;min-width:0}
+.step-r{flex:1 1 380px;min-width:0;background:var(--paper);border-radius:10px;padding:18px}
+.num{width:36px;height:36px;border-radius:50%;background:var(--navy);color:var(--gold-soft);display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.step-h{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.step-h h3{font-size:21px}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.1em;color:#5B6577;margin-bottom:10px}
+.prompt{background:#F7F5EF;border:1px dashed var(--gold-ink);border-radius:8px;padding:14px 16px;font-family:var(--f-mono);font-size:14px;line-height:1.6}
+.box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:15px}
+.legend{display:flex;flex-direction:column;gap:8px;font-size:14px;margin-top:12px}
+.legend div{display:flex;gap:10px;align-items:baseline}
+.legend .pill{flex:none;width:52px}
+table.sc{width:100%;border-collapse:collapse;background:#fff;font-size:13.5px}
+table.sc th{background:var(--navy);color:#fff;text-align:left;padding:8px 10px}
+table.sc td{padding:8px 10px;border-bottom:1px solid #E4E0D5;vertical-align:top}
+.r-pass{color:var(--pass);font-weight:700}.r-flag{color:var(--flag);font-weight:700}
+.fix{display:flex;gap:10px;align-items:center;background:#fff;border:2px solid var(--navy);border-radius:8px;padding:10px 12px;font-size:14px}
+.fix input{width:18px;height:18px;accent-color:var(--navy)}
+del{color:var(--hold);text-decoration:line-through}
+ins{color:var(--pass);background:var(--pass-bg);text-decoration:none;font-weight:600}
+table.qi{width:100%;border-collapse:collapse;background:#fff;font-size:13.5px}
+table.qi th{text-align:left;padding:7px 10px;width:42%;color:var(--muted);font-weight:600;border-bottom:1px solid #E4E0D5}
+table.qi td{padding:7px 10px;border-bottom:1px solid #E4E0D5}
+.decide{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
+.won{background:var(--navy);color:#fff;border-radius:12px;padding:30px;display:flex;flex-wrap:wrap;gap:28px}
+.won h2{color:#fff;font-size:28px;margin-bottom:8px}
+.won-g{flex:2 1 520px;min-width:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.won-g div{border-left:3px solid var(--gold);padding-left:14px}
+.won-g b{display:block;color:var(--gold-soft);margin-bottom:4px}
+.won-g span{font-size:14px;color:#E6EBF3}
+.faq{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.faq div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.faq h3{font-family:var(--f-body);font-size:16px;margin-bottom:6px}
+.help{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.help .card h3{margin-top:6px}
+.kick{font-size:13px;font-weight:700;letter-spacing:.08em;color:var(--gold-ink);display:flex;align-items:center;gap:8px}
+.incident{margin-top:16px;background:var(--hold-bg);border:1px solid #E8B4AE;border-radius:10px;padding:16px 20px;font-size:15px;color:#3A1512;display:flex;gap:10px}
+.owner{margin:56px 0 0;padding:26px 0 40px;border-top:2px solid var(--gold)}
+.owner-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;font-size:14px}
+.owner-g b{display:block;color:var(--navy)}
+.owner-g span{color:var(--muted)}
+/* cheat sheet */
+.cs-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.cs-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cs-step{border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;gap:10px}
+.cs-step .num{width:26px;height:26px;font-size:13px}
+.cs-step b{display:block;color:var(--navy);font-size:14px}
+@media (max-width:700px){.cs-3,.cs-2{grid-template-columns:1fr}.hero h1{font-size:36px}}
+
+/* ---------- lab ---------- */
+.lab-wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+.stepper{background:#fff;border-bottom:1px solid var(--line)}
+.stepper-in{max-width:1040px;margin:0 auto;padding:12px 24px;display:flex;gap:6px;overflow-x:auto}
+.st{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;white-space:nowrap;border:1px solid transparent}
+.st .n{width:22px;height:22px;border-radius:50%;background:#E6EBF3;color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:12px;flex:none}
+.st[aria-current="step"]{border-color:var(--navy);color:var(--navy);background:#F7F5EF}
+.st[aria-current="step"] .n{background:var(--navy);color:var(--gold-soft)}
+.st.done .n{background:var(--pass-bg);color:var(--pass)}
+.lab-head{padding:34px 0 8px}
+.lab-head .kick{margin-bottom:8px}
+.lab-head h1{font-size:34px;margin-bottom:8px}
+.lab-head p{color:var(--muted);max-width:760px}
+.timer{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--navy);background:#FBF1D2;border-radius:999px;padding:4px 10px;margin-left:8px;vertical-align:4px;font-family:var(--f-body)}
+.real{margin-top:22px;border:1px solid #BFCBDD;background:#EEF2F8;border-radius:10px;padding:14px 18px;display:flex;gap:12px;font-size:14.5px;color:#22324D}
+.real .ic{color:var(--navy);margin-top:2px}
+.real b{color:var(--navy)}
+.navrow{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;margin:28px 0 56px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px;align-items:start}
+.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px}
+.panel h3{font-size:19px;margin-bottom:10px}
+.adimg{width:100%;border-radius:8px;display:block;border:1px solid var(--line)}
+.caption{white-space:pre-wrap;font-size:14.5px;background:#F7F5EF;border-radius:8px;padding:14px 16px;margin-top:12px}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{font:600 14px var(--f-body);min-height:44px;padding:8px 14px;border-radius:999px;border:2px solid #B9B3A3;background:#fff;color:var(--ink);cursor:pointer;text-align:left}
+.chip:hover{border-color:var(--navy)}
+.chip[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.chip.res-hit{background:var(--pass-bg);border-color:var(--pass);color:var(--pass)}
+.chip.res-miss{background:var(--hold-bg);border-color:var(--hold);color:var(--hold);border-style:dashed}
+.chip.res-false{background:var(--flag-bg);border-color:var(--flag);color:var(--flag)}
+.chip.res-ok{opacity:.6}
+.chip[disabled]{cursor:default}
+.result-box{margin-top:18px;border-radius:10px;padding:16px 18px;background:#F7F5EF;font-size:15px}
+.keyrow{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;margin-top:10px;color:var(--muted)}
+.keyrow span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:4px;display:inline-block}
+.chat{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.chat-top{background:#F7F5EF;border-bottom:1px solid var(--line);padding:10px 16px;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.chat-body{padding:18px;display:flex;flex-direction:column;gap:14px;min-height:220px}
+.bubble{align-self:flex-end;max-width:520px;background:#E6EBF3;border-radius:12px 12px 2px 12px;padding:12px 14px;font-size:15px}
+.att{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid #BFCBDD;color:var(--navy);border-radius:6px;padding:5px 9px;font-size:13px;font-weight:600;margin:0 6px 8px 0}
+.skilltag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--gold-ink);background:#FBF1D2;border-radius:4px;padding:3px 8px}
+.working{display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--muted)}
+.working div{display:flex;gap:8px;align-items:center}
+.dot{width:10px;height:10px;border-radius:50%;background:#C8C2B2;flex:none}
+.dot.on{background:var(--gold)}
+.dot.ok{background:var(--pass)}
+.verdict-bar{display:flex;flex-wrap:wrap;align-items:center;gap:14px;border-radius:10px;padding:16px 18px;margin-bottom:16px}
+.vb-HOLD{background:var(--hold-bg);border:1px solid #E8B4AE}
+.vb-FLAG{background:var(--flag-bg);border:1px solid #EBCB85}
+.vb-PASS{background:var(--pass-bg);border:1px solid #9BCFAE}
+.verdict-bar .big{font:700 24px var(--f-display)}
+.r-hold{color:var(--hold);font-weight:700}
+.act{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:#fff;display:flex;flex-direction:column;gap:6px;font-size:14.5px}
+.act-h{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.act-h b{color:var(--navy);font-size:15.5px}
+.act dl{margin:0;display:grid;grid-template-columns:70px 1fr;gap:4px 10px}
+.act dt{font-weight:700;color:var(--muted);font-size:13px}
+.act dd{margin:0}
+.q-call{font-family:var(--f-mono);font-size:13.5px;background:#F7F5EF;border-radius:4px;padding:1px 5px}
+.tip{display:flex;gap:10px;align-items:flex-start;background:#FBF1D2;border-radius:10px;padding:12px 16px;font-size:14.5px;margin-top:14px}
+.tip .ic{color:var(--gold-ink);margin-top:2px}
+.decision{border:1px solid var(--line);border-radius:10px;background:#fff;padding:16px 18px}
+.decision.open{border-color:var(--navy);box-shadow:0 0 0 1px var(--navy)}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:14.5px;min-height:40px}
+.opt:hover{background:#F7F5EF}
+.opt input{width:18px;height:18px;margin-top:2px;accent-color:var(--navy);flex:none}
+.redline{white-space:pre-wrap;font-size:14.5px;line-height:1.65;background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.redline sup{font-size:11px;font-weight:700;color:var(--navy)}
+.mock{position:relative;aspect-ratio:1/1;background:linear-gradient(160deg,#16335E,#1F3D6B);border-radius:8px;color:#fff;padding:7% 7% 5%;display:flex;flex-direction:column;font-family:Inter,sans-serif;overflow:hidden;container-type:inline-size}
+.mock .mk-logo{display:flex;align-items:center;gap:3cqw;font-family:var(--f-display);font-size:3.2cqw;letter-spacing:.05em;line-height:1.1}
+.mock .mk-logo span{display:block;font-family:Inter;font-size:1.6cqw;letter-spacing:.3em;color:var(--gold-soft)}
+.mock h4{font:800 8.4cqw/1.05 Inter,sans-serif;margin:7cqw 0 3cqw;color:#fff}
+.mock h4 em{font-style:normal;color:var(--gold)}
+.mock .mk-l{font-size:4.1cqw;font-weight:600;line-height:1.35}
+.mock .mk-l b{color:var(--gold)}
+.mock .mk-disc{font-size:2.15cqw;line-height:1.35;color:#E6EBF3;margin-top:2.2cqw;border-left:2px solid var(--gold);padding-left:2cqw}
+.mock .mk-foot{margin-top:auto;border-top:1px solid var(--gold);padding-top:2.6cqw;display:flex;justify-content:space-between;align-items:flex-end;gap:2cqw}
+.mock .mk-name{font-size:4cqw;font-weight:700}
+.mock .mk-role{font-size:2.6cqw;color:var(--gold-soft)}
+.mock .mk-fine{font-size:1.75cqw;color:#BFCBDD;margin-top:1.6cqw}
+.mock .mk-cta{font-size:3cqw;font-weight:700;white-space:nowrap}
+.mock-label{position:absolute;top:3cqw;right:3cqw;background:var(--gold);color:var(--navy);font-size:2cqw;font-weight:800;letter-spacing:.06em;padding:1cqw 2cqw;border-radius:3px}
+.scen{display:flex;flex-direction:column;gap:16px}
+.scen-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px}
+.scen-card h3{font-size:18px;margin-bottom:6px}
+.scen-btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.scen-fb{margin-top:12px;border-radius:8px;padding:12px 14px;font-size:14.5px}
+.fb-good{background:var(--pass-bg);color:#123F23}
+.fb-bad{background:var(--hold-bg);color:#5A1410}
+.quiz{display:flex;flex-direction:column;gap:16px}
+.qz{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+.qz legend{font-weight:700;color:var(--navy);margin-bottom:8px;font-size:16px}
+.qz .fbk{margin-top:8px}
+.score{font:700 30px var(--f-display);color:var(--navy)}
+.ros{width:100%;border-collapse:collapse;background:#fff;font-size:14px;border:1px solid var(--line)}
+.ros th{background:var(--navy);color:#fff;text-align:left;padding:9px 12px;font-weight:600}
+.ros td{padding:10px 12px;border-bottom:1px solid #E4E0D5;vertical-align:top}
+.ros td:first-child{font-weight:700;color:var(--navy);white-space:nowrap}
+.say{font-style:italic;color:#22324D}
+.agenda{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.ag{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.ag .m{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--gold-ink)}
+.ag b{color:var(--navy)}
+.ag span{font-size:14px;color:var(--muted)}
+.phase{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.chk{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;font-size:15px}
+.chk li{display:flex;gap:10px;align-items:flex-start}
+.chk li .ic{color:var(--pass);margin-top:2px}
+@media (max-width:600px){.lab-head h1{font-size:28px}.act dl{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 21 2M16 7l3 3M18.5 4.5l2 2"/></symbol>
+<symbol id="i-package" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></symbol>
+<symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/></symbol>
+<symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></symbol>
+<symbol id="i-app" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M8 7h8M8 11h6"/></symbol>
+<symbol id="i-flow" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="6" rx="1"/><rect x="14" y="15" width="7" height="6" rx="1"/><path d="M6.5 9v4a2 2 0 0 0 2 2H14"/></symbol>
+<symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 2v6M15 2v6M6 8h12v3a6 6 0 0 1-12 0zM12 17v5"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2 21h20z"/><path d="M12 10v5M12 18h.01"/></symbol>
+<symbol id="i-message" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></symbol>
+<symbol id="i-usercheck" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="m16 11 2 2 4-4"/></symbol>
+<symbol id="i-trend" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+<symbol id="i-printer" viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.7-2.5 2-2.5 3.5M12 17h.01"/></symbol>
+<symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></symbol>
+<symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+</svg>
+
+
+<header class="top"><div class="top-in">
+  <div class="brand"><svg width="44" height="44" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#0F2747" stroke="#C9A227" stroke-width="1.6"/><path d="M20 6.5 L22.4 15.6 L31.5 18 L22.4 20.4 L20 29.5 L17.6 20.4 L8.5 18 L17.6 15.6 Z" fill="#C9A227"/><path d="M10 26.5 q2.5 -1.6 5 0 t5 0 t5 0 t5 0 M11.5 30 q2.1 -1.4 4.2 0 t4.3 0 t4.3 0 t4.2 0" fill="none" stroke="#C9A227" stroke-width="1.2"/></svg><div class="bn">NORTHSTAR HARBOR<span>MORTGAGE</span></div><div class="divider"></div><div class="hub">Harbor Hub</div></div>
+  <a class="back" href="../case-study/index.html#enablement" target="_blank" rel="noopener"><svg class="ic"><use href="#i-arrow-left"/></svg>Back to case study</a>
+</div></header>
+<nav class="views" aria-label="Parts of this lab"><div class="views-in">
+  <a class="vtab" href="#lab" data-tab="lab"><svg class="ic"><use href="#i-target"/></svg>Lab home</a>
+  <a class="vtab" href="#warmup" data-tab="steps"><svg class="ic"><use href="#i-flow"/></svg>Self-paced lab</a>
+  <a class="vtab" href="#facilitator" data-tab="facilitator"><svg class="ic"><use href="#i-users"/></svg>Facilitator guide</a>
+</div></nav>
+
+<div class="stepper" id="stepper" hidden><div class="stepper-in" id="stepperIn"></div></div>
+
+<!-- ================= LAB HOME ================= -->
+<div class="view" id="lab">
+  <div style="background:#fff;border-bottom:1px solid var(--line)"><div class="wrap crumb">Harbor Hub › AI Enablement › Training › <strong>Ad Review Assistant: Hands-On Lab</strong></div></div>
+  <div class="hero"><div class="hero-in">
+    <div style="flex:999 1 520px;min-width:0">
+      <span class="badge">30-MINUTE HANDS-ON LAB</span>
+      <h1>Take one ad from HOLD to PASS.</h1>
+      <p style="font-size:19px;color:#E6EBF3;max-width:640px;margin-bottom:10px">Practice on a sample Instagram post from Simone Washington before you check your own work. You'll find the problems, decide on every fix, and submit a clean version to Compliance.</p>
+      <p style="font-size:17px;color:var(--gold-soft);font-weight:600;margin-bottom:26px">You make every decision. The assistant explains the rules.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px"><a class="btn btn-gold" href="#warmup"><svg class="ic"><use href="#i-flow"/></svg>Start the self-paced lab</a><a class="btn" href="#facilitator" style="color:#fff;border-color:#8DA2C0"><svg class="ic"><use href="#i-users"/></svg>Running a live session?</a></div>
+    </div>
+    <div class="glance"><div class="glance-t">BY THE END, YOU CAN</div><div style="display:flex;flex-direction:column;gap:12px">
+      <div class="glance-row"><svg class="ic"><use href="#i-search"/></svg><div>Spot the <strong>rate, payment and down payment</strong> claims that need disclosures.</div></div>
+      <div class="glance-row"><svg class="ic"><use href="#i-clipboard"/></svg><div>Read a <strong>scorecard and action plan</strong> and decide on each fix.</div></div>
+      <div class="glance-row"><svg class="ic"><use href="#i-send"/></svg><div>Re-review, <strong>submit to Compliance</strong>, and know what PASS means.</div></div>
+      <div class="glance-row"><svg class="ic"><use href="#i-lock"/></svg><div>Tell what you <strong>can and can't paste</strong> into Claude.</div></div>
+    </div></div>
+  </div></div>
+
+  <div class="lab-wrap">
+    <div class="strip"><svg class="ic" style="color:var(--navy)"><use href="#i-shield"/></svg><span><strong style="color:var(--navy)">Recommended</strong> for every loan officer before a first live review</span><span>Skill: <strong>mortgage-ad-review</strong>, version 6</span><span>Prerequisite: <a href="../data-rules-card/index.html#acknowledge" target="_blank" rel="noopener">Data Rules acknowledgment</a> on file</span></div>
+
+    <section class="blk">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-clock"/></svg></span><h2>The 30 minutes</h2></div>
+      <p class="sub">Seven short steps. Each one shows how it works in the lab and what you'd do in Northstar's Claude.</p>
+      <div class="agenda" id="agenda"></div>
+    </section>
+
+    <section class="blk">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-layers"/></svg></span><h2>Two ways to take it</h2></div>
+      <p class="sub">Same ad, same steps, same completion record.</p>
+      <div class="cards">
+        <div class="card"><span class="tagx" style="background:#E6EBF3;color:var(--navy)">ON YOUR OWN</span><h3>Self-paced, right on this page</h3><p style="margin-bottom:14px">Every step is simulated here, so nothing you click goes to Compliance. Good for new hires and anyone who missed a live session.</p><a href="#warmup" style="font-weight:600">Start step 1 →</a></div>
+        <div class="card"><span class="tagx" style="background:#F3E7BF;color:#5C470B">LIVE IN TEAMS</span><h3>Facilitator-led, with your branch</h3><p style="margin-bottom:14px">A facilitator runs the same steps in Northstar's Claude with the sample files while your group follows along. AI Enablement leads the pilot sessions. Branch AI champions lead after that.</p><a href="#facilitator" style="font-weight:600">Open the facilitator guide →</a></div>
+        <div class="card"><span class="tagx" style="background:var(--navy);color:#fff">BEFORE YOU START</span><h3>What you need</h3><ul class="chk" style="margin-top:6px"><li><svg class="ic"><use href="#i-check"/></svg>Your Data Rules acknowledgment</li><li><svg class="ic"><use href="#i-check"/></svg>30 minutes without interruptions</li><li><svg class="ic"><use href="#i-check"/></svg>For live sessions: Northstar's Claude, with the skill showing under Customize</li></ul></div>
+      </div>
+    </section>
+
+    <footer class="owner">
+      <div class="owner-g"><div><b>Maintained by AI Enablement</b><span>Owner: Akeyla Peele-Tembong, AI Platform &amp; Enablement Lead. Writes the lab, trains facilitators, and reviews completion and feedback data each month.</span></div><div><b>Rule content approved by Compliance</b><span>The sample findings and the exit check match the rules Compliance signed off for skill version 6.</span></div><div><b>Sponsored by Marketing and loan officer leadership</b><span>Branch managers make time for the lab and encourage completion.</span></div></div>
+      <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:8px 24px;font-size:13px;color:var(--muted)"><span>Lab version 1.0 · for skill version 6</span><span>Last reviewed: November 14, 2026 · Next review: quarterly, or when the skill version changes</span><span>Feedback? Use the <a href="../loan-officer-quick-start/index.html#feedback" target="_blank" rel="noopener">Ad Review feedback form</a> and pick "An idea or request."</span></div>
+      <p class="fine" style="margin-top:16px">Northstar Harbor Mortgage is a fictional company created for portfolio purposes. Rates, APRs and NMLS numbers in this lab are illustrative placeholders.</p>
+    </footer>
+  </div>
+</div>
+
+<!-- ================= STEP 1: WARM-UP ================= -->
+<div class="view" id="warmup" hidden><div class="lab-wrap">
+  <div class="lab-head"><div class="kick"><svg class="ic"><use href="#i-search"/></svg>STEP 1 OF 7</div><h1>Spot the issues first <span class="timer"><svg class="ic" style="width:14px;height:14px"><use href="#i-clock"/></svg>5 min</span></h1><p>Simone wants to post this on Instagram. It's a 7/1 adjustable-rate mortgage. Before the assistant looks at it, tap every part you think Compliance would question. Then compare.</p></div>
+  <div class="two" style="margin-top:18px">
+    <div class="panel"><h3>Simone's post</h3><img class="adimg" src="img/simone.jpg" alt="Instagram graphic: Own your dream home with just 3% down! Payments as low as $1,450/mo. Lock in a FIXED rate of 5.875%. Simone Washington, Your Mortgage Counselor. DM me today. Fine print: 7/1 adjustable-rate mortgage."><div class="caption">Stop scrolling and start OWNING! 🏡✨
+
+Why rent when you can own your dream home with just 3% down? Payments as low as $1,450/mo with a FIXED rate of 5.875%. This is the best rate you'll see all year. 🔑
+
+I'm your mortgage counselor, and I'll walk you through every step. Everyone deserves a home, and everyone qualifies with me!
+
+DM me "HOME" today 📩
+
+#FirstTimeHomeBuyer #HomeOwnership #NorthstarHarbor #DreamHome #MortgageTips</div></div>
+    <div class="panel"><h3>What would you question?</h3><p style="font-size:14.5px;color:var(--muted);margin-bottom:14px">Tap to select. Some of these are fine.</p>
+      <div class="chips" id="chips"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px"><button class="btn btn-navy" id="compareBtn" type="button">Compare with the assistant</button><button class="btn btn-line" id="resetChips" type="button" hidden>Try again</button></div>
+      <div id="chipResult" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="real"><svg class="ic"><use href="#i-users"/></svg><div><b>In a live session:</b> the facilitator shares the post on screen and asks everyone to drop their picks in the Teams chat before anyone runs the review. Most groups catch the rate and the word "FIXED." Fewer catch "counselor."</div></div>
+  <div class="navrow"><a class="btn btn-line" href="#lab"><svg class="ic"><use href="#i-arrow-left"/></svg>Lab home</a><a class="btn btn-navy" href="#run">Next: run the review →</a></div>
+</div></div>
+
+<!-- ================= STEP 2: RUN ================= -->
+<div class="view" id="run" hidden><div class="lab-wrap">
+  <div class="lab-head"><div class="kick"><svg class="ic"><use href="#i-app"/></svg>STEP 2 OF 7</div><h1>Run the review <span class="timer"><svg class="ic" style="width:14px;height:14px"><use href="#i-clock"/></svg>3 min</span></h1><p>Attach the ad, fill in the starter prompt, and send. The assistant reads every word in the image and the caption, runs a rule scan, and scores five areas.</p></div>
+  <div class="two" style="margin-top:18px">
+    <div class="panel"><h3>The starter prompt</h3><p style="font-size:14.5px;margin-bottom:10px">Fill in the blanks the same way every time:</p><div class="prompt">Review this [social post / email / flyer / website / video] ad for a [loan product] loan. Planned publish date: [date].</div>
+      <p style="font-size:14.5px;margin:16px 0 10px">For Simone's post:</p><div class="prompt" style="color:var(--navy);font-weight:600">Review this social post ad for a 7/1 adjustable-rate purchase loan. Planned publish date: November 20, 2026.</div>
+      <div class="tip"><svg class="ic"><use href="#i-help"/></svg><div>Why name the product? The image says "FIXED," but the loan is an ARM. If you leave the product out, the assistant states its assumption, and it can't catch that mismatch as cleanly.</div></div></div>
+    <div class="chat"><div class="chat-top"><span>Claude · Northstar Harbor Mortgage</span><span class="skilltag"><svg class="ic" style="width:13px;height:13px"><use href="#i-package"/></svg>mortgage-ad-review v6</span></div>
+      <div class="chat-body">
+        <div class="bubble"><span class="att"><svg class="ic" style="width:14px;height:14px"><use href="#i-file"/></svg>simone-instagram.png</span><span class="att"><svg class="ic" style="width:14px;height:14px"><use href="#i-file"/></svg>caption.txt</span><div>Review this social post ad for a 7/1 adjustable-rate purchase loan. Planned publish date: November 20, 2026.</div></div>
+        <div class="working" id="working" hidden></div>
+        <div id="runDone" hidden style="font-size:15px"><strong style="color:var(--hold)">Verdict: HOLD.</strong> Your report is ready.</div>
+      </div>
+      <div style="padding:0 18px 18px"><button class="btn btn-gold" id="runBtn" type="button"><svg class="ic"><use href="#i-send"/></svg>Send to the assistant</button></div>
+    </div>
+  </div>
+  <div class="real"><svg class="ic"><use href="#i-app"/></svg><div><b>In Northstar's Claude:</b> open a new chat, attach both sample files from the <b>Ad Review Lab</b> folder on Harbor Hub, paste the prompt, and send. The skill is already assigned to you. Look for <b>mortgage-ad-review</b> under Customize. A real run takes a minute or two, and its wording can differ a little from this page. The verdict should match.</div></div>
+  <div class="navrow"><a class="btn btn-line" href="#warmup"><svg class="ic"><use href="#i-arrow-left"/></svg>Step 1</a><a class="btn btn-navy" href="#report" id="toReport">Next: read the report →</a></div>
+</div></div>
+
+<!-- ================= STEP 3: REPORT ================= -->
+<div class="view" id="report" hidden><div class="lab-wrap">
+  <div class="lab-head"><div class="kick"><svg class="ic"><use href="#i-clipboard"/></svg>STEP 3 OF 7</div><h1>Read the report <span class="timer"><svg class="ic" style="width:14px;height:14px"><use href="#i-clock"/></svg>6 min</span></h1><p>Start at the top: the verdict and one sentence on why. Then the scorecard, the scan, and the numbered action plan. Every finding quotes Simone's exact words and names the rule.</p></div>
+  <div class="verdict-bar vb-HOLD"><span class="pill p-HOLD" style="font-size:16px;padding:6px 12px">HOLD</span><div><div class="big" style="color:var(--hold)">Don't publish as written.</div><div style="font-size:14.5px">The 5.875% rate has no APR, "3% down" and "$1,450/mo" have no required terms, and the post calls an adjustable-rate loan "FIXED."</div></div></div>
+  <div class="two">
+    <div class="panel"><h3>Scorecard</h3><div style="overflow-x:auto"><table class="sc"><thead><tr><th>Area</th><th>Result</th><th>Why</th></tr></thead><tbody id="scBody"></tbody></table></div><p style="font-size:13px;color:var(--muted);margin-top:8px">The overall verdict is the strictest result in the table.</p>
+      <h3 style="margin-top:20px">What's working</h3><ul style="margin:0;padding-left:20px;font-size:14.5px;display:flex;flex-direction:column;gap:4px"><li>A clear, specific call to action: "DM me 'HOME' today."</li><li>The ARM is named in the fine print, so the product is known.</li><li>Strong brand look and an easy-to-read headline.</li></ul></div>
+    <div class="panel"><h3>What the scan found</h3><div style="overflow-x:auto"><table class="sc"><thead><tr><th>Exact words</th><th>What it is</th><th>Status</th></tr></thead><tbody id="scanBody"></tbody></table></div>
+      <div class="tip"><svg class="ic"><use href="#i-help"/></svg><div>The scan finds candidates and the assistant judges them. "#FirstTimeHomeBuyer" was never in question. A word like "fixed" is fine on a fixed-rate loan and a problem on an ARM.</div></div></div>
+  </div>
+  <section class="blk" style="padding-top:28px"><div class="h2row"><span class="icb"><svg class="ic"><use href="#i-clipboard"/></svg></span><h2 style="font-size:26px">Action plan</h2></div><p class="sub">HOLD items come first. You'll decide on each one in the next step.</p><div id="actions" style="display:flex;flex-direction:column;gap:12px"></div>
+    <div class="panel" style="margin-top:14px"><b style="color:var(--navy)">For the reviewer:</b> <span style="font-size:14.5px">Confirm the worked example matches the current rate sheet. "Stop scrolling and start OWNING!" is enthusiastic but makes no claim.</span></div>
+  </section>
+  <div class="real"><svg class="ic"><use href="#i-app"/></svg><div><b>In Northstar's Claude:</b> the same report appears in the chat, and you can download it as a PDF. Read the "In one sentence" line out loud in live sessions. It's the fastest way for a group to agree on why the ad is on HOLD.</div></div>
+  <div class="navrow"><a class="btn btn-line" href="#run"><svg class="ic"><use href="#i-arrow-left"/></svg>Step 2</a><a class="btn btn-navy" href="#fixes">Next: decide on the fixes →</a></div>
+</div></div>
+
+<!-- ================= STEP 4: FIXES ================= -->
+<div class="view" id="fixes" hidden><div class="lab-wrap">
+  <div class="lab-head"><div class="kick"><svg class="ic"><use href="#i-sliders"/></svg>STEP 4 OF 7</div><h1>Approve or reject each fix <span class="timer"><svg class="ic" style="width:14px;height:14px"><use href="#i-clock"/></svg>6 min</span></h1><p>The assistant asks, "Which fixes should I apply?" and changes only what you approve. Anything you skip stays open for the reviewer. Item 5 lets you write your own wording. Choose carefully.</p></div>
+  <div class="panel" style="margin-bottom:14px;background:#F7F5EF"><b style="color:var(--navy)">Simone's rate sheet</b> <span style="font-size:14.5px">(illustrative, from Northstar's connected product knowledge): 7/1 ARM purchase · 5.875% interest rate · 6.412% APR · as of November 13, 2026 · example: $252,500 price, 3% down ($7,575), $244,925 loan · first 84 payments $1,449.</span></div>
+  <div id="decisions" style="display:flex;flex-direction:column;gap:12px"></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px"><button class="btn btn-line" type="button" id="approveAll">Approve all suggested fixes</button></div>
+  <div class="real"><svg class="ic"><use href="#i-app"/></svg><div><b>In Northstar's Claude:</b> you get a multi-select question with one option per item, plus "All fixes." To use your own wording, skip that item in the question, then type your version in the chat. The assistant checks your wording too.</div></div>
+  <div class="navrow"><a class="btn btn-line" href="#report"><svg class="ic"><use href="#i-arrow-left"/></svg>Step 3</a><div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px"><button class="btn btn-navy" type="button" id="applyBtn">Apply my choices and re-review →</button><span id="decMsg" aria-live="polite" style="font-size:14px;color:var(--hold)"></span></div></div>
+</div></div>
+
+<!-- ================= STEP 5: REVISION ================= -->
+<div class="view" id="revision" hidden><div class="lab-wrap">
+  <div class="lab-head"><div class="kick"><svg class="ic"><use href="#i-trend"/></svg>STEP 5 OF 7</div><h1>Re-review and submit <span class="timer"><svg class="ic" style="width:14px;height:14px"><use href="#i-clock"/></svg>4 min</span></h1><p>The assistant applies only what you approved, shows every change, re-scores the new version, and offers to submit it once it reaches PASS or FLAG.</p></div>
+  <div id="revVerdict"></div>
+  <div class="two">
+    <div class="panel"><h3>Marked-up caption</h3><p style="font-size:13px;color:var(--muted);margin-bottom:10px"><del>Removed</del> · <ins>added</ins> · <sup style="font-weight:700;color:var(--navy)">[n]</sup> = action item</p><div class="redline" id="redline"></div></div>
+    <div class="panel"><h3>Revised graphic</h3><div id="mock"></div><p style="font-size:13px;color:var(--muted);margin-top:8px">The assistant can't edit the original image file. It draws a mockup with placement notes, and Marketing's designer finalizes it.</p></div>
+  </div>
+  <div class="panel" style="margin-top:22px"><h3>New scorecard</h3><div style="overflow-x:auto"><table class="sc"><thead><tr><th>Area</th><th>Before</th><th>Now</th><th>Why</th></tr></thead><tbody id="sc2Body"></tbody></table></div><div id="openItems" style="margin-top:12px;font-size:14.5px"></div></div>
+  <div id="submitArea" style="margin-top:22px"></div>
+  <div class="real"><svg class="ic"><use href="#i-app"/></svg><div><b>In Northstar's Claude:</b> answer "Ready to submit this to Compliance?" with yes. The assistant builds the submission packet, creates the item in the SharePoint <b>Ad Review Queue</b> with status <b>Submitted</b>, and stops there. Power Automate sends the Teams alert to Compliance. <b>In the lab, nothing is sent.</b></div></div>
+  <div class="navrow"><a class="btn btn-line" href="#fixes"><svg class="ic"><use href="#i-arrow-left"/></svg>Change my choices</a><a class="btn btn-navy" href="#data-check" id="toData">Next: data rules check →</a></div>
+</div></div>
+
+<!-- ================= STEP 6: DATA ================= -->
+<div class="view" id="data-check" hidden><div class="lab-wrap">
+  <div class="lab-head"><div class="kick"><svg class="ic"><use href="#i-lock"/></svg>STEP 6 OF 7</div><h1>Can I paste this? <span class="timer"><svg class="ic" style="width:14px;height:14px"><use href="#i-clock"/></svg>3 min</span></h1><p>Three quick calls from a normal week. Decide before you check the answer.</p></div>
+  <div class="scen" id="scen"></div>
+  <div class="incident"><svg class="ic" style="color:var(--hold);margin-top:2px"><use href="#i-alert"/></svg><div><strong style="color:var(--hold)">Pasted customer information by mistake?</strong> Stop. Open a service desk ticket marked "AI data incident," copy Compliance, then delete the chat. No blame. Reporting quickly is what matters. <a href="../data-rules-card/index.html#card" target="_blank" rel="noopener" style="color:var(--hold);font-weight:600">Review the Data Rules card →</a></div></div>
+  <div class="navrow"><a class="btn btn-line" href="#revision"><svg class="ic"><use href="#i-arrow-left"/></svg>Step 5</a><a class="btn btn-navy" href="#exit-check">Next: exit check →</a></div>
+</div></div>
+
+<!-- ================= STEP 7: EXIT ================= -->
+<div class="view" id="exit-check" hidden><div class="lab-wrap">
+  <div class="lab-head"><div class="kick"><svg class="ic"><use href="#i-check"/></svg>STEP 7 OF 7</div><h1>Exit check <span class="timer"><svg class="ic" style="width:14px;height:14px"><use href="#i-clock"/></svg>3 min</span></h1><p>Five questions. Get four right to record your completion. You can retake it right away.</p></div>
+  <form id="quiz" class="quiz" novalidate></form>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:18px"><button class="btn btn-navy" type="button" id="gradeBtn">Check my answers</button><span id="quizMsg" aria-live="polite" style="font-size:14px;color:var(--hold)"></span></div>
+  <div id="quizResult" aria-live="polite"></div>
+  <div class="navrow"><a class="btn btn-line" href="#data-check"><svg class="ic"><use href="#i-arrow-left"/></svg>Step 6</a><a class="btn btn-navy" href="#complete" id="toComplete" hidden>Record my completion →</a></div>
+</div></div>
+
+<!-- ================= COMPLETE ================= -->
+<div class="view" id="complete" hidden>
+  <div class="form-stage"><div class="mform">
+    <div class="mform-head"><div class="mform-kicker">MICROSOFT FORM · MOCKUP</div><h1>Ad Review Lab: Completion</h1><p>Records your lab completion in the AI Enablement training list. Your branch manager sees completions in the monthly adoption report.</p></div>
+    <form class="mform-body" id="compForm" novalidate>
+      <div class="who">Signed in as <strong>Luis Ortega</strong> (luis.ortega@northstarharbor.example)</div>
+      <div class="q"><label for="cbranch">1. Branch <span class="req">*</span></label><select id="cbranch"><option>Atlanta, GA</option><option>Edmond, OK</option><option>Irvine, CA</option><option selected>Dallas, TX</option><option>Charlotte, NC</option><option>Corporate / Remote</option></select></div>
+      <fieldset class="q"><legend>2. How did you take the lab? <span class="req">*</span></legend><div class="radios"><label><input type="radio" name="cmode" value="Self-paced" checked>Self-paced</label><label><input type="radio" name="cmode" value="Live session">Live session</label></div></fieldset>
+      <div class="q"><label for="cscore">3. Exit check score</label><input type="text" id="cscore" value="" readonly style="font-family:var(--f-mono);background:#F7F5EF"></div>
+      <div class="q"><label for="cconf">4. How ready do you feel to check your own ad? <span class="req">*</span></label><select id="cconf"><option>1 · Not ready</option><option>2</option><option>3</option><option selected>4</option><option>5 · Completely ready</option></select></div>
+      <div class="q"><label for="cnote">5. One thing that would make the lab better <span style="font-weight:400;color:var(--muted)">(optional)</span></label><textarea id="cnote" style="min-height:80px">More practice with video ads.</textarea></div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center"><button class="btn btn-navy" type="submit">Submit</button><span id="compMsg" aria-live="polite" style="font-size:14px;color:var(--hold)"></span></div>
+    </form>
+    <div class="mform-body" id="compDone" hidden>
+      <div class="done-head"><svg class="ic" style="width:52px;height:52px;color:var(--pass)"><use href="#i-check"/></svg><div><h2>Lab complete. Nice work, Luis.</h2><div style="color:#3A4458">You took Simone's ad from HOLD to PASS.</div></div></div>
+      <div style="border:2px solid var(--navy);border-radius:10px;padding:16px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><div style="font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--muted)">COMPLETION RECORD</div><div style="font-family:var(--f-mono);font-size:24px;font-weight:700;color:var(--navy)">LAB-2026-0587</div></div><span class="pill p-PASS" style="font-size:14px">Recorded</span></div>
+      <table class="resp" id="compTable"></table>
+      <div style="display:flex;flex-direction:column;gap:10px"><div style="font-weight:700;color:var(--navy)">What's next</div>
+        <a class="next-link btn-navy" href="../loan-officer-quick-start/index.html#steps" target="_blank" rel="noopener"><span>Run your first real review with the quick-start guide</span><span>→</span></a>
+        <a class="next-link btn-line" style="border:2px solid var(--navy)" href="../loan-officer-quick-start/index.html#cheat-sheet" target="_blank" rel="noopener"><span>Print the one-page cheat sheet</span><span>→</span></a>
+      </div>
+      <p class="fine">Mockup. Nothing was submitted or stored. Northstar Harbor Mortgage is a fictional company created for portfolio purposes.</p>
+    </div>
+  </div></div>
+  <div class="portfolio-note"><a href="#lab" style="font-weight:600">← Back to lab home</a></div>
+</div>
+
+<!-- ================= FACILITATOR ================= -->
+<div class="view" id="facilitator" hidden>
+  <div style="background:#fff;border-bottom:1px solid var(--line)"><div class="wrap crumb">Harbor Hub › AI Enablement › Training › Hands-On Lab › <strong>Facilitator guide</strong></div></div>
+  <div class="lab-wrap">
+    <div class="lab-head"><div class="kick"><svg class="ic"><use href="#i-users"/></svg>FACILITATOR GUIDE</div><h1>Running the lab live in Teams</h1><p>Thirty minutes, one sample ad, and everyone makes their own decisions. You keep the group moving and turn questions into feedback for AI Enablement.</p></div>
+
+    <section class="blk" style="padding-top:20px">
+      <div class="agenda">
+        <div class="ag"><span class="m">LENGTH</span><b>30 minutes</b><span>Book 45 so there's time for questions.</span></div>
+        <div class="ag"><span class="m">GROUP SIZE</span><b>6 to 15 loan officers</b><span>Add a co-host above 10 to watch the chat.</span></div>
+        <div class="ag"><span class="m">WHERE</span><b>Teams meeting</b><span>You share your screen and run the review in Northstar's Claude.</span></div>
+        <div class="ag"><span class="m">MATERIALS</span><b>Ad Review Lab folder</b><span>Simone's image and caption, the rate sheet, and a link to this page.</span></div>
+      </div>
+    </section>
+
+    <section class="blk">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-target"/></svg></span><h2>Who leads</h2></div>
+      <p class="sub">Two phases, so the lab gets better before it scales.</p>
+      <div class="phase">
+        <div class="card" style="border-top:5px solid var(--navy)"><span class="tagx" style="background:var(--navy);color:#fff">PHASE 1 · PILOT</span><h3>AI Enablement leads</h3><p>Enablement runs the first cohorts at two pilot branches, Edmond, OK and Atlanta, GA. After each session, we update the lab, this guide and the exit check based on what confused people.</p></div>
+        <div class="card" style="border-top:5px solid var(--gold)"><span class="tagx" style="background:#F3E7BF;color:#5C470B">PHASE 2 · AT SCALE</span><h3>Branch AI champions lead</h3><p>Each champion takes a 45-minute train-the-trainer session, co-leads one session with Enablement, then runs the lab for their branch. Enablement stays on call and reviews completion data monthly.</p></div>
+      </div>
+    </section>
+
+    <section class="blk">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-clipboard"/></svg></span><h2>Before the session</h2></div>
+      <div class="cards">
+        <div class="card"><h3 style="margin-top:0">One week before</h3><ul class="chk"><li><svg class="ic"><use href="#i-check"/></svg>Send the invite with this page linked.</li><li><svg class="ic"><use href="#i-check"/></svg>Check the roster against Data Rules acknowledgments. Anyone missing completes it first.</li><li><svg class="ic"><use href="#i-check"/></svg>Ask attendees to confirm the skill shows under Customize in Claude.</li></ul></div>
+        <div class="card"><h3 style="margin-top:0">Fifteen minutes before</h3><ul class="chk"><li><svg class="ic"><use href="#i-check"/></svg>Open a fresh chat in Northstar's Claude. Never reuse one with real ads in it.</li><li><svg class="ic"><use href="#i-check"/></svg>Download Simone's image and caption from the Ad Review Lab folder.</li><li><svg class="ic"><use href="#i-check"/></svg>Open this page in a second tab as your backup.</li></ul></div>
+        <div class="card"><h3 style="margin-top:0">Ground rules to say out loud</h3><ul class="chk"><li><svg class="ic"><use href="#i-check"/></svg>Sample content only. No real ads or client details today.</li><li><svg class="ic"><use href="#i-check"/></svg>Nothing goes to Compliance. In the lab, "submit" is practice.</li><li><svg class="ic"><use href="#i-check"/></svg>Wrong guesses are the point of the warm-up.</li></ul></div>
+      </div>
+    </section>
+
+    <section class="blk">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-clock"/></svg></span><h2>Run of show</h2></div>
+      <p class="sub">What you do, what to say, and what to watch for at each step.</p>
+      <div style="overflow-x:auto"><table class="ros"><thead><tr><th>Time</th><th>Step</th><th>What you do</th><th>Say something like</th><th>Watch for</th></tr></thead><tbody>
+        <tr><td>0:00–0:05</td><td>1. Spot the issues</td><td>Share Simone's post. Everyone drops picks in the chat. Read a few out.</td><td class="say">"Pretend you're the compliance reviewer. What would you send back?"</td><td>People who think the headline is the problem. It's loud, but it makes no claim.</td></tr>
+        <tr><td>0:05–0:08</td><td>2. Run the review</td><td>Attach both files, paste the starter prompt, send.</td><td class="say">"Notice I named the product. That's how it catches the 'FIXED' problem."</td><td>Anyone who'd skip the product. Point to the prompt on the cheat sheet.</td></tr>
+        <tr><td>0:08–0:14</td><td>3. Read the report</td><td>Read the verdict sentence. Walk the scorecard, then item 1 in full.</td><td class="say">"Every finding quotes her words and names the rule. You learn the rule while you fix the ad."</td><td>Defensiveness about the HOLD. A HOLD now saves a 3-to-5-day return later.</td></tr>
+        <tr><td>0:14–0:20</td><td>4. Decide on fixes</td><td>Poll item 5 in the chat: suggested, own wording A, or own wording B.</td><td class="say">"You're in charge. It changes only what you approve."</td><td>Anyone who picks "Approval guaranteed." Let the re-review catch it, then discuss.</td></tr>
+        <tr><td>0:20–0:24</td><td>5. Re-review and submit</td><td>Approve, show the redline and new scorecard, say yes to submit.</td><td class="say">"PASS means ready for sign-off. A reviewer still approves every ad."</td><td>"So I can post it now?" No. Point to "What it won't do."</td></tr>
+        <tr><td>0:24–0:27</td><td>6. Data rules check</td><td>Read each scenario. Hands up for yes or no.</td><td class="say">"If you're unsure, leave it out. If it's already pasted, report it. No blame."</td><td>The rate sheet: it's fine, and people often say no.</td></tr>
+        <tr><td>0:27–0:30</td><td>7. Exit check</td><td>Drop this page's #exit-check link in the chat. Everyone completes it and submits the completion form.</td><td class="say">"Four of five records your completion. You can retake it right away."</td><td>Note which question people miss most and send it to Enablement.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="blk">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-help"/></svg></span><h2>If something goes sideways</h2></div>
+      <div class="faq">
+        <div><h3>The live report's wording is different from this page.</h3><p style="font-size:15px">That's normal. AI output varies a little from run to run. The verdict and the main findings should match. If the verdict doesn't match, keep going with this page and log it in the feedback form.</p></div>
+        <div><h3>Claude is slow or down.</h3><p style="font-size:15px">Switch to the self-paced steps on this page and run them on screen. The lab works the same.</p></div>
+        <div><h3>Someone's skill is missing.</h3><p style="font-size:15px">They follow along on your screen today and open a service desk ticket after the session.</p></div>
+        <div><h3>Someone pastes a real ad or client detail.</h3><p style="font-size:15px">Pause and walk through the data incident steps together: ticket, copy Compliance, delete the chat. Stay calm and kind. That's the habit you want.</p></div>
+        <div><h3>A rule question you can't answer.</h3><p style="font-size:15px">Say so. Write it down and send it to Compliance through Enablement. Never guess at a rule.</p></div>
+        <div><h3>"Is this going to replace Compliance?"</h3><p style="font-size:15px">No. It catches the common issues early, so reviewers can spend their time on the judgment calls.</p></div>
+      </div>
+    </section>
+
+    <section class="blk">
+      <div class="h2row"><span class="icb"><svg class="ic"><use href="#i-send"/></svg></span><h2>After the session</h2></div>
+      <div class="cards">
+        <div class="card"><h3 style="margin-top:0">Same day</h3><p>Check that every attendee submitted the completion form. Send a short note with the quick-start guide and cheat sheet links.</p></div>
+        <div class="card"><h3 style="margin-top:0">Within two days</h3><p>Send questions, confusing moments and the most-missed exit question to AI Enablement through the <a href="../loan-officer-quick-start/index.html#feedback" target="_blank" rel="noopener">feedback form</a>. Start the description with "Lab."</p></div>
+        <div class="card"><h3 style="margin-top:0">Monthly</h3><p>Enablement reviews completions, readiness ratings and lab feedback, then updates the lab. You'll see the changes in the version note at the bottom of the lab home.</p></div>
+      </div>
+    </section>
+
+    <footer class="owner">
+      <div class="owner-g"><div><b>Maintained by AI Enablement</b><span>Owner: Akeyla Peele-Tembong, AI Platform &amp; Enablement Lead.</span></div><div><b>Rule content approved by Compliance</b><span>Facilitators don't interpret rules. Rule questions go to Compliance.</span></div><div><b>Facilitator support</b><span>Questions before a session? Post in the AI Champions channel in Teams.</span></div></div>
+      <p class="fine" style="margin-top:16px">Guide version 1.0 · Northstar Harbor Mortgage is a fictional company created for portfolio purposes.</p>
+    </footer>
+  </div>
+</div>
+
+<script>
+(function(){
+  var STEPS=[
+    {id:"warmup",t:"Spot the issues",m:5,d:"Find the problems before the assistant does."},
+    {id:"run",t:"Run the review",m:3,d:"Attach the ad and use the starter prompt."},
+    {id:"report",t:"Read the report",m:6,d:"Scorecard, scan and action plan."},
+    {id:"fixes",t:"Decide on fixes",m:6,d:"Approve, reject or use your own wording."},
+    {id:"revision",t:"Re-review & submit",m:4,d:"See HOLD turn into PASS, then submit."},
+    {id:"data-check",t:"Data rules check",m:3,d:"Three quick 'Can I paste this?' calls."},
+    {id:"exit-check",t:"Exit check",m:3,d:"Five questions and a completion record."}
+  ];
+  var VIEWS=["lab","facilitator","complete"].concat(STEPS.map(function(s){return s.id;}));
+  var visited={};
+
+  // agenda + stepper
+  var ag=document.getElementById('agenda'), sIn=document.getElementById('stepperIn');
+  STEPS.forEach(function(s,i){
+    ag.insertAdjacentHTML('beforeend','<a class="ag" href="#'+s.id+'" style="text-decoration:none"><span class="m">STEP '+(i+1)+' · '+s.m+' MIN</span><b>'+s.t+'</b><span>'+s.d+'</span></a>');
+    sIn.insertAdjacentHTML('beforeend','<a class="st" href="#'+s.id+'" data-step="'+s.id+'"><span class="n">'+(i+1)+'</span>'+s.t+'</a>');
+  });
+
+  function show(){
+    var h=location.hash.slice(1), v=VIEWS.indexOf(h)>=0?h:"lab";
+    VIEWS.forEach(function(x){document.getElementById(x).hidden=(x!==v);});
+    var isStep=STEPS.some(function(s){return s.id===v;});
+    var tab=isStep||v==="complete"?"steps":v;
+    document.querySelectorAll('.vtab').forEach(function(t){ if(t.getAttribute('data-tab')===tab) t.setAttribute('aria-current','page'); else t.removeAttribute('aria-current'); });
+    document.getElementById('stepper').hidden=!isStep;
+    if(isStep) visited[v]=true;
+    document.querySelectorAll('.st').forEach(function(s){ var id=s.getAttribute('data-step'); if(id===v) s.setAttribute('aria-current','step'); else s.removeAttribute('aria-current'); s.classList.toggle('done',!!visited[id]&&id!==v); });
+    if(v==="revision") renderRevision();
+    window.scrollTo(0,0);
+  }
+  window.addEventListener('hashchange',show);
+
+  function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+  // ---------- step 1 chips ----------
+  var CHIPS=[
+    {t:"Stop scrolling and start OWNING!",issue:false,why:"Enthusiastic, but it makes no claim."},
+    {t:"3% down",issue:true,why:"Down payment is a triggering term. It needs the full terms and the APR."},
+    {t:"$1,450/mo",issue:true,why:"A payment amount is a triggering term, and it must say taxes and insurance aren't included."},
+    {t:"5.875%",issue:true,why:"A rate with no APR."},
+    {t:"FIXED rate",issue:true,why:"The loan is a 7/1 ARM. Calling it fixed is misleading."},
+    {t:"best rate you'll see all year",issue:true,why:"An unsupported claim about future rates."},
+    {t:"mortgage counselor",issue:true,why:"A lender can't call itself a counselor."},
+    {t:"everyone qualifies with me",issue:true,why:"A guarantee no lender can make."},
+    {t:"DM me \"HOME\" today",issue:false,why:"A clear call to action. Fine."},
+    {t:"#FirstTimeHomeBuyer",issue:false,why:"A hashtag with no claim. Fine."},
+    {t:"Missing: NMLS IDs and Equal Housing Lender",issue:true,why:"Northstar requires both on every ad."},
+    {t:"Missing: Simone's phone number",issue:false,why:"Nice to have, but not required."}
+  ];
+  var chipsEl=document.getElementById('chips');
+  function drawChips(){ chipsEl.innerHTML=""; CHIPS.forEach(function(c,i){ var b=document.createElement('button'); b.type="button"; b.className="chip"; b.textContent=c.t; b.setAttribute('aria-pressed','false'); b.addEventListener('click',function(){ b.setAttribute('aria-pressed', b.getAttribute('aria-pressed')==='true'?'false':'true'); }); chipsEl.appendChild(b); }); document.getElementById('chipResult').innerHTML=""; document.getElementById('compareBtn').hidden=false; document.getElementById('resetChips').hidden=true; }
+  drawChips();
+  document.getElementById('compareBtn').addEventListener('click',function(){
+    var bs=chipsEl.querySelectorAll('.chip'), hit=0, total=0, falsePos=0, notes=[];
+    bs.forEach(function(b,i){ var c=CHIPS[i], on=b.getAttribute('aria-pressed')==='true'; b.disabled=true; b.removeAttribute('aria-pressed');
+      if(c.issue){ total++; if(on){hit++; b.classList.add('res-hit');} else {b.classList.add('res-miss'); notes.push('<li><strong>'+esc(c.t)+'</strong>: '+c.why+'</li>');} }
+      else { if(on){falsePos++; b.classList.add('res-false'); notes.push('<li><strong>'+esc(c.t)+'</strong>: '+c.why+'</li>');} else b.classList.add('res-ok'); } });
+    var msg = hit===total ? "You caught all "+total+". Sharp eyes." : "You caught "+hit+" of "+total+". The assistant will explain every one in step 3.";
+    document.getElementById('chipResult').innerHTML='<div class="result-box"><div style="font:700 20px var(--f-display);color:var(--navy);margin-bottom:6px">'+msg+'</div>'+(notes.length?'<ul style="margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:4px">'+notes.join('')+'</ul>':'')+'<div class="keyrow"><span><i class="sw" style="background:var(--pass-bg);border:1px solid var(--pass)"></i>You caught it</span><span><i class="sw" style="background:var(--hold-bg);border:1px dashed var(--hold)"></i>Missed</span><span><i class="sw" style="background:var(--flag-bg);border:1px solid var(--flag)"></i>Actually fine</span></div></div>';
+    document.getElementById('compareBtn').hidden=true; document.getElementById('resetChips').hidden=false;
+  });
+  document.getElementById('resetChips').addEventListener('click',drawChips);
+
+  // ---------- step 2 run ----------
+  var ran=false;
+  document.getElementById('runBtn').addEventListener('click',function(){
+    var btn=this; if(ran){ location.hash='report'; return; }
+    btn.disabled=true; var w=document.getElementById('working'); w.hidden=false;
+    var lines=["Reading the image and caption","Running the rule scan (11 matches)","Checking Reg Z disclosures","Checking Northstar house standards","Scoring five areas"];
+    w.innerHTML=lines.map(function(l){return '<div><span class="dot"></span>'+l+'</div>';}).join('');
+    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var i=0, ds=w.querySelectorAll('.dot');
+    (function tick(){ if(i>0) ds[i-1].className="dot ok"; if(i<ds.length){ ds[i].className="dot on"; i++; setTimeout(tick, reduce?60:520); } else { document.getElementById('runDone').hidden=false; ran=true; btn.disabled=false; btn.innerHTML='Open the report →'; } })();
+  });
+
+  // ---------- step 3 report ----------
+  var SC=[
+    ["Rates & APR · 1026.24(c)","HOLD","\"5.875%\" appears with no APR."],
+    ["Triggering Terms & Disclosures · 1026.24(d), (f)","HOLD","\"3% down\" and \"$1,450/mo\" have no repayment terms, APR, or taxes-and-insurance statement."],
+    ["Prohibited Practices · 1026.24(i)","HOLD","\"FIXED\" on a 7/1 ARM, and \"mortgage counselor.\""],
+    ["House Standards · Northstar checklist","FLAG","\"Everyone qualifies\" and \"best rate all year\"; no NMLS IDs, Equal Housing Lender, as-of date or credit approval line."],
+    ["Clarity & Placement · 1026.24(b)","FLAG","The only ARM mention is tiny fine print, far from the rate."]
+  ];
+  function rc(r){return r==="PASS"?"r-pass":r==="FLAG"?"r-flag":"r-hold";}
+  document.getElementById('scBody').innerHTML=SC.map(function(r){return '<tr><td>'+r[0]+'</td><td class="'+rc(r[1])+'">'+r[1]+'</td><td>'+esc(r[2])+'</td></tr>';}).join('');
+  var SCAN=[["5.875%","Rate","Needs APR"],["3% down","Down payment (trigger)","Needs disclosures"],["$1,450/mo","Payment amount (trigger)","Needs disclosures"],["FIXED","\"Fixed\" claim","Needs fix: loan is an ARM"],["mortgage counselor","\"Counselor\"","Needs fix"],["everyone qualifies","Guarantee claim","Needs fix"],["best rate you'll see all year","Unsupported claim","Needs fix"],["7/1 adjustable-rate mortgage","ARM statement","OK, move it next to the rate"],["#FirstTimeHomeBuyer","Hashtag","OK"],["NMLS ID","Not found","Needs fix"],["Equal Housing Lender","Not found","Needs fix"]];
+  document.getElementById('scanBody').innerHTML=SCAN.map(function(r){var cls=/^OK/.test(r[2])?"r-pass":"r-hold";return '<tr><td><span class="q-call">'+esc(r[0])+'</span></td><td>'+esc(r[1])+'</td><td class="'+cls+'" style="font-weight:600">'+esc(r[2])+'</td></tr>';}).join('');
+
+  var ACTIONS=[
+    {id:1,level:"HOLD",title:"Add the APR next to the rate",found:"FIXED rate of 5.875%",rule:"Rates & APR, Reg Z 1026.24(c)",fix:"5.875% interest rate ([APR]% APR)",where:"Same line as the rate, same size, in the graphic and the caption."},
+    {id:2,level:"HOLD",title:"Add the terms for \"3% down\" and \"$1,450/mo\"",found:"just 3% down · Payments as low as $1,450/mo",rule:"Triggering terms, Reg Z 1026.24(d) and (f)",fix:"Example: $[price] home, [3]% down ($[amount]), $[loan] loan. [84] monthly payments of $[payment] at [rate]%, then [276] monthly payments that can go up or down. [APR]% APR. Payment doesn't include taxes and insurance, so your actual payment will be higher.",where:"Directly under the payment line in the graphic, and right after the payment sentence in the caption."},
+    {id:3,level:"HOLD",title:"Stop calling the ARM \"fixed\"",found:"Lock in a FIXED rate",rule:"Misleading \"fixed\" claim, Reg Z 1026.24(i)(1)",fix:"7/1 adjustable-rate mortgage: [rate]% for the first 7 years, then the rate can increase.",where:"Replace the FIXED line, same size as the rate."},
+    {id:4,level:"HOLD",title:"Replace \"counselor\"",found:"Your Mortgage Counselor · I'm your mortgage counselor",rule:"\"Counselor\" for a lender, Reg Z 1026.24(i)(6)",fix:"Loan Officer · I'm your Northstar loan officer",where:"Under Simone's name, and in the caption."},
+    {id:5,level:"FLAG",title:"Remove the guarantee",found:"everyone qualifies with me!",rule:"Northstar house standards: no guarantees of approval",fix:"Let's find out what you qualify for.",where:"Caption, same spot."},
+    {id:6,level:"FLAG",title:"Remove the claim about future rates",found:"This is the best rate you'll see all year.",rule:"Northstar house standards: no unsupported claims or pressure",fix:"Delete the sentence, or: \"Rates as of [date].\"",where:"Caption."},
+    {id:7,level:"FLAG",title:"Add Northstar's required lines",found:"(missing)",rule:"Northstar house standards: IDs and required statements",fix:"Simone Washington, Loan Officer, NMLS #0000303 · Northstar Harbor Mortgage, NMLS #0000000 · Equal Housing Lender · Rates as of [date]. Rates and terms are subject to change and credit approval. Not a commitment to lend.",where:"Footer of the graphic and end of the caption."}
+  ];
+  document.getElementById('actions').innerHTML=ACTIONS.map(function(a){return '<div class="act"><div class="act-h"><span class="pill p-'+a.level+'">'+a.level+'</span><b>'+a.id+'. '+esc(a.title)+'</b></div><dl><dt>Found</dt><dd><span class="q-call">'+esc(a.found)+'</span></dd><dt>Rule</dt><dd>'+esc(a.rule)+'</dd><dt>Fix</dt><dd>'+esc(a.fix)+'</dd><dt>Where</dt><dd>'+esc(a.where)+'</dd></dl></div>';}).join('');
+
+  // ---------- step 4 decisions ----------
+  var dec={1:"approve",2:"approve",3:"approve",4:"approve",5:null,6:null,7:null};
+  for(var k in dec) dec[k]=null;
+  var decEl=document.getElementById('decisions');
+  function drawDecisions(){
+    decEl.innerHTML=ACTIONS.map(function(a){
+      var opts=[["approve","Approve the suggested fix: <span class=\"q-call\">"+esc(a.fix.length>90?a.fix.slice(0,88)+"…":a.fix)+"</span>"]];
+      if(a.id===5){ opts.push(["ownA","Use my own wording: <span class=\"q-call\">Homeownership may be closer than you think.</span>"]); opts.push(["ownB","Use my own wording: <span class=\"q-call\">Approval guaranteed in 24 hours!</span>"]); }
+      opts.push(["skip","Skip it. Leave it open for the reviewer."]);
+      return '<fieldset class="decision'+(dec[a.id]?'':' open')+'"><legend style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px"><span class="pill p-'+a.level+'">'+a.level+'</span><b style="color:var(--navy)">'+a.id+'. '+esc(a.title)+'</b></legend>'+
+        opts.map(function(o){return '<label class="opt"><input type="radio" name="d'+a.id+'" value="'+o[0]+'"'+(dec[a.id]===o[0]?' checked':'')+'><span>'+o[1]+'</span></label>';}).join('')+'</fieldset>';
+    }).join('');
+    decEl.querySelectorAll('input').forEach(function(inp){ inp.addEventListener('change',function(){ dec[+inp.name.slice(1)]=inp.value; inp.closest('fieldset').classList.remove('open'); }); });
+  }
+  drawDecisions();
+  document.getElementById('approveAll').addEventListener('click',function(){ ACTIONS.forEach(function(a){dec[a.id]="approve";}); drawDecisions(); });
+  document.getElementById('applyBtn').addEventListener('click',function(){
+    var missing=ACTIONS.filter(function(a){return !dec[a.id];});
+    if(missing.length){ document.getElementById('decMsg').textContent="Decide on item"+(missing.length>1?"s ":" ")+missing.map(function(a){return a.id;}).join(", ")+" first."; var f=decEl.querySelector('input[name=d'+missing[0].id+']'); if(f){ f.focus(); f.closest('fieldset').scrollIntoView({block:'center'}); } return; }
+    document.getElementById('decMsg').textContent="";
+    location.hash='revision';
+  });
+
+  // ---------- step 5 revision ----------
+  function on(id){return dec[id]==="approve";}
+  function renderRevision(){
+    ACTIONS.forEach(function(a){ if(!dec[a.id]) dec[a.id]="skip"; });
+    var five = dec[5]==="approve"?"Let's find out what you qualify for.":dec[5]==="ownA"?"Homeownership may be closer than you think.":dec[5]==="ownB"?"Approval guaranteed in 24 hours!":null;
+    function chg(oldT,newT,n,ok){ return ok ? (oldT?'<del>'+esc(oldT)+'</del> ':'')+'<ins>'+esc(newT)+'</ins><sup>['+n+']</sup>' : esc(oldT); }
+    var r="Stop scrolling and start OWNING! 🏡✨\n\n";
+    r+="Why rent when you can own your dream home with just 3% down? Payments as low as "+(on(2)?'<del>$1,450/mo</del> <ins>$1,449/mo</ins><sup>[2]</sup>':'$1,450/mo')+" with a "+(on(3)?'<del>FIXED rate of</del> <ins>7/1 adjustable-rate mortgage:</ins><sup>[3]</sup> 5.875%':'FIXED rate of 5.875%')+(on(1)?' <ins>interest rate (6.412% APR)</ins><sup>[1]</sup>':'')+(on(3)?' <ins>for the first 7 years, then the rate can increase</ins><sup>[3]</sup>':'')+". ";
+    r+=on(6)?'<del>This is the best rate you\'ll see all year.</del><sup>[6]</sup> 🔑':"This is the best rate you'll see all year. 🔑";
+    if(on(2)) r+="\n<ins>Example: $252,500 home, 3% down ($7,575), $244,925 loan. 84 monthly payments of $1,449 at 5.875%, then 276 monthly payments that can go up or down. 6.412% APR. Payment doesn't include taxes and insurance, so your actual payment will be higher.</ins><sup>[2]</sup>";
+    r+="\n\nI'm your "+(on(4)?'<del>mortgage counselor</del> <ins>Northstar loan officer</ins><sup>[4]</sup>':'mortgage counselor')+", and I'll walk you through every step. Everyone deserves a home"+(five?', <del>and everyone qualifies with me!</del> <ins>'+esc(five)+'</ins><sup>[5]</sup>':', and everyone qualifies with me!');
+    r+="\n\nDM me \"HOME\" today 📩";
+    if(on(7)) r+="\n\n<ins>Simone Washington, Loan Officer, NMLS #0000303 · Northstar Harbor Mortgage, NMLS #0000000 · Equal Housing Lender. Rates as of November 13, 2026. Rates and terms are subject to change and credit approval. Not a commitment to lend.</ins><sup>[7]</sup>";
+    r+="\n\n#FirstTimeHomeBuyer #HomeOwnership #NorthstarHarbor #DreamHome #MortgageTips";
+    document.getElementById('redline').innerHTML=r;
+
+    // mockup
+    var rateLine = on(3) ? '7/1 ARM: <b>5.875%</b>'+(on(1)?' <span style="font-size:3.3cqw">(<b>6.412% APR</b>)</span>':'')+'<div style="font-size:2.7cqw;font-weight:500;color:#E6EBF3">Rate fixed for the first 7 years, then it can increase.</div>' : 'Lock in a <strong>FIXED</strong> rate of <b>5.875%</b>'+(on(1)?' (<b>6.412% APR</b>)':'');
+    var disc = on(2) ? '<div class="mk-disc">Example: $252,500 home, 3% down ($7,575), $244,925 loan. 84 monthly payments of $1,449 at 5.875%, then 276 monthly payments that can go up or down. 6.412% APR. Payment doesn\'t include taxes and insurance; actual payment will be higher.</div>' : '';
+    document.getElementById('mock').innerHTML='<div class="mock" role="img" aria-label="Revision mockup of Simone\'s Instagram graphic"><span class="mock-label">REVISION MOCKUP · DESIGNER TO FINALIZE</span>'+
+      '<div class="mk-logo"><svg viewBox="0 0 40 40" style="width:9cqw;height:9cqw" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="none" stroke="#C9A227" stroke-width="1.4"/><path d="M20 6.5 L22.4 15.6 L31.5 18 L22.4 20.4 L20 29.5 L17.6 20.4 L8.5 18 L17.6 15.6 Z" fill="#C9A227"/><path d="M10 26.5 q2.5 -1.6 5 0 t5 0 t5 0 t5 0 M11.5 30 q2.1 -1.4 4.2 0 t4.3 0 t4.3 0 t4.2 0" fill="none" stroke="#C9A227" stroke-width="1.2"/></svg><div>NORTHSTAR<br>HARBOR<span>MORTGAGE</span></div></div>'+
+      '<h4>Own your dream home with just <em>3% down</em></h4>'+
+      '<div class="mk-l">Payments as low as <b>'+(on(2)?'$1,449':'$1,450')+'/mo</b></div><div class="mk-l">'+rateLine+'</div>'+disc+
+      '<div class="mk-foot"><div><div class="mk-name">Simone Washington</div><div class="mk-role">'+(on(4)?'Loan Officer'+(on(7)?' · NMLS #0000303':''):'Your Mortgage Counselor')+'</div>'+(on(7)?'<div class="mk-fine">Northstar Harbor Mortgage, NMLS #0000000 · Equal Housing Lender · Rates as of 11/13/2026, subject to change and credit approval. Not a commitment to lend.</div>':'')+'</div><div class="mk-cta">DM me today →</div></div></div>';
+
+    // re-score
+    var res={rates:on(1)?"PASS":"HOLD",trig:on(2)?"PASS":"HOLD",proh:(on(3)&&on(4)&&dec[5]!=="ownB")?"PASS":"HOLD",house:"PASS",clar:on(3)?"PASS":"FLAG"};
+    var whyHouse=[];
+    if(!five) whyHouse.push('"everyone qualifies" still there');
+    if(!on(6)) whyHouse.push('"best rate all year" still there');
+    if(!on(7)) whyHouse.push('NMLS IDs and required lines still missing');
+    if(whyHouse.length) res.house="FLAG";
+    var whyProh = res.proh==="PASS" ? 'No "fixed" claim, no "counselor," no guarantees.' : [ !on(3)?'"FIXED" still on an ARM':null, !on(4)?'"counselor" still there':null, dec[5]==="ownB"?'"Approval guaranteed" is a guarantee claim':null ].filter(Boolean).join('; ')+'.';
+    var rows=[
+      [SC[0][0],"HOLD",res.rates,res.rates==="PASS"?'"6.412% APR" sits with the rate.':'Still no APR.'],
+      [SC[1][0],"HOLD",res.trig,res.trig==="PASS"?'Full example, APR and the taxes-and-insurance statement sit right under the payment.':'Triggers still lack their terms.'],
+      [SC[2][0],"HOLD",res.proh,whyProh],
+      [SC[3][0],"FLAG",res.house,whyHouse.length?whyHouse.join('; ')+'.':'IDs, Equal Housing Lender, as-of date and credit line present.'+(dec[5]==="ownB"?'':' No guarantees.')],
+      [SC[4][0],"FLAG",res.clar,res.clar==="PASS"?'The ARM is stated next to the rate, same size.':'ARM mention is still only in fine print.']
+    ];
+    document.getElementById('sc2Body').innerHTML=rows.map(function(r){return '<tr><td>'+r[0]+'</td><td class="'+rc(r[1])+'">'+r[1]+'</td><td class="'+rc(r[2])+'">'+r[2]+'</td><td>'+esc(r[3])+'</td></tr>';}).join('');
+    var vals=[res.rates,res.trig,res.proh,res.house,res.clar];
+    var overall=vals.indexOf("HOLD")>=0?"HOLD":vals.indexOf("FLAG")>=0?"FLAG":"PASS";
+    var open=ACTIONS.filter(function(a){return dec[a.id]==="skip";}).map(function(a){return a.id+'. '+a.title;});
+    if(dec[5]==="ownB") open.push('5. Your wording "Approval guaranteed in 24 hours!" is a guarantee claim. That breaks the same rule, and since it promises approval it\'s now a HOLD.');
+    document.getElementById('openItems').innerHTML= open.length?'<strong style="color:var(--navy)">Still open:</strong><ul style="margin:6px 0 0;padding-left:20px">'+open.map(function(o){return '<li>'+esc(o)+'</li>';}).join('')+'</ul>':'<strong style="color:var(--pass)">No open items.</strong>';
+    var msgs={PASS:["Ready for compliance sign-off.","Every HOLD and FLAG item is resolved. PASS still isn't approval. A reviewer signs off next."],FLAG:["Needs a human look.","You can fix the open items, or submit and let the reviewer decide on them."],HOLD:["Still can't be published.","A HOLD item is open, so it can't be submitted yet. Change your choices and re-review."]};
+    document.getElementById('revVerdict').innerHTML='<div class="verdict-bar vb-'+overall+'"><span class="pill p-HOLD" style="font-size:15px;padding:6px 10px">HOLD</span><span style="font-weight:700;font-size:20px">→</span><span class="pill p-'+overall+'" style="font-size:16px;padding:6px 12px">'+overall+'</span><div><div class="big" style="color:var(--'+overall.toLowerCase()+')">'+msgs[overall][0]+'</div><div style="font-size:14.5px">'+msgs[overall][1]+'</div></div></div>';
+    var sa=document.getElementById('submitArea');
+    if(overall==="HOLD"){ sa.innerHTML='<div class="panel" style="border-color:#E8B4AE"><b style="color:var(--hold)">Submit is unavailable while the verdict is HOLD.</b> <a href="#fixes" style="font-weight:600">Change my choices →</a></div>'; }
+    else {
+      sa.innerHTML='<div class="panel"><h3>Ready to submit this to Compliance?</h3><p style="font-size:14.5px;margin-bottom:12px">'+(overall==="FLAG"?'The open items go to the reviewer as notes. ':'')+'In the lab, this shows what would be created. Nothing is sent.</p><button class="btn btn-gold" type="button" id="subBtn"><svg class="ic"><use href="#i-send"/></svg>Yes, submit (practice)</button><div id="subOut"></div></div>';
+      document.getElementById('subBtn').addEventListener('click',function(){
+        this.disabled=true;
+        var f=[["Submission ID",'<span style="font-family:var(--f-mono);font-weight:700;color:var(--navy)">NHM-20261114-SW-1</span>'],["Title","Instagram post, 7/1 ARM purchase, 3% down"],["Loan officer","Simone Washington, NMLS #0000303"],["Channel","Social (Instagram)"],["Product","7/1 adjustable-rate purchase"],["Pre-screen verdict",'HOLD → '+overall],["Version","1"],["Planned publish date","2026-11-20"],["Open items for reviewer",open.length?esc(open.join("; ")):"None"],["Publisher","Loan officer (own social account)"],["Status",'<span class="pill" style="background:#E6EBF3;color:var(--navy)">Submitted</span>'],["Attachment","NHM-20261114-SW-1_submission-packet.pdf"]];
+        document.getElementById('subOut').innerHTML='<div style="margin-top:16px"><div class="lbl">AD REVIEW QUEUE ITEM (SHAREPOINT LIST · PRACTICE)</div><table class="qi">'+f.map(function(x){return '<tr><th>'+x[0]+'</th><td>'+x[1]+'</td></tr>';}).join('')+'</table><p style="font-size:14px;margin-top:10px">The assistant stops at <strong>Submitted</strong>. It never approves an ad and never notifies anyone.</p></div>';
+      });
+    }
+  }
+
+  // ---------- step 6 scenarios ----------
+  var SCEN=[
+    {q:"Simone wants to add a line to her caption: \"The Garcia family closed in 21 days!\" Can she paste the draft into Claude as is?",a:false,good:"Right. Take the family's name out first. No borrower names, addresses or loan numbers go into Claude, even in a draft.",bad:"Not as is. A borrower's name is customer information. Remove it before pasting, and check with Compliance before using a client story at all."},
+    {q:"A client texted Simone asking whether 5.875% is the best she can get. Can Simone attach a screenshot of that text thread for ideas?",a:false,good:"Right. The screenshot shows a client's name and number, and it isn't an ad. Keep it out.",bad:"No. The screenshot holds a client's name, number and loan question. That's customer data, and it isn't an ad to review."},
+    {q:"Can Simone paste today's Northstar rate sheet to get the APR and the example numbers right?",a:true,good:"Right. A rate sheet is Northstar product information with no customer data. It's fine to use, and it helps the assistant check your numbers.",bad:"It's actually fine. A rate sheet is Northstar product information with no customer data, and it helps the assistant check your numbers."}
+  ];
+  document.getElementById('scen').innerHTML=SCEN.map(function(s,i){return '<div class="scen-card"><div class="kick" style="margin-bottom:6px">SCENARIO '+(i+1)+'</div><h3>'+esc(s.q)+'</h3><div class="scen-btns"><button class="btn btn-line" type="button" data-s="'+i+'" data-a="1">Yes, paste it</button><button class="btn btn-line" type="button" data-s="'+i+'" data-a="0">No, don\'t</button></div><div class="sfb" aria-live="polite"></div></div>';}).join('');
+  document.querySelectorAll('[data-s]').forEach(function(b){ b.addEventListener('click',function(){ var s=SCEN[+b.getAttribute('data-s')], yes=b.getAttribute('data-a')==="1", ok=(yes===s.a); var card=b.closest('.scen-card'); card.querySelector('.sfb').innerHTML='<div class="scen-fb '+(ok?'fb-good':'fb-bad')+'"><strong>'+(ok?'Correct. ':'Not quite. ')+'</strong>'+esc(ok?s.good:s.bad)+'</div>'; }); });
+
+  // ---------- step 7 quiz ----------
+  var QZ=[
+    {q:"Your ad comes back PASS. What happens next?",o:["Post it. PASS means it's approved.","Submit it. A compliance reviewer signs off before anyone publishes it.","Send it to Marketing to post."],a:1,e:"PASS means ready for sign-off. A licensed reviewer approves every ad, including PASS."},
+    {q:"Why does \"3% down\" need more information in the ad?",o:["It's a triggering term, so the full terms and the APR have to appear with it.","Down payments can't be advertised on social media.","It only needs the Equal Housing Lender statement."],a:0,e:"A down payment amount is a triggering term under Reg Z, so the ad must show the terms and the APR."},
+    {q:"You disagree with a FLAG item. What do you do?",o:["Run the review again until the flag goes away.","Skip that fix and submit. It stays open as a note for the reviewer.","Edit the report to remove it."],a:1,e:"You stay in charge. Skipped items go to the reviewer, who makes the call."},
+    {q:"Compliance returned your ad with comments. How do you resubmit?",o:["Find the original chat and reply there.","Start a new ad with a new Submission ID.","Open a new chat and paste \"Resubmit\" plus your Submission ID, the comments and your latest version."],a:2,e:"The Submission ID is how the assistant finds your ad. The original chat isn't needed, and the same queue item moves to version 2."},
+    {q:"Which of these can you paste into Northstar's Claude?",o:["Today's Northstar rate sheet","A screenshot of a client's text message","Your draft ad, with a client's name in a testimonial"],a:0,e:"Rate sheets are Northstar product information. Anything with customer details stays out."}
+  ];
+  var qf=document.getElementById('quiz');
+  function drawQuiz(){ qf.innerHTML=QZ.map(function(x,i){return '<fieldset class="qz"><legend>'+(i+1)+'. '+esc(x.q)+'</legend>'+x.o.map(function(o,j){return '<label class="opt"><input type="radio" name="q'+i+'" value="'+j+'"><span>'+esc(o)+'</span></label>';}).join('')+'<div class="fbk" aria-live="polite"></div></fieldset>';}).join(''); document.getElementById('quizResult').innerHTML=""; document.getElementById('toComplete').hidden=true; var g=document.getElementById('gradeBtn'); g.textContent="Check my answers"; g.dataset.mode="grade"; }
+  drawQuiz();
+  var lastScore=null;
+  document.getElementById('gradeBtn').addEventListener('click',function(){
+    if(this.dataset.mode==="retake"){ drawQuiz(); window.scrollTo(0,qf.offsetTop-80); return; }
+    var msg=document.getElementById('quizMsg'), answered=0, right=0;
+    QZ.forEach(function(x,i){ if(qf.querySelector('input[name=q'+i+']:checked')) answered++; });
+    if(answered<QZ.length){ msg.textContent="Answer all five questions to check."; return; }
+    msg.textContent="";
+    QZ.forEach(function(x,i){ var v=+qf.querySelector('input[name=q'+i+']:checked').value, ok=v===x.a; if(ok) right++; qf.querySelectorAll('input[name=q'+i+']').forEach(function(inp){inp.disabled=true;}); qf.querySelectorAll('.fbk')[i].innerHTML='<div class="scen-fb '+(ok?'fb-good':'fb-bad')+'"><strong>'+(ok?'Correct. ':'Not quite. ')+'</strong>'+esc(x.e)+'</div>'; });
+    lastScore=right; var pass=right>=4;
+    document.getElementById('quizResult').innerHTML='<div class="panel" style="margin-top:18px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;border-color:'+(pass?'#9BCFAE':'#E8B4AE')+'"><span class="score">'+right+' / 5</span><div>'+(pass?'<strong style="color:var(--pass)">You passed.</strong> Record your completion to finish the lab.':'<strong style="color:var(--hold)">Not quite there.</strong> Read the explanations above, then retake it.')+'</div></div>';
+    document.getElementById('toComplete').hidden=!pass;
+    this.textContent="Retake the exit check"; this.dataset.mode="retake";
+    try{ sessionStorage.setItem('labScore',String(right)); }catch(e){}
+  });
+
+  // ---------- completion ----------
+  document.getElementById('compForm').addEventListener('submit',function(e){ e.preventDefault();
+    var mode=document.querySelector('input[name=cmode]:checked').value;
+    var rows=[["Name","Luis Ortega"],["Branch",document.getElementById('cbranch').value],["Format",mode],["Exit check",document.getElementById('cscore').value],["Readiness",document.getElementById('cconf').value],["Completed","November 14, 2026"],["Skill version","mortgage-ad-review v6"]];
+    document.getElementById('compTable').innerHTML=rows.map(function(r){return '<tr><th>'+r[0]+'</th><td>'+esc(r[1])+'</td></tr>';}).join('');
+    this.hidden=true; document.getElementById('compDone').hidden=false; window.scrollTo(0,0);
+  });
+  function fillScore(){ var s=lastScore; if(s===null){ try{ var v=sessionStorage.getItem('labScore'); if(v) s=+v; }catch(e){} } document.getElementById('cscore').value=(s===null?5:s)+" / 5 · passed"; }
+  window.addEventListener('hashchange',function(){ if(location.hash==="#complete") fillScore(); });
+  if(location.hash==="#complete") fillScore();
+
+  show();
+})();
+</script>
+</body>
+</html>
